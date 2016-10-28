@@ -1,24 +1,50 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode'; 
+import * as vscode from 'vscode';
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
+class TextDocumentContentProvider implements vscode.TextDocumentContentProvider {
+	public _onDidChange = new vscode.EventEmitter<vscode.Uri>();
+
+	public provideTextDocumentContent(uri: vscode.Uri): string {
+		return `
+			<body>
+				<iframe
+					width="100%"
+					height="100%"
+					frameborder="0"
+					src="http://localhost:8080"
+					style="
+						position: absolute;
+						left: 0;
+						right: 0;
+						bottom: 0;
+						top: 0;
+					" />
+			</body>
+		`;
+	}
+
+	public get onDidChange(): vscode.Event<vscode.Uri> {
+		return this._onDidChange.event;
+	}
+
+	public update(uri: vscode.Uri) {
+		this._onDidChange.fire(uri);
+	}
+}
+
 export function activate(context: vscode.ExtensionContext) {
-
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "vscode-browser" is now active!'); 
-
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with  registerCommand
-	// The commandId parameter must match the command field in package.json
-	var disposable = vscode.commands.registerCommand('extension.sayHello', () => {
-		// The code you place here will be executed every time your command is executed
-
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World!');
+	const previewUri = vscode.Uri.parse('css-preview://authority/css-preview');
+	let provider = new TextDocumentContentProvider();
+	let registration = vscode.workspace.registerTextDocumentContentProvider('css-preview', provider);
+	provider.update(previewUri);
+	let disposable = vscode.commands.registerCommand('extension.openWebBrowser', () => {
+		return vscode.commands.executeCommand('vscode.previewHtml', previewUri, vscode.ViewColumn.Two, 'Web Browser').then((success) => {
+			// do nothing
+		}, (reason) => {
+			vscode.window.showErrorMessage(reason);
+		});
 	});
-	
-	context.subscriptions.push(disposable);
+	context.subscriptions.push(disposable, registration);
+}
+
+export function deactivate() {
 }

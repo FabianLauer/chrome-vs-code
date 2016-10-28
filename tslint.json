@@ -1,0 +1,60 @@
+{
+	"extends": "tslint:latest",
+	"rules": {
+		"object-literal-sort-keys": false,
+		"indent": [
+			true,
+			"tabs"
+		],
+		"forin": false,
+		"new-parens": false,
+		"jsdoc-format": true,
+		"interface-name": [
+			true,
+			"always-prefix"
+		],
+		"quotemark": [
+			true,
+			"single",
+			"avoid-escape"
+		],
+		"semicolon": [
+			true,
+			"always"
+		],
+		"variable-name": [
+			true,
+			"ban-keywords",
+			"check-format"
+		],
+		"no-var-keyword": false,
+		"whitespace": [
+			true,
+			"check-branch",
+			"check-operator"
+		],
+		"member-access": [
+			true,
+			"check-accessor"
+		],
+		"member-ordering": [
+			false
+		],
+		"curly": true,
+		"ordered-imports": false,
+		"no-debugger": true,
+		"no-consecutive-blank-lines": false,
+		"max-line-length": [
+			true,
+			180
+		],
+		"trailing-comma": [
+			true,
+			{
+				"multiline": "never",
+				"singleline": "never"
+			}
+		]
+	},
+	"rulesDirectory": []
+}
