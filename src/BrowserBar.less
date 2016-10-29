@@ -1,7 +1,16 @@
 .browser-bar {
+	@height: 40px;
+	box-sizing: border-box;
 	float: left;
 	clear: both;
 	width: 100%;
-	height: auto;
-	background: #ddd;
+	height: @height;
+	flex-basis: @height;
+	flex-grow: 0;
+	flex-shrink: 0;
+	padding: 0.3em;
+	background: #f3f3f3;
+	border-bottom: 1px solid #ddd;
+	box-shadow: 0 0 10px -4px rgba(0, 0, 0, 0.5);
+	z-index: 200;
 }

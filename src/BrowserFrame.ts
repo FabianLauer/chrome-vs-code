@@ -16,9 +16,11 @@ export default class BrowserBar implements IRenderable {
 
 	public async renderHTML(html: string): Promise<void> {
 		this.outerElement.classList.add('browser-frame');
-		this.outerElement.innerHTML = html;
+		this.outerElement.appendChild(this.frame);
+		this.frame.contentWindow.document.body.innerHTML = html;
 	}
 
 
 	private outerElement = document.createElement('div');
+	private frame = document.createElement('iframe');
 }
