@@ -1,4 +1,7 @@
 import BrowserWindow from './BrowserWindow';
 
-const browser = new BrowserWindow();
-browser.load('about://home');
+(async () => {
+	const browser = new BrowserWindow();
+	await browser.render();
+	await browser.load('about://home');
+})();

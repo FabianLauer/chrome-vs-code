@@ -1,32 +1,29 @@
 import * as http from 'http';
+import * as fs from 'fs';
 import * as cp from 'child_process';
 
-const browserFile = cp.execSync('browserify ./out/src/browser.js') + ''
+function loadBrowserJS(): string {
+	return cp.execSync('browserify ./out/src/browser.js').toString();
+}
 
 const server = http.createServer((request, response) => {
 	switch (request.url) {
 		default:
+			if (/\/[a-zA-Z]+\.less/.test(request.url)) {
+				response.statusCode = 200;
+				response.end(fs.readFileSync(`./src${request.url}`).toString());
+				break;
+			}
 			response.statusCode = 404;
 			break;
 		case '':
 		case '/':
 			response.statusCode = 200;
-			response.end(`
-				<!DOCTYPE html>
-				<html>
-					<head>
-						<meta charset="utf-8" />
-					</head>
-					<body>
-						...
-						<script src="./browser.js"></script>
-					</body>
-				</html>
-			`);
+			response.end(fs.readFileSync('./src/browser.html').toString());
 			break;
 		case '/browser.js':
 			response.statusCode = 200;
-			response.end(browserFile);
+			response.end(loadBrowserJS());
 			break;
 	}
 	console.log(response.statusCode, request.url);
