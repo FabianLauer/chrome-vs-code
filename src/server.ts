@@ -39,6 +39,7 @@ const server = http.createServer((request, response) => {
 });
 
 server.listen(8080, 'localhost');
+console.log('server listening');
 
 
 function loadURL(requestURL: string, request: http.IncomingMessage, response: http.ServerResponse): void {

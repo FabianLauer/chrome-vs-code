@@ -19,6 +19,7 @@ export default class URLBar implements IRenderable {
 			// trigger change event on enter
 			if (e.keyCode === 13) {
 				this.onChange.trigger();
+				this.input.blur();
 			}
 		});
 		this.input.placeholder = 'Enter an address';
@@ -36,6 +37,6 @@ export default class URLBar implements IRenderable {
 	}
 
 
-	private outerElement = document.createElement('div');
-	private input = document.createElement('input');
+	private readonly outerElement = document.createElement('div');
+	private readonly input = document.createElement('input');
 }

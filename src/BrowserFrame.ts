@@ -21,6 +21,6 @@ export default class BrowserBar implements IRenderable {
 	}
 
 
-	private outerElement = document.createElement('div');
-	private frame = document.createElement('iframe');
+	private readonly outerElement = document.createElement('div');
+	private readonly frame = document.createElement('iframe');
 }
