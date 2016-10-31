@@ -28,6 +28,12 @@ export default class BrowserWindow {
 		this.browserBar.urlBar.onChange.bind(async () => {
 			this.load(await this.browserBar.urlBar.getValue());
 		});
+		this.browserBar.onRefreshButtonPressed.bind(() => {
+			this.load(this.currentURI);
+		});
+		this.browserBar.onNoCacheRefreshButtonPressed.bind(() => {
+			this.load(this.currentURI);
+		});
 		await this.browserBar.render();
 		document.body.appendChild(this.browserBar.getDOM());
 		// browser viewport
@@ -40,6 +46,7 @@ export default class BrowserWindow {
 
 
 	public async load(uri: string): Promise<void> {
+		this.currentURI = uri;
 		await this.browserBar.urlBar.setValue(uri);
 		const statusIndicatorTicket = this.statusIndicator.show(`loading ${uri}`);
 		const response = await this.request(uri);
@@ -84,4 +91,5 @@ export default class BrowserWindow {
 
 
 	private readonly statusIndicator = new StatusIndicator();
+	private currentURI: string;
 }

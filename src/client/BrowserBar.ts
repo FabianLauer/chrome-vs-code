@@ -52,11 +52,11 @@ export default class BrowserBar implements IRenderable {
 		// 'go forward' button
 		await this.forwardButton.render();
 		this.outerElement.appendChild(this.forwardButton.getDOM());
-		this.backButton.getDOM().addEventListener('click', () => this.onForwardButtonPressed.trigger());
+		this.forwardButton.getDOM().addEventListener('click', () => this.onForwardButtonPressed.trigger());
 		// 'refresh' button
 		await this.refreshButton.render();
 		this.outerElement.appendChild(this.refreshButton.getDOM());
-		this.backButton.getDOM().addEventListener('click', e => {
+		this.refreshButton.getDOM().addEventListener('click', e => {
 			if (e.shiftKey) {
 				this.onNoCacheRefreshButtonPressed.trigger();
 			} else {
@@ -69,7 +69,7 @@ export default class BrowserBar implements IRenderable {
 		// 'go home' button
 		await this.homeButton.render();
 		this.outerElement.appendChild(this.homeButton.getDOM());
-		this.backButton.getDOM().addEventListener('click', () => this.onHomeButtonPressed.trigger());
+		this.homeButton.getDOM().addEventListener('click', () => this.onHomeButtonPressed.trigger());
 	}
 
 
