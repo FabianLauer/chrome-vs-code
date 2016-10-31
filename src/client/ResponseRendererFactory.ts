@@ -1,5 +1,8 @@
 import Viewport from './Viewport';
 import ResponseRenderer from './ResponseRenderer';
+import { BUG_REPORT_URL } from '../config';
+
+declare function unescape(str: string): string;
 
 /**
  * @singleton
@@ -39,11 +42,7 @@ export default class ResponseRendererFactory {
 		}
 		// fall back to another renderer if no matching renderer for the response was found
 		if (highest.score < 1) {
-			highest.rendererClass = class FallbackRenderer extends ResponseRenderer {
-				protected async renderResponseConcrete(): Promise<void> {
-					await this.viewport.renderHTML('Rendering failed.');
-				}
-			};
+			highest.rendererClass = ResponseRendererFactory.FallbackRenderer;
 		}
 		// get or create a renderer instance for the given viewport 
 		if (!Array.isArray(this.instancesByViewport.get(viewport))) {
@@ -58,8 +57,45 @@ export default class ResponseRendererFactory {
 	}
 
 
-	private static registry = new Map<(response: XMLHttpRequest) => number, typeof ResponseRenderer>();
-	private static instancesByViewport = new Map<Viewport, ResponseRenderer[]>();
+	private static readonly registry = new Map<(response: XMLHttpRequest) => number, typeof ResponseRenderer>();
+	private static readonly instancesByViewport = new Map<Viewport, ResponseRenderer[]>();
+
+
+	private static readonly FallbackRenderer = class FallbackRenderer extends ResponseRenderer {
+		protected async renderResponseConcrete(response: XMLHttpRequest): Promise<void> {
+			const url = unescape(((<string>(<any>response).responseURL) || '').replace(/^.*?\?/, ''));
+			await this.viewport.renderHTML(
+				`
+					<title>Rendering Error</title>
+					<style>
+						* {
+							font-family: system, -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif!important;
+						}
+						body {
+							box-sizing: border-box;
+							padding: 10vh 10vw;
+							font-size: 0.8em;
+							background: #fafafa;
+							color: #333;
+						}
+						p {
+							line-height: 1.3em;
+						}
+						a {
+							color: #666;
+						}
+					</style>
+				`,
+				`
+					<h1>This site can't be displayed.</h1>
+					<p>
+						The web page at <b>${url}</b> can not be displayed because no matching renderer was found.
+					</p>
+					<a href='${BUG_REPORT_URL}' title='File a bug report'>Report this issue</a>
+				`
+			);
+		}
+	};
 }
 
 

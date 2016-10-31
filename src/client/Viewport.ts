@@ -11,10 +11,11 @@ export default class Viewport implements IRenderable {
 	}
 
 
-	public async renderHTML(html: string): Promise<void> {
+	public async renderHTML(headHTML: string, bodyHTML: string): Promise<void> {
 		this.outerElement.classList.add('viewport');
 		this.outerElement.appendChild(this.frame);
-		this.frame.contentWindow.document.body.innerHTML = html;
+		this.frame.contentWindow.document.head.innerHTML = headHTML;
+		this.frame.contentWindow.document.body.innerHTML = bodyHTML;
 	}
 
 
