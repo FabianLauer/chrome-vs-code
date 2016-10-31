@@ -1,6 +1,9 @@
 import ResponseRenderer from '../ResponseRenderer';
 import ResponseRendererFactory from '../ResponseRendererFactory';
 
+declare function escape(str: string): string;
+declare function unescape(str: string): string;
+
 @ResponseRendererFactory.register(response => {
 	var score = 0;
 	if (response.status === 200) {
@@ -17,7 +20,42 @@ class HTMLRenderer extends ResponseRenderer {
 	 * @param response The response to render.
 	 */
 	protected async renderResponseConcrete(response: XMLHttpRequest): Promise<void> {
-		await this.viewport.renderHTML(response.responseText);
+		var headHTML: string;
+		var bodyHTML: string;
+		const parsedDocument = document.implementation.createHTMLDocument('response');
+		parsedDocument.documentElement.innerHTML = response.responseText;
+		const baseURL = unescape(((<string>(<any>response).responseURL) || '').replace(/^.*?\?/, ''));
+		HTMLRenderer.updateAllURIAttributes(parsedDocument, baseURL);
+		const headElement = parsedDocument.getElementsByTagName('head')[0];
+		if (typeof headElement === 'undefined') {
+			headHTML = '';
+		} else {
+			headHTML = headElement.innerHTML;
+		}
+		const bodyElement = parsedDocument.getElementsByTagName('body')[0];
+		if (typeof bodyElement === 'undefined') {
+			bodyHTML = '';
+		} else {
+			bodyHTML = bodyElement.innerHTML;
+		}
+		await this.viewport.renderHTML(headHTML, bodyHTML);
+	}
+
+
+	private static updateAllURIAttributes(document: Document, baseURL: string): void {
+		const elements = document.getElementsByTagName('*');
+		for (let i = 0; i < elements.length; i++) {
+			const element = elements[i];
+			for (let a = 0; a < element.attributes.length; a++) {
+				const attribute = element.attributes[a];
+				if (/^https?:\//.test(attribute.value)) {
+					attribute.value = `/load?${escape(attribute.value)}`;
+					continue;
+				} else if (attribute.name === 'src' || attribute.name === 'href' || attribute.name === 'xlink:href') {
+					attribute.value = `/load?${baseURL}/${escape(attribute.value)}`;
+				}
+			}
+		}
 	}
 }
 
