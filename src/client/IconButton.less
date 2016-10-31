@@ -4,14 +4,16 @@
 	clear: none;
 	width: @size;
 	height: @size;
-	margin: 0 0.3em;
+	margin: 0 0.1em;
 	line-height: @size;
 	text-align: center;
 	cursor: pointer;
+	background: @icon_button_inactive_background;
+	transition: background 0.1s ease;
 	&:hover {
-		background: #ddd;
+		background: @icon_button_hover_background;
 	}
 	&:active {
-		background: #ccc;
+		background: @icon_button_active_background;
 	}
 }

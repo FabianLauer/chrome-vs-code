@@ -1,21 +1,43 @@
 ///
+/// Browser Window
+///
+// The browser window's border.
+@browser_window_border: none;
+
+///
 /// Browser Bar
 ///
 // The browser bar's background color.
-@browser_bar_background: #f3f3f3;
+@browser_bar_background: transparent;
 // The browser bar's border bottom.
-@browser_bar_border_bottom: 1px solid #ddd;
+@browser_bar_border_bottom: none;
 // The browser bar's box shadow.
-@browser_bar_box_shadow: 0 0 10px -4px rgba(0, 0, 0, 0.5);
+@browser_bar_box_shadow: 0 3px 10px -5px rgba(0, 0, 0, 0.6);
 
 ///
 /// URL Bar
 ///
 // The URL bar's inactive background.
-@url_bar_inactive_background: #fff;
+@url_bar_inactive_background: #f7f7f7;
+// The URL bar's active background.
+@url_bar_active_background: #fafafa;
+// The URL bar's inactive text color.
+@url_bar_inactive_color: #444;
+// The URL bar's active text color.
+@url_bar_active_color: #111;
 // The URL bar's inactive border.
-@url_bar_inactive_border: 1px solid #ddd;
+@url_bar_inactive_border: 1px solid transparent;
 // The URL bar's active border color.
 @url_bar_focused_border_color: #4d90fe;
 // The URL bar's loading bar background color.
 @url_bar_loading_bar_border_color: #4d90fe;
+
+///
+/// Icon Buttons
+///
+// Icon buttons' background when inactive.
+@icon_button_inactive_background: #fff;
+// Icon buttons' background when hovered.
+@icon_button_hover_background: #fafafa;
+// Icon buttons' background when active.
+@icon_button_active_background: #f7f7f7;
