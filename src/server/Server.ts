@@ -2,6 +2,7 @@ import * as http from 'http';
 import * as https from 'https';
 import HTTPServer from './HTTPServer';
 import FileReader from './FileReader';
+import { format } from 'url';
 
 declare function unescape(str: string): string;
 
@@ -24,7 +25,9 @@ export default class Server {
 				request: http.IncomingMessage,
 				response: http.ServerResponse
 			) => {
-				const query = unescape(HTTPServer.createURLFromString(request.url).query.replace(/\?/, ''));
+				var query = unescape(HTTPServer.createURLFromString(request.url).query.replace(/\?/, ''));
+				// normalize the URL
+				query = format(HTTPServer.createURLFromString(query));
 				if (base) {
 					this.previousBaseURL = query;
 				}
@@ -125,7 +128,10 @@ export default class Server {
 
 	private httpServer = new HTTPServer(
 		this.handle404.bind(this),
-		this.handle500.bind(this)
+		this.handle500.bind(this),
+		error => {
+			this.log(`ERROR: ${error}`);
+		}
 	);
 
 	private previousBaseURL: string;

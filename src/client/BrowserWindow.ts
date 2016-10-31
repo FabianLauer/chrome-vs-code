@@ -3,6 +3,7 @@ import Viewport from './Viewport';
 import ResponseRendererFactory from './ResponseRendererFactory';
 
 declare function escape(str: string): string;
+declare function unescape(str: string): string;
 
 /**
  * The complete browser window, including browser bar and viewport.
@@ -11,7 +12,10 @@ export default class BrowserWindow {
 	constructor(
 		private readonly browserBar: BrowserBar = new BrowserBar(),
 		private readonly viewport: Viewport = new Viewport(),
-	) { }
+	) {
+		this.viewport.onAfterNavigation.bind(this.handleViewportNavigation.bind(this));
+		this.viewport.onRequestNavigation.bind(this.handleNavigationRequestFromViewport.bind(this));
+	}
 
 
 	public async render(): Promise<void> {
@@ -53,5 +57,17 @@ export default class BrowserWindow {
 		const bodyHeight = document.body.getBoundingClientRect().height;
 		const browserBarHeight = this.browserBar.getDOM().getBoundingClientRect().height;
 		this.viewport.updateHeight(bodyHeight - browserBarHeight);
+	}
+
+
+	private async handleViewportNavigation(uri: string): Promise<void> {
+		uri = unescape(((<string>uri) || '').replace(/^.*?\?/, ''));
+		await this.load(uri);
+	}
+
+
+	private async handleNavigationRequestFromViewport(targetURI: string): Promise<void> {
+		targetURI = unescape(((<string>targetURI) || '').replace(/^.*?\?/, ''));
+		await this.load(targetURI);
 	}
 }

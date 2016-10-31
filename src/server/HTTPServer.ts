@@ -12,10 +12,12 @@ export default class HTTPServer {
 	 * Creates a new server instance.
 	 * @param handle404 A request handler that is called if no handler can be found for a request URL.
 	 * @param handle500 A request handler that is called if another request handler throws an error.
+	 * @param handleError A function that is called when errors occur that can not be handled using `handle500`.
 	 */
 	public constructor(
 		private handle404: IRequestHandler,
-		private handle500: IErrorRequestHandler
+		private handle500: IErrorRequestHandler,
+		private handleError: (error: any) => void
 	) { /* do nothing */ }
 
 
@@ -56,6 +58,7 @@ export default class HTTPServer {
 					await this.handle500.call(this, err, request, response);
 				}
 			});
+			server.on('error', this.handleError);
 			// start the server, resolve the promise when the server was actually started
 			server.listen(port, hostname, () => {
 				this.servers.push(server);
