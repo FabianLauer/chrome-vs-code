@@ -2,6 +2,8 @@ import BrowserBar from './BrowserBar';
 import Viewport from './Viewport';
 import StatusIndicator from './StatusIndicator';
 import ResponseRendererFactory from './ResponseRendererFactory';
+import History from './History';
+import HistoryEntry from './HistoryEntry';
 
 declare function escape(str: string): string;
 declare function unescape(str: string): string;
@@ -14,6 +16,7 @@ export default class BrowserWindow {
 		private readonly browserBar: BrowserBar = new BrowserBar(),
 		private readonly viewport: Viewport = new Viewport()
 	) {
+		this.history.push(new HistoryEntry('about://home', Date.now()));
 		this.viewport.onAfterNavigation.bind(this.handleViewportNavigation.bind(this));
 		this.viewport.onRequestNavigation.bind(this.handleNavigationRequestFromViewport.bind(this));
 	}
@@ -29,10 +32,18 @@ export default class BrowserWindow {
 			this.load(await this.browserBar.urlBar.getValue());
 		});
 		this.browserBar.onRefreshButtonPressed.bind(() => {
-			this.load(this.currentURI);
+			this.load(this.history.getCurrent().uri);
 		});
 		this.browserBar.onNoCacheRefreshButtonPressed.bind(() => {
-			this.load(this.currentURI);
+			this.load(this.history.getCurrent().uri);
+		});
+		this.browserBar.onBackButtonPressed.bind(async () => {
+			await this.history.goBack();
+			this.load(this.history.getCurrent().uri);
+		});
+		this.browserBar.onForwardButtonPressed.bind(async () => {
+			await this.history.goForward();
+			this.load(this.history.getCurrent().uri);
 		});
 		await this.browserBar.render();
 		document.body.appendChild(this.browserBar.getDOM());
@@ -47,7 +58,7 @@ export default class BrowserWindow {
 
 
 	public async load(uri: string): Promise<void> {
-		this.currentURI = uri;
+		this.history.push(new HistoryEntry(uri, Date.now()));
 		await this.browserBar.urlBar.setValue(uri);
 		this.statusIndicator.show(`loading ${uri}`);
 		await this.browserBar.showLoadingProgress(10);
@@ -150,7 +161,7 @@ export default class BrowserWindow {
 
 
 	private readonly statusIndicator = new StatusIndicator();
-	private currentURI: string;
+	private history = new History();
 	private lastViewportScroll: {
 		recordedTime: number;
 		scrollY: number;
