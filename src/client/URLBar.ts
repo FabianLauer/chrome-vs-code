@@ -2,9 +2,12 @@ import IRenderable from './IRenderable';
 import { Event } from '../utils/event';
 
 /**
- * Controller for the browser's URL bar.
+ * The browser's URL bar component.
  */
 export default class URLBar implements IRenderable {
+	/**
+	 * Triggered when the URL bar's value has changed.
+	 */
 	public readonly onChange = new Event<() => void>();
 
 
@@ -32,21 +35,36 @@ export default class URLBar implements IRenderable {
 	}
 
 
-	public getValue(): string {
+	/**
+	 * Returns the current URL as a string.
+	 */
+	public getURL(): string {
 		return this.input.value;
 	}
 
 
-	public async setValue(value: string): Promise<void> {
-		this.input.value = value;
+	/**
+	 * Updates the URL bar's current value.
+	 * @param url The new URL to show in the URL bar.
+	 * @param triggerChangeEvent Whether to trigger the URL bar's change event or not.
+	 */
+	public async setURL(url: string, triggerChangeEvent = false): Promise<void> {
+		this.input.value = url;
 	}
 
 
+	/**
+	 * Shows an infinite loading indicator in the URL bar.
+	 */
 	public showLoadingIndicator(): void {
 		this.loadingBar.classList.add('visible', 'infinite');
 	}
 
 
+	/**
+	 * Shows a progress loading indicator in the URL bar.
+	 * @param percentComplete The progress percentage.
+	 */
 	public async showLoadingProgress(percentComplete: number): Promise<void> {
 		return new Promise<void>(resolve => {
 			this.loadingBar.classList.remove('infinite');
@@ -61,6 +79,9 @@ export default class URLBar implements IRenderable {
 	}
 
 
+	/**
+	 * Hides the loading indicator (infinite or progress).
+	 */
 	public async hideLoadingIndicator(): Promise<void> {
 		return new Promise<void>(resolve => {
 			this.loadingBar.classList.remove('visible', 'infinite');

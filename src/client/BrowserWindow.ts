@@ -29,7 +29,7 @@ export default class BrowserWindow {
 		const statusIndicatorTicket = this.statusIndicator.show('initializing');
 		// browser bar
 		this.browserBar.urlBar.onChange.bind(async () => {
-			this.load(await this.browserBar.urlBar.getValue());
+			this.load(await this.browserBar.urlBar.getURL());
 		});
 		this.browserBar.onHomeButtonPressed.bind(() => {
 			this.load('about://home');
@@ -74,7 +74,7 @@ export default class BrowserWindow {
 		if (collapseBrowserBar) {
 			this.expandBrowserBar(true);
 		}
-		await this.browserBar.urlBar.setValue(uri);
+		await this.browserBar.urlBar.setURL(uri);
 		this.statusIndicator.show(`loading ${uri}`);
 		await this.browserBar.showLoadingProgress(10);
 		const response = await this.request(uri);
