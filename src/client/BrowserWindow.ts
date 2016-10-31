@@ -155,7 +155,6 @@ export default class BrowserWindow {
 		if (Math.abs(currentScrollY - this.lastViewportScroll.scrollY) < threshold) {
 			return;
 		}
-		console.log(currentScrollY > this.lastViewportScroll.scrollY, currentScrollY, this.lastViewportScroll.scrollY);
 		// scrolling down:
 		if (currentScrollY > this.lastViewportScroll.scrollY) {
 			this.collapseBrowserBar();
