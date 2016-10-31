@@ -19,15 +19,25 @@ export default class Server {
 		this.createFileReaderRoute('/', 'text/html', this.browserHTML);
 		this.createFileReaderRoute('/browser.js', 'text/javascript', this.browserJS);
 		this.createFileReaderRoute('/browser.css', 'text/css', this.browserCSS);
-		this.httpServer.addHandler(
-			HTTPServer.createURLFromString('/load'),
-			async (
+		const createProxyHandler = (base: boolean) => {
+			return async (
 				request: http.IncomingMessage,
 				response: http.ServerResponse
 			) => {
 				const query = unescape(HTTPServer.createURLFromString(request.url).query.replace(/\?/, ''));
+				if (base) {
+					this.previousBaseURL = query;
+				}
 				await this.delegateToProxy(query, request, response);
-			}
+			};
+		};
+		this.httpServer.addHandler(
+			HTTPServer.createURLFromString('/load'),
+			createProxyHandler(false)
+		);
+		this.httpServer.addHandler(
+			HTTPServer.createURLFromString('/load/base'),
+			createProxyHandler(true)
 		);
 	}
 
@@ -72,9 +82,14 @@ export default class Server {
 	 * Handles 404 errors from `this.httpServer`.
 	 */
 	private handle404(request: http.IncomingMessage, response: http.ServerResponse): void {
-		this.log(`[404]: ${HTTPServer.urlToString(request.url)}`);
-		response.statusCode = 404;
-		response.end();
+		if (typeof this.previousBaseURL === 'string' && !(/^[a-z]+:\//.test(request.url))) {
+			this.log(`[404 -> proxy]: ${request.url}`);
+			this.delegateToProxy(`${this.previousBaseURL}/${request.url}`, request, response);
+		} else {
+			this.log(`[404]: ${HTTPServer.urlToString(request.url)}`);
+			response.statusCode = 404;
+			response.end();
+		}
 	}
 
 
@@ -112,4 +127,6 @@ export default class Server {
 		this.handle404.bind(this),
 		this.handle500.bind(this)
 	);
+
+	private previousBaseURL: string;
 }

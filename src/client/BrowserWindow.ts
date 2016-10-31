@@ -42,7 +42,7 @@ export default class BrowserWindow {
 					resolve(request);
 				}
 			};
-			request.open('GET', `/load?${escape(uri)}`, true);
+			request.open('GET', `/load/base?${escape(uri)}`, true);
 			request.send();
 		});
 	}
