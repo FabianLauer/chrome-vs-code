@@ -80,13 +80,14 @@ function extractAboutPageName(str: string): string {
 
 class AboutFileReader extends FileReader<string> {
 	public constructor(
-		private filePath: string
+		private filePath: string,
+		private fileContent?: string
 	) {
 		super();
 	}
 
 	protected async getContentConcrete() {
-		const fileContent = await readFile(this.filePath);
+		const fileContent = this.fileContent || await readFile(this.filePath);
 		const html = `
 			<!DOCTYPE html>
 			<html>
@@ -119,6 +120,24 @@ async function generateAboutPageReaders() {
 			reader: new AboutFileReader(filePath)
 		});
 	}
+	let indexHTML = results.map(aboutPage => {
+		return `
+			<li>
+				<a href='about://${aboutPage.name}' title='${aboutPage.name}'>${aboutPage.name}</a>
+			</li>
+		`;
+	}).join('');
+	indexHTML = `
+		<!-- @about://index -->
+		<h1>about:// Page Index</h1>
+		<ul>
+			${indexHTML}
+		</ul>
+	`;
+	results.push({
+		name: 'index',
+		reader: new AboutFileReader('index', indexHTML)
+	});
 	return results;
 }
 
