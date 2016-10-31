@@ -31,6 +31,9 @@ export default class BrowserWindow {
 		this.browserBar.urlBar.onChange.bind(async () => {
 			this.load(await this.browserBar.urlBar.getValue());
 		});
+		this.browserBar.onHomeButtonPressed.bind(() => {
+			this.load('about://home');
+		});
 		this.browserBar.onRefreshButtonPressed.bind(() => {
 			this.load(this.history.getCurrent().uri);
 		});
