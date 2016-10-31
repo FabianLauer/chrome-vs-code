@@ -58,9 +58,15 @@ export default class BrowserWindow {
 		this.viewport.onScroll.bind(this.handleViewportScroll.bind(this));
 		// hide the status indicator
 		this.statusIndicator.hide(statusIndicatorTicket);
+		// resize the viewport when the window size changes
+		window.addEventListener('resize', () => this.expandBrowserBar(false));
 	}
 
 
+	/**
+	 * Loads a URI and renders it in the browser.
+	 * @param uri The URI to load.
+	 */
 	public async load(uri: string): Promise<void> {
 		this.history.push(new HistoryEntry(uri, Date.now()));
 		this.updateHistoryButtons();
