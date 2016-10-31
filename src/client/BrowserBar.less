@@ -2,7 +2,6 @@
 	position: relative;
 	box-sizing: border-box;
 	float: left;
-	clear: both;
 	width: 100%;
 	height: auto;
 	padding: 0.3em;
@@ -10,4 +9,16 @@
 	border-bottom: @browser_bar_border_bottom;
 	box-shadow: @browser_bar_box_shadow;
 	z-index: 200;
+	> .browser-bar-wrapper {
+		position: relative;
+		float: left;
+		left: 50%;
+		transform: translateX(-50%);
+		width: auto;
+		height: auto;
+		padding: 0;
+		margin: 0;
+		background: transparent;
+		border: none;
+	}
 }

@@ -45,20 +45,22 @@ export default class BrowserBar implements IRenderable {
 
 	public async render(): Promise<void> {
 		this.outerElement.classList.add('browser-bar');
+		this.innerWrapper.classList.add('browser-bar-wrapper');
+		this.outerElement.appendChild(this.innerWrapper);
 		// 'go back' button
 		await this.backButton.render();
 		this.backButton.setIconAsText('←');
-		this.outerElement.appendChild(this.backButton.getDOM());
+		this.innerWrapper.appendChild(this.backButton.getDOM());
 		this.backButton.getDOM().addEventListener('click', () => this.onBackButtonPressed.trigger());
 		// 'go forward' button
 		await this.forwardButton.render();
 		this.forwardButton.setIconAsText('→');
-		this.outerElement.appendChild(this.forwardButton.getDOM());
+		this.innerWrapper.appendChild(this.forwardButton.getDOM());
 		this.forwardButton.getDOM().addEventListener('click', () => this.onForwardButtonPressed.trigger());
 		// 'refresh' button
 		await this.refreshButton.render();
 		this.refreshButton.setIconAsText('⟳');
-		this.outerElement.appendChild(this.refreshButton.getDOM());
+		this.innerWrapper.appendChild(this.refreshButton.getDOM());
 		this.refreshButton.getDOM().addEventListener('click', e => {
 			if (e.shiftKey) {
 				this.onNoCacheRefreshButtonPressed.trigger();
@@ -68,11 +70,11 @@ export default class BrowserBar implements IRenderable {
 		});
 		// URL bar
 		await this.urlBar.render();
-		this.outerElement.appendChild(this.urlBar.getDOM());
+		this.innerWrapper.appendChild(this.urlBar.getDOM());
 		// 'go home' button
 		await this.homeButton.render();
 		this.homeButton.setIconAsText('⌂');
-		this.outerElement.appendChild(this.homeButton.getDOM());
+		this.innerWrapper.appendChild(this.homeButton.getDOM());
 		this.homeButton.getDOM().addEventListener('click', () => this.onHomeButtonPressed.trigger());
 	}
 
@@ -93,6 +95,7 @@ export default class BrowserBar implements IRenderable {
 
 
 	private readonly outerElement = document.createElement('div');
+	private readonly innerWrapper = document.createElement('div');
 	private readonly backButton = new IconButton();
 	private readonly forwardButton = new IconButton();
 	private readonly homeButton = new IconButton();
