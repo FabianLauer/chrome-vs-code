@@ -39,7 +39,8 @@ export default class BrowserWindow {
 		// browser viewport
 		await this.viewport.render();
 		document.body.appendChild(this.viewport.getDOM());
-		this.updateViewportHeight();
+		this.updateViewportHeight(false);
+		this.viewport.onScroll.bind(this.handleViewportScroll.bind(this));
 		// hide the status indicator
 		this.statusIndicator.hide(statusIndicatorTicket);
 	}
@@ -57,6 +58,28 @@ export default class BrowserWindow {
 		await this.browserBar.showLoadingProgress(100);
 		await this.browserBar.hideLoadingIndicator();
 		this.statusIndicator.hide(statusIndicatorTicket);
+	}
+
+
+	/**
+	 * Collapses the browser bar and returns when the animation is complete.
+	 */
+	public async collapseBrowserBar(): Promise<void> {
+		await Promise.all([
+			this.browserBar.collapse(),
+			this.viewport.updateHeight(document.body.getBoundingClientRect().height, true)
+		]);
+	}
+
+
+	/**
+	 * Expands the browser bar and returns when the animation is complete.
+	 */
+	public async expandBrowserBar(): Promise<void> {
+		await Promise.all([
+			this.browserBar.expand(),
+			this.updateViewportHeight(true)
+		]);
 	}
 
 
@@ -83,10 +106,34 @@ export default class BrowserWindow {
 	}
 
 
-	private updateViewportHeight(): void {
+	private updateViewportHeight(animated: boolean): void {
 		const bodyHeight = document.body.getBoundingClientRect().height;
 		const browserBarHeight = this.browserBar.getDOM().getBoundingClientRect().height;
-		this.viewport.updateHeight(bodyHeight - browserBarHeight);
+		this.viewport.updateHeight(bodyHeight - browserBarHeight, animated);
+	}
+
+
+	private handleViewportScroll(): void {
+		const now = Date.now();
+		if (now - this.lastViewportScroll.recordedTime <= 300) {
+			return;
+		}
+		const currentScrollY = this.viewport.getScroll().y;
+		const threshold = this.viewport.getDOM().getBoundingClientRect().height / 10;
+		if (Math.abs(currentScrollY - this.lastViewportScroll.scrollY) < threshold) {
+			return;
+		}
+		console.log(currentScrollY > this.lastViewportScroll.scrollY, currentScrollY, this.lastViewportScroll.scrollY);
+		// scrolling down:
+		if (currentScrollY > this.lastViewportScroll.scrollY) {
+			this.collapseBrowserBar();
+		}
+		// scrolling up:
+		else {
+			this.expandBrowserBar();
+		}
+		this.lastViewportScroll.recordedTime = now;
+		this.lastViewportScroll.scrollY = currentScrollY;
 	}
 
 
@@ -104,4 +151,11 @@ export default class BrowserWindow {
 
 	private readonly statusIndicator = new StatusIndicator();
 	private currentURI: string;
+	private lastViewportScroll: {
+		recordedTime: number;
+		scrollY: number;
+	} = {
+		recordedTime: Date.now(),
+		scrollY: 0
+	};
 }

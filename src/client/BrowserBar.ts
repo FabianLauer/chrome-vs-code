@@ -2,6 +2,7 @@ import IRenderable from './IRenderable';
 import URLBar from './URLBar';
 import IconButton from './IconButton';
 import { Event } from '../utils/event';
+import { sleep } from '../utils';
 
 /**
  * Controller for the browser top bar.
@@ -76,6 +77,24 @@ export default class BrowserBar implements IRenderable {
 		this.homeButton.setIconAsText('⌂');
 		this.innerWrapper.appendChild(this.homeButton.getDOM());
 		this.homeButton.getDOM().addEventListener('click', () => this.onHomeButtonPressed.trigger());
+	}
+
+
+	/**
+	 * Collapses the browser bar and returns when the animation is complete.
+	 */
+	public async collapse(): Promise<void> {
+		this.outerElement.classList.add('collapsed');
+		return sleep(200);
+	}
+
+
+	/**
+	 * Expands the browser bar and returns when the animation is complete.
+	 */
+	public async expand(): Promise<void> {
+		this.outerElement.classList.remove('collapsed');
+		return sleep(200);
 	}
 
 
