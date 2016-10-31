@@ -19,9 +19,10 @@ export default class BrowserWindow {
 			this.load(await this.browserBar.urlBar.getValue());
 		});
 		await this.browserBar.render();
-		await this.viewport.render();
 		document.body.appendChild(this.browserBar.getDOM());
+		await this.viewport.render();
 		document.body.appendChild(this.viewport.getDOM());
+		this.updateViewportHeight();
 	}
 
 
@@ -45,5 +46,12 @@ export default class BrowserWindow {
 			request.open('GET', `/load/base?${escape(uri)}`, true);
 			request.send();
 		});
+	}
+
+
+	private updateViewportHeight(): void {
+		const bodyHeight = document.body.getBoundingClientRect().height;
+		const browserBarHeight = this.browserBar.getDOM().getBoundingClientRect().height;
+		this.viewport.updateHeight(bodyHeight - browserBarHeight);
 	}
 }

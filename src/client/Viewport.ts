@@ -11,6 +11,15 @@ export default class Viewport implements IRenderable {
 	}
 
 
+	/**
+	 * Updates the viewport's height.
+	 * @param height The new height in pixels.
+	 */
+	public updateHeight(height: number): void {
+		this.outerElement.style.height = `${height}px`;
+	}
+
+
 	public async renderHTML(headHTML: string, bodyHTML: string): Promise<void> {
 		this.outerElement.classList.add('viewport');
 		this.outerElement.appendChild(this.frame);
