@@ -4,8 +4,7 @@
 		"target": "es6",
 		"outDir": "out",
 		"noLib": true,
-		"sourceMap": true,
-		"baseUrl": "./src/"
+		"sourceMap": true
 	},
 	"exclude": [
 		"node_modules"

@@ -1,4 +1,4 @@
-import IRenderable from 'client/IRenderable';
+import IRenderable from './IRenderable';
 
 export default class Viewport implements IRenderable {
 	public getDOM(): HTMLElement {
@@ -12,7 +12,7 @@ export default class Viewport implements IRenderable {
 
 
 	public async renderHTML(html: string): Promise<void> {
-		this.outerElement.classList.add('browser-frame');
+		this.outerElement.classList.add('viewport');
 		this.outerElement.appendChild(this.frame);
 		this.frame.contentWindow.document.body.innerHTML = html;
 	}

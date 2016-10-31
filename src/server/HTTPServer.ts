@@ -32,6 +32,14 @@ export default class HTTPServer {
 
 
 	/**
+	 * Creates a URL object compatible with `HTTPServer` from a string.
+	 */
+	public static createURLFromString(url: string): Url {
+		return parseUrl(url);
+	}
+
+
+	/**
 	 * Lets the server listen to a certain hostname and port.
 	 * @param hostname The hostname to listen to.
 	 * @param port The port to listen to.

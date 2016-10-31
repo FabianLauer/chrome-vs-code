@@ -1,4 +1,4 @@
-import BrowserWindow from 'client/BrowserWindow';
+import BrowserWindow from './client/BrowserWindow';
 
 (async () => {
 	const browser = new BrowserWindow();
