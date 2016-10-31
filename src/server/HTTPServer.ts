@@ -1,5 +1,5 @@
 import * as http from 'http';
-import { Url, parse as parseUrl, format as urlToString } from 'url';
+import { Url, parse as parseUrl } from 'url';
 
 export type IRequestHandler = (this: HTTPServer, request: http.IncomingMessage, response: http.ServerResponse) => void | Promise<void>;
 export type IErrorRequestHandler = (this: HTTPServer, serverError: Error, request: http.IncomingMessage, response: http.ServerResponse) => void | Promise<void>;
@@ -17,6 +17,18 @@ export default class HTTPServer {
 		private handle404: IRequestHandler,
 		private handle500: IErrorRequestHandler
 	) { /* do nothing */ }
+
+
+	/**
+	 * Converts a URL object to a string as used by `HTTPServer`.
+	 * @param url The URL to convert to a string.
+	 */
+	public static urlToString(url: Url | string): string {
+		if (typeof url === 'string') {
+			url = parseUrl(url);
+		}
+		return url.pathname;
+	}
 
 
 	/**
@@ -62,9 +74,9 @@ export default class HTTPServer {
 	 */
 	public addHandler(url: Url, handler: IRequestHandler): void {
 		if (this.hasHandlerForURL(url)) {
-			throw new Error(`can not add request handler: URL '${urlToString(url)}' already has a handler`);
+			throw new Error(`can not add request handler: URL '${HTTPServer.urlToString(url)}' already has a handler`);
 		}
-		this.handlers[urlToString(url)] = handler;
+		this.handlers[HTTPServer.urlToString(url)] = handler;
 	}
 
 
@@ -75,9 +87,9 @@ export default class HTTPServer {
 	 */
 	public removeHandlerForURL(url: Url): void {
 		if (!this.hasHandlerForURL(url)) {
-			throw new Error(`can not remove request handler: URL '${urlToString(url)}' does not have a handler`);
+			throw new Error(`can not remove request handler: URL '${HTTPServer.urlToString(url)}' does not have a handler`);
 		}
-		delete this.handlers[urlToString(url)];
+		delete this.handlers[HTTPServer.urlToString(url)];
 	}
 
 
@@ -88,7 +100,7 @@ export default class HTTPServer {
 	 *                      for the given URL is found.
 	 */
 	public getHandlerForURL(url: Url, fallbackTo404: boolean): IRequestHandler {
-		const handler = this.handlers[urlToString(url)];
+		const handler = this.handlers[HTTPServer.urlToString(url)];
 		// fallback to 404 handler if allowed and necessary
 		if (fallbackTo404 && typeof handler !== 'function') {
 			return this.handle404;
