@@ -1,9 +1,6 @@
 import IRenderable from './IRenderable';
 
-/**
- * Controller for the browser top bar.
- */
-export default class BrowserBar implements IRenderable {
+export default class Viewport implements IRenderable {
 	public getDOM(): HTMLElement {
 		return this.outerElement;
 	}

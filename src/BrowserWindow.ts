@@ -1,12 +1,15 @@
 import BrowserBar from './BrowserBar';
-import BrowserFrame from './BrowserFrame';
+import Viewport from './Viewport';
 
 declare function escape(str: string): string;
 
+/**
+ * The complete browser window, including browser bar and viewport.
+ */
 export default class BrowserWindow {
 	constructor(
 		private readonly browserBar: BrowserBar = new BrowserBar(),
-		private readonly browserFrame: BrowserFrame = new BrowserFrame(),
+		private readonly viewport: Viewport = new Viewport(),
 	) { }
 
 
@@ -15,15 +18,15 @@ export default class BrowserWindow {
 			this.load(await this.browserBar.urlBar.getValue());
 		});
 		await this.browserBar.render();
-		await this.browserFrame.render();
+		await this.viewport.render();
 		document.body.appendChild(this.browserBar.getDOM());
-		document.body.appendChild(this.browserFrame.getDOM());
+		document.body.appendChild(this.viewport.getDOM());
 	}
 
 
 	public async load(uri: string): Promise<void> {
 		await this.browserBar.urlBar.setValue(uri);
-		await this.browserFrame.renderHTML(await this.request(uri));
+		await this.viewport.renderHTML(await this.request(uri));
 	}
 
 
