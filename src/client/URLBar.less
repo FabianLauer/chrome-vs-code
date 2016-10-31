@@ -6,11 +6,11 @@
 	height: auto;
 	margin: 0 0.3em;
 	overflow: hidden;
-	border: 1px solid #ddd;
+	border: @url_bar_inactive_border;
 	transition: border-color 0.1s linear;
 	&:focus {
 		outline: none;
-		border-color: #4d90fe;
+		border-color: @url_bar_focused_border_color;
 	}
 	input {
 		display: block;
@@ -21,14 +21,15 @@
 		font-weight: 500;
 		border: none;
 		outline: none;
+		background: @url_bar_inactive_background;
 	}
 	.loading-bar {
 		position: absolute;
 		height: 2px;
 		bottom: 0;
 		left: 0;
-		background: #4d90fe;
-		box-shadow: 0 0 5px #4d90fe;
+		background: @url_bar_loading_bar_border_color;
+		box-shadow: 0 0 5px @url_bar_loading_bar_border_color;
 		opacity: 0;
 		transition: opacity 0.2s ease, width 0.2s linear;
 		&.visible {
