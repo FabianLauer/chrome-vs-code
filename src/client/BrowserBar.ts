@@ -1,7 +1,7 @@
-import IRenderable from './IRenderable';
-import URLBar from './URLBar';
-import IconButton from './IconButton';
-import { Event } from './event';
+import IRenderable from 'client/IRenderable';
+import URLBar from 'client/URLBar';
+import IconButton from 'client/IconButton';
+import { Event } from 'utils/event';
 
 /**
  * Controller for the browser top bar.

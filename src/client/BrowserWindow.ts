@@ -1,5 +1,5 @@
-import BrowserBar from './BrowserBar';
-import Viewport from './Viewport';
+import BrowserBar from 'client/BrowserBar';
+import Viewport from 'client/Viewport';
 
 declare function escape(str: string): string;
 

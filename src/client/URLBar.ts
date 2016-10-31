@@ -1,5 +1,5 @@
-import IRenderable from './IRenderable';
-import { Event } from './event';
+import IRenderable from 'client/IRenderable';
+import { Event } from 'utils/event';
 
 /**
  * Controller for the browser's URL bar.

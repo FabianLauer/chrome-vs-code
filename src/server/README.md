@@ -1,0 +1,1 @@
+This directory contains all code that runs on the server.

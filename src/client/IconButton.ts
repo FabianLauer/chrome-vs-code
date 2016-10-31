@@ -1,4 +1,4 @@
-import IRenderable from './IRenderable';
+import IRenderable from 'client/IRenderable';
 
 export default class IconButton implements IRenderable {
 	public getDOM(): HTMLElement {
