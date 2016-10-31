@@ -96,9 +96,13 @@ export default class Server {
 			}
 			requestFn(requestURL, clientResponse => {
 				response.statusCode = clientResponse.statusCode;
+				for (const headerName in clientResponse.headers) {
+					response.setHeader(headerName, clientResponse.headers[headerName]);
+				}
 				this.log(`[proxy: ${clientResponse.statusCode}] ${requestURL}`);
 				clientResponse.on('data', (data: Buffer) => response.write(data));
 				clientResponse.on('end', () => response.end());
+				resolve();
 			});
 		});
 	}

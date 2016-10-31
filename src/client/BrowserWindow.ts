@@ -1,5 +1,6 @@
 import BrowserBar from './BrowserBar';
 import Viewport from './Viewport';
+import ResponseRendererFactory from './ResponseRendererFactory';
 
 declare function escape(str: string): string;
 
@@ -26,17 +27,19 @@ export default class BrowserWindow {
 
 	public async load(uri: string): Promise<void> {
 		await this.browserBar.urlBar.setValue(uri);
-		await this.viewport.renderHTML(await this.request(uri));
+		const response = await this.request(uri);
+		const renderer = ResponseRendererFactory.getRenderer(this.viewport, response);
+		await renderer.renderResponse(response);
 	}
 
 
-	private async request(uri: string): Promise<string> {
-		return new Promise<string>((resolve, reject) => {
+	private async request(uri: string) {
+		return new Promise<XMLHttpRequest>((resolve, reject) => {
 			const request = new XMLHttpRequest();
 			request.onerror = reject;
 			request.onreadystatechange = () => {
 				if (request.readyState === XMLHttpRequest.DONE) {
-					resolve(request.responseText);
+					resolve(request);
 				}
 			};
 			request.open('GET', `/load?${escape(uri)}`, true);
