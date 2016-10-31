@@ -36,14 +36,20 @@ export function activate(context: vscode.ExtensionContext) {
 	let provider = new TextDocumentContentProvider();
 	let registration = vscode.workspace.registerTextDocumentContentProvider('css-preview', provider);
 	provider.update(previewUri);
-	let disposable = vscode.commands.registerCommand('extension.openWebBrowser', () => {
-		return vscode.commands.executeCommand('vscode.previewHtml', previewUri, vscode.ViewColumn.Two, 'Web Browser').then((success) => {
-			// do nothing
-		}, (reason) => {
-			vscode.window.showErrorMessage(reason);
-		});
-	});
-	context.subscriptions.push(disposable, registration);
+	const successHandler = (success) => { /* do nothing */ };
+	const errorHandler = (reason) => {
+		vscode.window.showErrorMessage(reason);
+	};
+	const disposables: vscode.Disposable[] = [];
+	disposables.push(vscode.commands.registerCommand('extension.openWebBrowser', () => {
+		return vscode.commands.executeCommand('vscode.previewHtml', previewUri, vscode.ViewColumn.One, 'Web Browser')
+			.then(successHandler, errorHandler);
+	}));
+	disposables.push(vscode.commands.registerCommand('extension.openWebBrowserToSide', () => {
+		return vscode.commands.executeCommand('vscode.previewHtml', previewUri, vscode.ViewColumn.Two, 'Web Browser')
+			.then(successHandler, errorHandler);
+	}));
+	disposables.forEach(disposable => context.subscriptions.push(disposable, registration));
 }
 
 export function deactivate() {

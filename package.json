@@ -15,12 +15,19 @@
 			{
 				"command": "extension.openWebBrowser",
 				"title": "Open Web Browser"
+			},
+			{
+				"command": "extension.openWebBrowserToSide",
+				"title": "Open Web Browser to the Side"
 			}
 		],
 		"menus": {
 			"editor/title": [
 				{
 					"command": "extension.openWebBrowser"
+				},
+				{
+					"command": "extension.openWebBrowserToSide"
 				}
 			]
 		}
