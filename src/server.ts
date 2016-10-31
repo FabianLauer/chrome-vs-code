@@ -94,7 +94,7 @@ class AboutFileReader extends FileReader<string> {
 					<title>about://${extractAboutPageName(fileContent)}</title>
 					<meta charset='utf-8'>
 					<style>
-						${await readFile('./src/static/about.css')}
+						${await readFile('./src/static/about/about.css')}
 					</style>
 				</head>
 				<body>

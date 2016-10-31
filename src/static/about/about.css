@@ -10,6 +10,15 @@ body {
 	color: #333;
 }
 
+section {
+	display: block;
+	float: left;
+	clear: both;
+	width: 100%;
+	height: auto;
+	margin: 2em 0;
+}
+
 p {
 	line-height: 1.3em;
 }
