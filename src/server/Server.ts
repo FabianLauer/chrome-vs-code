@@ -11,11 +11,13 @@ export default class Server {
 	 * @param browserHTML An object that reads the main HTML file for the browser client.
 	 * @param browserJS An object that reads the main JS file for the browser client.
 	 * @param browserCSS An object that reads the main CSS file for the browser client.
+	 * @param aboutPages An array containing readers for the `about:` pages.
 	 */
 	public constructor(
 		private browserHTML: FileReader<string>,
 		private browserJS: FileReader<string>,
-		private browserCSS: FileReader<string>
+		private browserCSS: FileReader<string>,
+		private aboutPages: Array<{ name: string; reader: FileReader<string> }>
 	) {
 		this.createFileReaderRoute('/', 'text/html', this.browserHTML);
 		this.createFileReaderRoute('/browser.js', 'text/javascript', this.browserJS);
@@ -108,6 +110,16 @@ export default class Server {
 
 
 	private async delegateToProxy(requestURL: string, request: http.IncomingMessage, response: http.ServerResponse): Promise<void> {
+		switch (HTTPServer.createURLFromString(requestURL).protocol) {
+			default:
+				return this.delegateToHttpProxy(requestURL, request, response);
+			case 'about:':
+				return this.delegateToAboutProxy(requestURL, request, response);
+		}
+	}
+
+
+	private async delegateToHttpProxy(requestURL: string, request: http.IncomingMessage, response: http.ServerResponse): Promise<void> {
 		return new Promise<void>(resolve => {
 			var requestFn: typeof http.get = http.get;
 			if (HTTPServer.createURLFromString(requestURL).protocol === 'https:') {
@@ -124,6 +136,20 @@ export default class Server {
 				resolve();
 			});
 		});
+	}
+
+
+	private async delegateToAboutProxy(requestURL: string, request: http.IncomingMessage, response: http.ServerResponse): Promise<void> {
+		const name = requestURL.replace(/^about:\/+/, '');
+		const page = this.aboutPages.find(aboutPage => aboutPage.name === name);
+		if (typeof page !== 'object' || page === null) {
+			response.statusCode = 404;
+			response.end();
+		} else {
+			response.statusCode = 200;
+			response.end(await page.reader.getContent());
+		}
+		this.log(`[about: ${response.statusCode}] ${requestURL}`);
 	}
 
 
