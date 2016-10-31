@@ -26,10 +26,11 @@ export default class Server {
 				response: http.ServerResponse
 			) => {
 				var query = unescape(HTTPServer.createURLFromString(request.url).query.replace(/\?/, ''));
+				const url = HTTPServer.createURLFromString(query);
 				// normalize the URL
-				query = format(HTTPServer.createURLFromString(query));
+				query = format(url);
 				if (base) {
-					this.previousBaseURL = query;
+					this.previousBaseURL = `${url.protocol}//${url.host}/`;
 				}
 				await this.delegateToProxy(query, request, response);
 			};

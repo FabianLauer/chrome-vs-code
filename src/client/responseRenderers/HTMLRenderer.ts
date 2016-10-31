@@ -24,8 +24,8 @@ class HTMLRenderer extends ResponseRenderer {
 		var bodyHTML: string;
 		const parsedDocument = document.implementation.createHTMLDocument('response');
 		parsedDocument.documentElement.innerHTML = response.responseText;
-		const baseURL = unescape(((<string>(<any>response).responseURL) || '').replace(/^.*?\?/, ''));
-		HTMLRenderer.updateAllURIAttributes(parsedDocument, baseURL);
+		const parsedURL = HTMLRenderer.getBaseURLFromServerResponse(response);
+		HTMLRenderer.updateAllURIAttributes(parsedDocument, `${parsedURL.protocol}//${parsedURL.hostname}`);
 		const headElement = parsedDocument.getElementsByTagName('head')[0];
 		if (typeof headElement === 'undefined') {
 			headHTML = '';
@@ -39,6 +39,18 @@ class HTMLRenderer extends ResponseRenderer {
 			bodyHTML = bodyElement.innerHTML;
 		}
 		await this.viewport.renderHTML(headHTML, bodyHTML);
+	}
+
+
+	private static getBaseURLFromServerResponse(response: XMLHttpRequest) {
+		return HTMLRenderer.parseURL(unescape(((<string>(<any>response).responseURL) || '').replace(/^.*?\?/, '')));
+	}
+
+
+	private static parseURL(url: string): { protocol: string; hostname: string; pathname: string } {
+		var link = document.createElement('a');
+		link.href = url;
+		return link;
 	}
 
 
