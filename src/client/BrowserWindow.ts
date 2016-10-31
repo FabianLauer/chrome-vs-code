@@ -64,6 +64,10 @@ export default class BrowserWindow {
 	public async load(uri: string): Promise<void> {
 		this.history.push(new HistoryEntry(uri, Date.now()));
 		this.updateHistoryButtons();
+		const collapseBrowserBar = this.isBrowserBarCollapsed();
+		if (collapseBrowserBar) {
+			this.expandBrowserBar(true);
+		}
 		await this.browserBar.urlBar.setValue(uri);
 		this.statusIndicator.show(`loading ${uri}`);
 		await this.browserBar.showLoadingProgress(10);
@@ -74,6 +78,18 @@ export default class BrowserWindow {
 		await this.browserBar.showLoadingProgress(100);
 		await this.browserBar.hideLoadingIndicator();
 		this.statusIndicator.hide(statusIndicatorTicket);
+		// collapse the browser bar if it was collapsed before loading started
+		if (collapseBrowserBar) {
+			await this.browserBar.collapse();
+		}
+	}
+
+
+	/**
+	 * Checks whether the browser bar is currently collapsed or expanded.
+	 */
+	public isBrowserBarCollapsed(): boolean {
+		return this.browserBar.isCollapsed();
 	}
 
 
@@ -90,11 +106,17 @@ export default class BrowserWindow {
 
 	/**
 	 * Expands the browser bar and returns when the animation is complete.
+	 * @param overlayMode When `true`, the browser bar will open as an overlay.
 	 */
-	public async expandBrowserBar(): Promise<void> {
+	public async expandBrowserBar(overlayMode = false): Promise<void> {
+		const updateViewportHeight = overlayMode ?
+			// in overlay mode, the viewport is at 100% height:
+			() => this.viewport.updateHeight(document.body.getBoundingClientRect().height, true) :
+			// if not in overlay mode, fit the viewport into available horizontal space:
+			() => this.updateViewportHeight(true);
 		await Promise.all([
 			this.browserBar.expand(),
-			this.updateViewportHeight(true)
+			updateViewportHeight()
 		]);
 	}
 

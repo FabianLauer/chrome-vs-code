@@ -81,6 +81,14 @@ export default class BrowserBar implements IRenderable {
 
 
 	/**
+	 * Checks whether the browser bar is currently collapsed or expanded.
+	 */
+	public isCollapsed(): boolean {
+		return this.outerElement.classList.contains('collapsed');
+	}
+
+
+	/**
 	 * Collapses the browser bar and returns when the animation is complete.
 	 */
 	public async collapse(): Promise<void> {
