@@ -1,8 +1,17 @@
 .icon-button {
+	@size: 1.7em;
 	float: left;
 	clear: none;
-	width: 1.6em;
-	height: 1.6em;
+	width: @size;
+	height: @size;
 	margin: 0 0.3em;
-	border: 1px solid #ddd;
+	line-height: @size;
+	text-align: center;
+	cursor: pointer;
+	&:hover {
+		background: #ddd;
+	}
+	&:active {
+		background: #ccc;
+	}
 }

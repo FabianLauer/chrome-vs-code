@@ -47,14 +47,17 @@ export default class BrowserBar implements IRenderable {
 		this.outerElement.classList.add('browser-bar');
 		// 'go back' button
 		await this.backButton.render();
+		this.backButton.setIconAsText('←');
 		this.outerElement.appendChild(this.backButton.getDOM());
 		this.backButton.getDOM().addEventListener('click', () => this.onBackButtonPressed.trigger());
 		// 'go forward' button
 		await this.forwardButton.render();
+		this.forwardButton.setIconAsText('→');
 		this.outerElement.appendChild(this.forwardButton.getDOM());
 		this.forwardButton.getDOM().addEventListener('click', () => this.onForwardButtonPressed.trigger());
 		// 'refresh' button
 		await this.refreshButton.render();
+		this.refreshButton.setIconAsText('⟳');
 		this.outerElement.appendChild(this.refreshButton.getDOM());
 		this.refreshButton.getDOM().addEventListener('click', e => {
 			if (e.shiftKey) {
@@ -68,6 +71,7 @@ export default class BrowserBar implements IRenderable {
 		this.outerElement.appendChild(this.urlBar.getDOM());
 		// 'go home' button
 		await this.homeButton.render();
+		this.homeButton.setIconAsText('⌂');
 		this.outerElement.appendChild(this.homeButton.getDOM());
 		this.homeButton.getDOM().addEventListener('click', () => this.onHomeButtonPressed.trigger());
 	}

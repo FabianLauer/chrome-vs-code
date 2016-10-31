@@ -11,5 +11,10 @@ export default class IconButton implements IRenderable {
 	}
 
 
+	public setIconAsText(icon: string): void {
+		this.outerElement.innerText = icon;
+	}
+
+
 	private outerElement = document.createElement('div');
 }
