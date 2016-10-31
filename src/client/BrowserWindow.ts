@@ -48,11 +48,14 @@ export default class BrowserWindow {
 	public async load(uri: string): Promise<void> {
 		this.currentURI = uri;
 		await this.browserBar.urlBar.setValue(uri);
-		const statusIndicatorTicket = this.statusIndicator.show(`loading ${uri}`);
-		this.browserBar.showLoadingIndicator();
+		this.statusIndicator.show(`loading ${uri}`);
+		await this.browserBar.showLoadingProgress(10);
 		const response = await this.request(uri);
 		const renderer = ResponseRendererFactory.getRenderer(this.viewport, response);
+		let statusIndicatorTicket = this.statusIndicator.show(`rendering ${uri}`);
 		await renderer.renderResponse(response);
+		await this.browserBar.showLoadingProgress(100);
+		await this.browserBar.hideLoadingIndicator();
 		this.statusIndicator.hide(statusIndicatorTicket);
 	}
 
@@ -61,15 +64,15 @@ export default class BrowserWindow {
 		return new Promise<XMLHttpRequest>((resolve, reject) => {
 			const request = new XMLHttpRequest();
 			request.onerror = reject;
-			request.onreadystatechange = () => {
+			request.onreadystatechange = async () => {
 				if (request.readyState === XMLHttpRequest.DONE) {
+					await this.browserBar.showLoadingProgress(90);
 					resolve(request);
-					this.browserBar.hideLoadingIndicator();
 				}
 			};
 			request.onprogress = e => {
 				if (e.lengthComputable) {
-					this.browserBar.showLoadingProgress((e.loaded / e.total) * 100);
+					this.browserBar.showLoadingProgress(((e.loaded / e.total) * 100) - 20);
 				} else {
 					this.browserBar.showLoadingIndicator();
 				}

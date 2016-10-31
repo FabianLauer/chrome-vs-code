@@ -78,13 +78,13 @@ export default class BrowserBar implements IRenderable {
 	}
 
 
-	public showLoadingProgress(percentComplete: number): void {
-		this.urlBar.showLoadingProgress(percentComplete);
+	public async showLoadingProgress(percentComplete: number): Promise<void> {
+		return this.urlBar.showLoadingProgress(percentComplete);
 	}
 
 
-	public hideLoadingIndicator(): void {
-		this.urlBar.hideLoadingIndicator();
+	public async hideLoadingIndicator(): Promise<void> {
+		return this.urlBar.hideLoadingIndicator();
 	}
 
 

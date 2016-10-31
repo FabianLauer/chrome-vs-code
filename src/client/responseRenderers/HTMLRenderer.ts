@@ -62,7 +62,6 @@ class HTMLRenderer extends ResponseRenderer {
 				const attribute = element.attributes[a];
 				if (/^https?:\//.test(attribute.value)) {
 					attribute.value = `/load?${escape(attribute.value)}`;
-					continue;
 				} else if (attribute.name === 'src' || attribute.name === 'href' || attribute.name === 'xlink:href') {
 					attribute.value = `/load?${baseURL}/${escape(attribute.value)}`;
 				}

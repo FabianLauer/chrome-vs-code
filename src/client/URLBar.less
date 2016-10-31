@@ -24,11 +24,12 @@
 	.loading-bar {
 		position: absolute;
 		height: 2px;
-		top: 0;
+		bottom: 0;
 		left: 0;
 		background: #4d90fe;
+		box-shadow: 0 0 5px #4d90fe;
 		opacity: 0;
-		transition: opacity 0.4s ease, width 0.2s ease;
+		transition: opacity 0.2s ease, width 0.2s linear;
 		&.visible {
 			opacity: 1;
 		}

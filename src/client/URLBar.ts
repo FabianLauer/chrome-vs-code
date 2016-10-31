@@ -47,16 +47,28 @@ export default class URLBar implements IRenderable {
 	}
 
 
-	public showLoadingProgress(percentComplete: number): void {
-		this.hideLoadingIndicator();
-		this.loadingBar.classList.add('visible', 'percent');
-		this.loadingBar.style.width = `${percentComplete}%`;
+	public async showLoadingProgress(percentComplete: number): Promise<void> {
+		return new Promise<void>(resolve => {
+			this.loadingBar.classList.remove('infinite');
+			this.loadingBar.classList.add('visible');
+			if (this.loadingBar.style.width === `${percentComplete}%`) {
+				resolve();
+				return;
+			}
+			this.loadingBar.style.width = `${percentComplete}%`;
+			setTimeout(resolve, 200);
+		});
 	}
 
 
-	public hideLoadingIndicator(): void {
-		this.loadingBar.classList.remove('visible', 'infinite', 'percent');
-		this.loadingBar.style.width = '0%';
+	public async hideLoadingIndicator(): Promise<void> {
+		return new Promise<void>(resolve => {
+			this.loadingBar.classList.remove('visible', 'infinite');
+			setTimeout(() => {
+				this.loadingBar.style.width = '0%';
+				resolve();
+			}, 200);
+		});
 	}
 
 
