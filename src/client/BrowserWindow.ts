@@ -1,5 +1,6 @@
 import BrowserBar from './BrowserBar';
 import Viewport from './Viewport';
+import StatusIndicator from './StatusIndicator';
 import ResponseRendererFactory from './ResponseRendererFactory';
 
 declare function escape(str: string): string;
@@ -11,7 +12,7 @@ declare function unescape(str: string): string;
 export default class BrowserWindow {
 	constructor(
 		private readonly browserBar: BrowserBar = new BrowserBar(),
-		private readonly viewport: Viewport = new Viewport(),
+		private readonly viewport: Viewport = new Viewport()
 	) {
 		this.viewport.onAfterNavigation.bind(this.handleViewportNavigation.bind(this));
 		this.viewport.onRequestNavigation.bind(this.handleNavigationRequestFromViewport.bind(this));
@@ -19,22 +20,32 @@ export default class BrowserWindow {
 
 
 	public async render(): Promise<void> {
+		// status indicator
+		await this.statusIndicator.render();
+		document.body.appendChild(this.statusIndicator.getDOM());
+		const statusIndicatorTicket = this.statusIndicator.show('initializing');
+		// browser bar
 		this.browserBar.urlBar.onChange.bind(async () => {
 			this.load(await this.browserBar.urlBar.getValue());
 		});
 		await this.browserBar.render();
 		document.body.appendChild(this.browserBar.getDOM());
+		// browser viewport
 		await this.viewport.render();
 		document.body.appendChild(this.viewport.getDOM());
 		this.updateViewportHeight();
+		// hide the status indicator
+		this.statusIndicator.hide(statusIndicatorTicket);
 	}
 
 
 	public async load(uri: string): Promise<void> {
 		await this.browserBar.urlBar.setValue(uri);
+		const statusIndicatorTicket = this.statusIndicator.show(`loading ${uri}`);
 		const response = await this.request(uri);
 		const renderer = ResponseRendererFactory.getRenderer(this.viewport, response);
 		await renderer.renderResponse(response);
+		this.statusIndicator.hide(statusIndicatorTicket);
 	}
 
 
@@ -70,4 +81,7 @@ export default class BrowserWindow {
 		targetURI = unescape(((<string>targetURI) || '').replace(/^.*?\?/, ''));
 		await this.load(targetURI);
 	}
+
+
+	private readonly statusIndicator = new StatusIndicator();
 }

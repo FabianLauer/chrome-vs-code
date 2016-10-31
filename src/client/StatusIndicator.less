@@ -1,0 +1,26 @@
+.status-indicator {
+	display: none;
+	position: fixed;
+	width: auto;
+	height: 1.3em;
+	min-width: 10vw;
+	max-width: 33vw;
+	padding: 0.2em 0.6em;
+	left: 0;
+	bottom: 0;
+	z-index: 300;
+	font-size: 0.7em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	background: #ddd;
+	border: 1px solid #aaa;
+	border-left: none;
+	border-bottom: none;
+	border-radius: 0 4px 0 0;
+	color: #333;
+	box-shadow: 0 0 15px -5px rgba(0, 0, 0, 0.5);
+	&.visible {
+		display: block;
+	}
+}
