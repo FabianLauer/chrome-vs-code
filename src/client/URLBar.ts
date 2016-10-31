@@ -15,7 +15,12 @@ export default class URLBar implements IRenderable {
 
 	public async render(): Promise<void> {
 		this.outerElement.classList.add('url-bar');
-		this.outerElement.addEventListener('keyup', (e) => {
+		// loading bar
+		this.loadingBar.classList.add('loading-bar');
+		this.hideLoadingIndicator();
+		this.outerElement.appendChild(this.loadingBar);
+		// input
+		this.input.addEventListener('keyup', (e) => {
 			// trigger change event on enter
 			if (e.keyCode === 13) {
 				this.onChange.trigger();
@@ -37,6 +42,25 @@ export default class URLBar implements IRenderable {
 	}
 
 
+	public showLoadingIndicator(): void {
+		this.loadingBar.classList.add('visible', 'infinite');
+	}
+
+
+	public showLoadingProgress(percentComplete: number): void {
+		this.hideLoadingIndicator();
+		this.loadingBar.classList.add('visible', 'percent');
+		this.loadingBar.style.width = `${percentComplete}%`;
+	}
+
+
+	public hideLoadingIndicator(): void {
+		this.loadingBar.classList.remove('visible', 'infinite', 'percent');
+		this.loadingBar.style.width = '0%';
+	}
+
+
 	private readonly outerElement = document.createElement('div');
+	private readonly loadingBar = document.createElement('div');
 	private readonly input = document.createElement('input');
 }

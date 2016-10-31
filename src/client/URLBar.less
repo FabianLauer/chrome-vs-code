@@ -1,20 +1,48 @@
 .url-bar {
+	position: relative;
 	float: left;
 	clear: none;
 	width: 40%;
 	height: auto;
+	overflow: hidden;
+	border: 1px solid #ddd;
+	transition: border-color 0.1s linear;
+	&:focus {
+		outline: none;
+		border-color: #4d90fe;
+	}
 	input {
 		display: block;
 		float: left;
-		width: 100%;
+		width: calc(100% ~'-' 2.4em);
 		padding: 0.4em 0.4em 0.4em 2em;
 		font-size: 0.8em;
 		font-weight: 500;
-		border: 1px solid #ddd;
-		transition: border-color 0.1s linear;
-		&:focus {
-			outline: none;
-			border-color: #4d90fe;
+		border: none;
+		outline: none;
+	}
+	.loading-bar {
+		position: absolute;
+		height: 2px;
+		top: 0;
+		left: 0;
+		background: #4d90fe;
+		opacity: 0;
+		transition: opacity 0.4s ease, width 0.2s ease;
+		&.visible {
+			opacity: 1;
+		}
+		&.infinite {
+			@keyframes infinite {
+				from {
+					left: -30%;
+				}
+				to {
+					left: 100%;
+				}
+			}
+			width: 30%!important;
+			animation: infinite 2s infinite;
 		}
 	}
 }

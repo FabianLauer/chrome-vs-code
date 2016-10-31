@@ -73,6 +73,21 @@ export default class BrowserBar implements IRenderable {
 	}
 
 
+	public showLoadingIndicator(): void {
+		this.urlBar.showLoadingIndicator();
+	}
+
+
+	public showLoadingProgress(percentComplete: number): void {
+		this.urlBar.showLoadingProgress(percentComplete);
+	}
+
+
+	public hideLoadingIndicator(): void {
+		this.urlBar.hideLoadingIndicator();
+	}
+
+
 	private readonly outerElement = document.createElement('div');
 	private readonly backButton = new IconButton();
 	private readonly forwardButton = new IconButton();

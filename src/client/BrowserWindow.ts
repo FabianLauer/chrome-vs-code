@@ -49,6 +49,7 @@ export default class BrowserWindow {
 		this.currentURI = uri;
 		await this.browserBar.urlBar.setValue(uri);
 		const statusIndicatorTicket = this.statusIndicator.show(`loading ${uri}`);
+		this.browserBar.showLoadingIndicator();
 		const response = await this.request(uri);
 		const renderer = ResponseRendererFactory.getRenderer(this.viewport, response);
 		await renderer.renderResponse(response);
@@ -63,6 +64,14 @@ export default class BrowserWindow {
 			request.onreadystatechange = () => {
 				if (request.readyState === XMLHttpRequest.DONE) {
 					resolve(request);
+					this.browserBar.hideLoadingIndicator();
+				}
+			};
+			request.onprogress = e => {
+				if (e.lengthComputable) {
+					this.browserBar.showLoadingProgress((e.loaded / e.total) * 100);
+				} else {
+					this.browserBar.showLoadingIndicator();
 				}
 			};
 			request.open('GET', `/load/base?${escape(uri)}`, true);
