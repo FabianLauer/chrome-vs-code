@@ -59,6 +59,7 @@ export default class BrowserWindow {
 
 	public async load(uri: string): Promise<void> {
 		this.history.push(new HistoryEntry(uri, Date.now()));
+		this.updateNavButtons();
 		await this.browserBar.urlBar.setValue(uri);
 		this.statusIndicator.show(`loading ${uri}`);
 		await this.browserBar.showLoadingProgress(10);
@@ -114,6 +115,11 @@ export default class BrowserWindow {
 			request.open('GET', `/load/base?${escape(uri)}`, true);
 			request.send();
 		});
+	}
+
+
+	private updateNavButtons(): void {
+		
 	}
 
 

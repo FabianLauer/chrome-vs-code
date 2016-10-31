@@ -52,17 +52,17 @@ export default class BrowserBar implements IRenderable {
 		await this.backButton.render();
 		this.backButton.setIconAsText('←');
 		this.innerWrapper.appendChild(this.backButton.getDOM());
-		this.backButton.getDOM().addEventListener('click', () => this.onBackButtonPressed.trigger());
+		this.backButton.onClick.bind(() => this.onBackButtonPressed.trigger());
 		// 'go forward' button
 		await this.forwardButton.render();
 		this.forwardButton.setIconAsText('→');
 		this.innerWrapper.appendChild(this.forwardButton.getDOM());
-		this.forwardButton.getDOM().addEventListener('click', () => this.onForwardButtonPressed.trigger());
+		this.forwardButton.onClick.bind(() => this.onForwardButtonPressed.trigger());
 		// 'refresh' button
 		await this.refreshButton.render();
 		this.refreshButton.setIconAsText('⟳');
 		this.innerWrapper.appendChild(this.refreshButton.getDOM());
-		this.refreshButton.getDOM().addEventListener('click', e => {
+		this.refreshButton.onClick.bind(e => {
 			if (e.shiftKey) {
 				this.onNoCacheRefreshButtonPressed.trigger();
 			} else {
@@ -76,7 +76,7 @@ export default class BrowserBar implements IRenderable {
 		await this.homeButton.render();
 		this.homeButton.setIconAsText('⌂');
 		this.innerWrapper.appendChild(this.homeButton.getDOM());
-		this.homeButton.getDOM().addEventListener('click', () => this.onHomeButtonPressed.trigger());
+		this.homeButton.onClick.bind(() => this.onHomeButtonPressed.trigger());
 	}
 
 

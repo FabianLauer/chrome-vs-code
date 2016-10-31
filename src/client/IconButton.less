@@ -9,11 +9,16 @@
 	text-align: center;
 	cursor: pointer;
 	background: @icon_button_inactive_background;
-	transition: background 0.1s ease;
+	opacity: 1;
+	transition: background 0.1s ease, opacity 0.1s ease;
 	&:hover {
 		background: @icon_button_hover_background;
 	}
 	&:active {
 		background: @icon_button_active_background;
+	}
+	&.disabled {
+		opacity: 0.75;
+		background: @icon_button_inactive_background!important;
 	}
 }
