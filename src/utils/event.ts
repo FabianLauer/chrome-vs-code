@@ -32,6 +32,9 @@ export class Event<THandler extends Function> {
 
 
 	public trigger(...args: any[]): void {
+		if (this.isSuspended()) {
+			return;
+		}
 		if (this.handlers && this.handlers.length > 0) {
 			this.handlers.forEach(handler => handler.apply(null, args));
 		}

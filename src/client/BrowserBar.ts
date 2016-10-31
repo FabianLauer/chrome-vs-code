@@ -113,6 +113,26 @@ export default class BrowserBar implements IRenderable {
 	}
 
 
+	public enableHistoryForwardButton(): void {
+		this.forwardButton.enable();
+	}
+
+
+	public disableHistoryForwardButton(): void {
+		this.forwardButton.disable();
+	}
+
+
+	public enableHistoryBackButton(): void {
+		this.backButton.enable();
+	}
+
+
+	public disableHistoryBackButton(): void {
+		this.backButton.disable();
+	}
+
+
 	private readonly outerElement = document.createElement('div');
 	private readonly innerWrapper = document.createElement('div');
 	private readonly backButton = new IconButton();

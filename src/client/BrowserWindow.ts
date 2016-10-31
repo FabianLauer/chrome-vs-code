@@ -46,6 +46,7 @@ export default class BrowserWindow {
 			this.load(this.history.getCurrent().uri);
 		});
 		await this.browserBar.render();
+		this.updateHistoryButtons();
 		document.body.appendChild(this.browserBar.getDOM());
 		// browser viewport
 		await this.viewport.render();
@@ -59,7 +60,7 @@ export default class BrowserWindow {
 
 	public async load(uri: string): Promise<void> {
 		this.history.push(new HistoryEntry(uri, Date.now()));
-		this.updateNavButtons();
+		this.updateHistoryButtons();
 		await this.browserBar.urlBar.setValue(uri);
 		this.statusIndicator.show(`loading ${uri}`);
 		await this.browserBar.showLoadingProgress(10);
@@ -118,8 +119,19 @@ export default class BrowserWindow {
 	}
 
 
-	private updateNavButtons(): void {
-		
+	private updateHistoryButtons(): void {
+		// forward button
+		if (this.history.canGoForward()) {
+			this.browserBar.enableHistoryForwardButton();
+		} else {
+			this.browserBar.disableHistoryForwardButton();
+		}
+		// back button
+		if (this.history.canGoBackward()) {
+			this.browserBar.enableHistoryBackButton();
+		} else {
+			this.browserBar.disableHistoryBackButton();
+		}
 	}
 
 

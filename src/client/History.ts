@@ -24,6 +24,16 @@ export default class History<TEntry extends HistoryEntry> {
 	}
 
 
+	public canGoForward(): boolean {
+		return this.currentIndex !== 0;
+	}
+
+
+	public canGoBackward(): boolean {
+		return this.currentIndex < this.entries.length - 1;
+	}
+
+
 	/**
 	 * Moves back by a certain number of entries and returns the new current entry.
 	 */
