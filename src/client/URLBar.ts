@@ -29,16 +29,8 @@ export default class URLBar implements IRenderable {
 		this.hideLoadingIndicator();
 		this.outerElement.appendChild(this.loadingBar);
 		// input
-		this.input.addEventListener('blur', () => {
-			this.outerElement.classList.remove('focused');
-		});
-		this.input.addEventListener('keyup', (e) => {
-			// trigger change event on enter
-			if (e.keyCode === 13) {
-				this.onChange.trigger();
-				this.input.blur();
-			}
-		});
+		this.input.addEventListener('blur', this.handleInputBlur.bind(this));
+		this.input.addEventListener('keyup', e => this.handleInputChange(e));
 		this.input.placeholder = 'Enter an address';
 		this.outerElement.appendChild(this.input);
 		// formatted view
@@ -82,8 +74,7 @@ export default class URLBar implements IRenderable {
 			this.host.innerText += '/';
 		}
 		// update the input's value
-		this.input.value =
-			`${this.protocol.innerText}${this.host.innerText}${this.path.innerText}`;
+		this.input.value = this.getURLFromFormattedView();
 	}
 
 
@@ -124,6 +115,38 @@ export default class URLBar implements IRenderable {
 				resolve();
 			}, 200);
 		});
+	}
+
+
+	private getURLFromFormattedView(): string {
+		return `${this.protocol.innerText}${this.host.innerText}${this.path.innerText}`;
+	}
+
+
+	private handleInputBlur(): void {
+		this.outerElement.classList.remove('focused');
+		// reset the input's value to the current URL
+		this.setURL(this.getURLFromFormattedView(), false);
+	}
+
+
+	private handleInputChange(e: KeyboardEvent): void {
+		// only trigger change event on enter
+		if (e.keyCode !== 13) {
+			return;
+		}
+		// fall back to 'http://' if no protocol was provided
+		if (
+			// no protocol at all:
+			!(/^[a-z]+\:\//.test(this.input.value)) ||
+			// only a leading double slash
+			/^\/+/.test(this.input.value)
+		) {
+			this.input.value = this.input.value.replace(/^[a-z]*\:?\/+/, '');
+			this.input.value = `http://${this.input.value}`;
+		}
+		this.onChange.trigger();
+		this.input.blur();
 	}
 
 
