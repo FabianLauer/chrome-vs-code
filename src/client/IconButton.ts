@@ -31,6 +31,12 @@ export default class IconButton implements IRenderable {
 	}
 
 
+	public setIcon(iconName: string): void {
+		this.outerElement.innerText = '';
+		this.outerElement.classList.add(`icon-${iconName}`);
+	}
+
+
 	public isEnabled(): boolean {
 		return !this.outerElement.classList.contains('disabled');
 	}
