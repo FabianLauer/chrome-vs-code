@@ -1,11 +1,21 @@
 import IRenderable from './IRenderable';
 import { Event } from '../utils/event';
 import { sleep } from '../utils';
-import Dialog from './Dialog';
+import IFrameBindings from './IFrameBindings';
 
 declare function escape(str: string): string;
 
 export default class Viewport implements IRenderable {
+	/**
+	 * Creates a new viewport.
+	 * @param getFrameBindings A function that creates an `IFrameBindings` object for every
+	 *                         frame created by this viewport.
+	 */
+	public constructor(
+		private readonly getFrameBindings: () => IFrameBindings
+	) { }
+
+
 	/**
 	 * Triggered after the viewport has navigated to another page.
 	 */
@@ -98,6 +108,9 @@ export default class Viewport implements IRenderable {
 				let iterations = 0;
 				let matches = 0;
 				while (iterations++ < 1000) {
+					if (typeof this.frame.contentWindow === 'object' && this.frame.contentWindow !== null) {
+						this.injectFrameBindings();
+					}
 					if (
 						typeof this.frame.contentDocument === 'object' && this.frame.contentDocument !== null &&
 						typeof this.frame.contentDocument.body === 'object' && this.frame.contentDocument.body !== null
@@ -140,6 +153,67 @@ export default class Viewport implements IRenderable {
 	}
 
 
+	private injectFrameBindings(): void {
+		if (
+			// if there's no contentWindow
+			typeof this.frame.contentWindow !== 'object' ||
+			this.frame.contentWindow === null ||
+			// or if the bindings were already created
+			typeof (<any>this.frame.contentWindow).vscodeBrowser === 'object' &&
+			(<any>this.frame.contentWindow).vscodeBrowser !== null
+		) {
+			return;
+		}
+		const members: Array<{
+			name: string;
+			property: PropertyDescriptor;
+		}> = [];
+		const bindings = this.getFrameBindings();
+		Viewport.bindings.splice(0, Viewport.bindings.length);
+		(<any>window).getBinding = (bindingID: number) => Viewport.bindings[bindingID];
+		for (const key in bindings) {
+			let value = bindings[key];
+			if (typeof bindings[key] === 'function') {
+				const bindingID = Viewport.bindings.push(bindings[key]) - 1;
+				value = new Function(`window.parent.getBinding(${bindingID}).apply(undefined, arguments);`);
+			}
+			members.push({
+				name: key,
+				property: {
+					configurable: false,
+					enumerable: false,
+					value: value,
+					writable: false
+				}
+			});
+		}
+		const js = members.map(member => {
+			var propertyCode = '{ ';
+			for (const key in member.property) {
+				propertyCode += `'${key}': ${member.property[key].toString()}, `;
+			}
+			propertyCode = propertyCode.slice(0, propertyCode.length - 2);
+			propertyCode += ' }';
+			return `Object.defineProperty(bindings, '${member.name}', ${propertyCode})`;
+		}).join('');
+		(<any>this.frame.contentWindow).eval(`
+			(function() {
+				/* VS Code Browser Injected Bindings */
+				'use strict';
+				var bindings = {};
+				Object.defineProperty(window, 'vscodeBrowser', {
+					enumerable: false,
+					configurable: false,
+					get: () => bindings
+				});
+				${js};
+				window.dispatchEvent(new Event('vscodeBrowserBindingsReady'));
+			})();
+		`);
+	}
+
+
 	private readonly outerElement = document.createElement('div');
 	private frame: HTMLIFrameElement;
+	private static readonly bindings: Array<Function> = [];
 }

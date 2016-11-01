@@ -15,13 +15,18 @@ declare function unescape(str: string): string;
 export default class BrowserWindow {
 	constructor(
 		private readonly browserBar?: BrowserBar,
-		private readonly viewport: Viewport = new Viewport()
+		private readonly viewport?: Viewport
 	) {
 		this.browserBar = this.browserBar || new BrowserBar(
 			undefined,
 			dialog => this.renderDialog(dialog),
 			url => this.load(url)
 		);
+		this.viewport = this.viewport || new Viewport(() => {
+			return {
+				load: uri => this.load(uri)
+			};
+		});
 		this.history.push(new HistoryEntry('about://home', Date.now()));
 		this.viewport.onAfterNavigation.bind(this.handleViewportNavigation.bind(this));
 		this.viewport.onRequestNavigation.bind(this.handleNavigationRequestFromViewport.bind(this));

@@ -1,1 +1,19 @@
 <!-- @about://home -->
+
+
+<script>
+	window.addEventListener('vscodeBrowserBindingsReady', function() {
+		const request = new XMLHttpRequest();
+		request.onerror = (e) => {
+			console.error(e);
+		};
+		request.onreadystatechange = () => {
+			if (request.readyState === XMLHttpRequest.DONE) {
+				const config = JSON.parse(request.responseText);
+				window.vscodeBrowser.load(config.home);
+			}
+		};
+		request.open('GET', `/config`, true);
+		request.send();
+	});
+</script>

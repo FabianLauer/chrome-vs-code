@@ -44,6 +44,13 @@ export default class Server {
 			HTTPServer.createURLFromString('/load/base'),
 			createProxyHandler(true)
 		);
+		this.httpServer.addHandler(HTTPServer.createURLFromString('/config'), (request, response) => {
+			response.statusCode = 200;
+			response.setHeader('Content-Type', 'text/json');
+			response.end(JSON.stringify({
+				home: 'about://index'
+			}));
+		});
 	}
 
 
