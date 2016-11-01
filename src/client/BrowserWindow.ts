@@ -2,6 +2,7 @@ import BrowserBar from './BrowserBar';
 import Viewport from './Viewport';
 import StatusIndicator from './StatusIndicator';
 import ResponseRendererFactory from './ResponseRendererFactory';
+import Dialog from './Dialog';
 import History from './History';
 import HistoryEntry from './HistoryEntry';
 
@@ -13,9 +14,14 @@ declare function unescape(str: string): string;
  */
 export default class BrowserWindow {
 	constructor(
-		private readonly browserBar: BrowserBar = new BrowserBar(),
+		private readonly browserBar?: BrowserBar,
 		private readonly viewport: Viewport = new Viewport()
 	) {
+		this.browserBar = this.browserBar || new BrowserBar(
+			undefined,
+			dialog => this.renderDialog(dialog),
+			url => this.load(url)
+		);
 		this.history.push(new HistoryEntry('about://home', Date.now()));
 		this.viewport.onAfterNavigation.bind(this.handleViewportNavigation.bind(this));
 		this.viewport.onRequestNavigation.bind(this.handleNavigationRequestFromViewport.bind(this));
@@ -129,6 +135,12 @@ export default class BrowserWindow {
 			this.browserBar.expand(),
 			updateViewportHeight()
 		]);
+	}
+
+
+	public async renderDialog(dialog: Dialog): Promise<void> {
+		await dialog.render();
+		document.body.appendChild(dialog.getDOM());
 	}
 
 

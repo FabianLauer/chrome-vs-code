@@ -1,6 +1,8 @@
 import IRenderable from './IRenderable';
 import URLBar from './URLBar';
 import IconButton from './IconButton';
+import Dialog from './Dialog';
+import MainMenuDialog from './MainMenuDialog';
 import { Event } from '../utils/event';
 import { sleep } from '../utils';
 
@@ -9,7 +11,9 @@ import { sleep } from '../utils';
  */
 export default class BrowserBar implements IRenderable {
 	constructor(
-		public readonly urlBar: URLBar = new URLBar()
+		public readonly urlBar: URLBar = new URLBar(),
+		private renderDialog: (dialog: Dialog) => Promise<void>,
+		private openURL: (url: string) => Promise<void>
 	) { }
 
 
@@ -77,6 +81,15 @@ export default class BrowserBar implements IRenderable {
 		this.homeButton.setIconAsText('⌂');
 		this.innerWrapper.appendChild(this.homeButton.getDOM());
 		this.homeButton.onClick.bind(() => this.onHomeButtonPressed.trigger());
+		// menu button
+		await this.menuButton.render();
+		this.menuButton.setIconAsText('+');
+		this.innerWrapper.appendChild(this.menuButton.getDOM());
+		this.menuButton.onClick.bind(async () => {
+			const dialog = await MainMenuDialog.createMainMenuDialog(this.openURL);
+			await this.renderDialog(dialog);
+			await dialog.open();
+		});
 	}
 
 
@@ -147,4 +160,5 @@ export default class BrowserBar implements IRenderable {
 	private readonly forwardButton = new IconButton();
 	private readonly homeButton = new IconButton();
 	private readonly refreshButton = new IconButton();
+	private readonly menuButton = new IconButton();
 }

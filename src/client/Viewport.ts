@@ -1,6 +1,7 @@
 import IRenderable from './IRenderable';
 import { Event } from '../utils/event';
 import { sleep } from '../utils';
+import Dialog from './Dialog';
 
 declare function escape(str: string): string;
 
