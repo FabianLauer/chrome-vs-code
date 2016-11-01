@@ -6,24 +6,61 @@
 	height: auto;
 	margin: 0 0.3em;
 	overflow: hidden;
-	input {
-		display: block;
+	input, .formatted-view {
 		float: left;
 		width: calc(100% ~'-' 2.4em ~'-' 2px);
+		height: 1em;
 		padding: 0.4em 0.4em 0.4em 2em;
 		font-size: 0.8em;
-		font-weight: 500;
-		border: none;
+		font-weight: @url_bar_inactive_font_weight;
+		border: @url_bar_inactive_border;
 		outline: none;
 		color: @url_bar_inactive_color;
 		background: @url_bar_inactive_background;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
 		transition: border-color 0.1s ease, background 0.1s ease, color 0.1s ease;
-		border: @url_bar_inactive_border;
+	}
+	input {
+		display: none;
 		&:focus {
 			outline: none;
+			font-weight: @url_bar_active_font_weight;
 			border-color: @url_bar_focused_border_color;
 			color: @url_bar_active_color;
 			background: @url_bar_active_background;
+		}
+	}
+	.formatted-view {
+		display: block;
+		line-height: 1.1em;
+		cursor: pointer;
+		.formatted-view-wrapper {
+			display: block;
+			float: left;
+			width: 1000000%;
+			height: auto;
+			> * {
+				display: block;
+				float: left;
+				clear: none;
+				width: auto;
+			}
+			.protocol {
+				color: @url_bar_inactive_protocol_color;
+			}
+			.path {
+				color: @url_bar_inactive_path_color;
+			}
+		}
+	}
+	&.focused {
+		input {
+			display: block;
+		}
+		.formatted-view {
+			display: none;
 		}
 	}
 	.loading-bar {

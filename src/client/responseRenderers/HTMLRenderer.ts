@@ -26,7 +26,7 @@ class HTMLRenderer extends ResponseRenderer {
 		const parsedDocument = document.implementation.createHTMLDocument('response');
 		parsedDocument.documentElement.innerHTML = response.responseText;
 		const parsedURL = HTMLRenderer.getBaseURLFromServerResponse(responseURI);
-		HTMLRenderer.updateAllURIAttributes(parsedDocument, `${parsedURL.protocol}//${parsedURL.hostname}`);
+		HTMLRenderer.updateAllURIAttributes(parsedDocument, `${parsedURL.protocol}//${parsedURL.host}`);
 		const headElement = parsedDocument.getElementsByTagName('head')[0];
 		if (typeof headElement === 'undefined') {
 			headHTML = '';
