@@ -28,7 +28,7 @@ export default class Viewport implements IRenderable {
 
 	public async render(): Promise<void> {
 		this.outerElement.classList.add('viewport');
-		this.createNewFrame();
+		await this.createNewFrame();
 	}
 
 
@@ -52,21 +52,16 @@ export default class Viewport implements IRenderable {
 
 
 	public async renderHTML(html: string): Promise<void> {
-		// this.createNewFrame(`data:text/html;charset=utf-8,${escape(html)}`);
-		this.createNewFrame(html);
-		this.frame.contentWindow.onclick = e => {
-			e.preventDefault();
-			e.stopPropagation();
-			const target: HTMLAnchorElement = <HTMLAnchorElement>e.target;
-			if (
-				target instanceof (<any>this.frame.contentWindow).HTMLAnchorElement &&
-				target.tagName.toLowerCase() === 'a'
-			) {
-				this.onRequestNavigation.trigger(target.href);
-			}
-		};
+		await this.createNewFrame(html);
+		this.bindClickHook();
 		this.overwriteBeforeUnloadInFrame();
+		// bind scroll listeners
 		this.frame.contentWindow.addEventListener('scroll', () => this.onScroll.trigger());
+		this.frame.contentWindow.document.addEventListener('scroll', () => this.onScroll.trigger());
+		const body = this.frame.contentWindow.document.getElementsByTagName('body')[0];
+		if (typeof body === 'object' && body !== null) {
+			body.addEventListener('scroll', () => this.onScroll.trigger());
+		}
 	}
 
 
@@ -87,16 +82,35 @@ export default class Viewport implements IRenderable {
 	}
 
 
-	private createNewFrame(src?: string): void {
-		if (this.frame instanceof HTMLElement) {
-			this.frame.remove();
-		}
-		this.frame = document.createElement('iframe');
-		if (typeof src === 'string') {
-			(<any>this.frame).srcdoc = src;
-		}
-		this.overwriteBeforeUnloadInFrame();
-		this.outerElement.appendChild(this.frame);
+	private async createNewFrame(src?: string): Promise<void> {
+		await new Promise<void>(async resolve => {
+			if (this.frame instanceof HTMLElement) {
+				this.frame.remove();
+			}
+			this.frame = document.createElement('iframe');
+			(<any>this.frame).sandbox = 'allow-scripts allow-same-origin allow-forms allow-popups';
+			if (typeof src === 'string') {
+				(<any>this.frame).srcdoc = src;
+			}
+			this.outerElement.appendChild(this.frame);
+			if (typeof src === 'string') {
+				let iterations = 0;
+				let matches = 0;
+				while (iterations++ < 1000) {
+					if (
+						typeof this.frame.contentDocument === 'object' && this.frame.contentDocument !== null &&
+						typeof this.frame.contentDocument.body === 'object' && this.frame.contentDocument.body !== null
+					) {
+						matches += 1;
+						if (matches === 2) {
+							break;
+						}
+					}
+					await sleep(100);
+				}
+			}
+			resolve();
+		});
 	}
 
 
@@ -107,6 +121,21 @@ export default class Viewport implements IRenderable {
 		this.frame.contentWindow.onbeforeunload = () => {
 			console.log('unload');
 		};
+	}
+
+
+	private bindClickHook(): void {
+		this.frame.contentDocument.body.addEventListener('click', e => {
+			e.preventDefault();
+			e.stopPropagation();
+			const target: HTMLAnchorElement = <HTMLAnchorElement>e.target;
+			if (
+				target instanceof (<any>this.frame.contentWindow).HTMLAnchorElement &&
+				target.tagName.toLowerCase() === 'a'
+			) {
+				this.onRequestNavigation.trigger(target.href);
+			}
+		});
 	}
 
 
