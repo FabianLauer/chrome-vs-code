@@ -1,8 +1,8 @@
 import ResponseRenderer from '../ResponseRenderer';
 import ResponseRendererFactory from '../ResponseRendererFactory';
+import { parseURL } from '../../utils';
 
 declare function escape(str: string): string;
-declare function unescape(str: string): string;
 
 @ResponseRendererFactory.register(response => {
 	var score = 0;
@@ -44,14 +44,7 @@ class HTMLRenderer extends ResponseRenderer {
 
 
 	private static getBaseURLFromServerResponse(responseURL: string) {
-		return HTMLRenderer.parseURL(responseURL.replace(/^.*?\?/, ''));
-	}
-
-
-	private static parseURL(url: string): { protocol: string; hostname: string; pathname: string } {
-		var link = document.createElement('a');
-		link.href = url;
-		return link;
+		return parseURL(responseURL.replace(/^.*?\?/, ''));
 	}
 
 
