@@ -1,4 +1,5 @@
 import IRenderable from './IRenderable';
+import Button from './Button';
 import { sleep } from '../utils';
 
 export default class Dialog implements IRenderable {
@@ -63,6 +64,12 @@ export default class Dialog implements IRenderable {
 	}
 
 
+	public async addButton(button: Button): Promise<void> {
+		await button.render();
+		this.bottomBarElement.appendChild(button.getDOM());
+	}
+
+
 	/**
 	 * Checks whether the dialog is currently open or not.
 	 */
@@ -95,6 +102,7 @@ export default class Dialog implements IRenderable {
 		this.outerElement.classList.remove('open');
 		await sleep(200);
 		this.outerElement.style.display = '';
+		this.outerElement.remove();
 	}
 
 

@@ -1,0 +1,27 @@
+.button {
+	@icon_size: 1.7em;
+	cursor: pointer;
+	background: @icon_button_inactive_background;
+	opacity: 1;
+	transition: background 0.1s ease, opacity 0.1s ease;
+	.icon {
+		float: left;
+		clear: none;
+		width: @icon_size;
+		height: @icon_size;
+		margin: 0 0.1em;
+		line-height: @icon_size;
+		text-align: center;
+	}
+	&:hover {
+		background: @icon_button_hover_background;
+	}
+	&:active {
+		background: @icon_button_active_background;
+	}
+	&.disabled {
+		cursor: default;
+		opacity: 0.3;
+		background: @icon_button_inactive_background!important;
+	}
+}

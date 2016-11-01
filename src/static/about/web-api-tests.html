@@ -8,30 +8,50 @@
 	<p>
 		<button onclick="window.alert('This is a test message.')">Test</button>
 	</p>
+	<h3>window.confirm()</h3>
+	<p>
+		<button onclick="testConfirm()">Test</button>
+		<p id="test-confirm-result"></p>
+		<script>
+			var resultElement = document.getElementById('test-confirm-result');
+			function testConfirm() {
+				window.confirm('Are you sure?').then(result => {
+					resultElement.innerHTML = 'typeof ' + typeof result + ', ' + (!!result ? 'true' : 'false');
+				}).catch(reason => {
+					console.error(reason);
+					resultElement.innerHTML = 'Error! See console for more.';
+				});
+			}
+		</script>
+	</p>
 </section>
 
 <section>
 	<h2>Webcam Access</h2>
-	<p>The video element below should be empty.</p>
+	<button onclick="testWebcam()">Test</button>
+	<br>
+	<br>
 	<video autoplay="true" id="webcam-video-player" style="width: 300px; height: 300px; background: #aaa;"></video>
 	<p id="webcam-info"></p>
 	<script type="text/javascript">
-		const video = document.querySelector("#webcam-video-player");
-		navigator.getUserMedia =
-			navigator.getUserMedia ||
-			navigator.webkitGetUserMedia;
-		if (navigator.getUserMedia) {
-			document.querySelector("#webcam-info").innerHTML += 'navigator.getUserMedia is supported' + '<br>';
-			navigator.getUserMedia(
-				{ video: true },
-				function(stream) {
-					video.src = window.URL.createObjectURL(stream);
-				}, function(error) {
-					console.log(error);
-				}
-			);
-		} else {
-			document.querySelector("#webcam-info").innerHTML += 'navigator.getUserMedia is not supported' + '<br>';
+		function testWebcam() {
+			const video = document.querySelector("#webcam-video-player");
+			navigator.getUserMedia =
+				navigator.getUserMedia ||
+				navigator.webkitGetUserMedia;
+			if (navigator.getUserMedia) {
+				document.querySelector("#webcam-info").innerHTML += 'navigator.getUserMedia is supported' + '<br>';
+				navigator.getUserMedia(
+					{ video: true },
+					function(stream) {
+						video.src = window.URL.createObjectURL(stream);
+					}, function(error) {
+						console.log(error);
+					}
+				);
+			} else {
+				document.querySelector("#webcam-info").innerHTML += 'navigator.getUserMedia is not supported' + '<br>';
+			}
 		}
 	</script>
 </section>

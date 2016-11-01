@@ -48,7 +48,7 @@ export default class Server {
 			response.statusCode = 200;
 			response.setHeader('Content-Type', 'text/json');
 			response.end(JSON.stringify({
-				home: 'about://index'
+				home: 'about://web-api-tests'
 			}));
 		});
 	}
