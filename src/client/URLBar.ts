@@ -72,7 +72,7 @@ export default class URLBar implements IRenderable {
 		// update the formatted view
 		const parsedURL = parseURL(url);
 		this.protocol.innerText = parsedURL.protocol.replace(/\//g, '') + '//';
-		this.path.innerText = parsedURL.pathname.replace(/\//g, '');
+		this.path.innerText = parsedURL.pathname.replace(/^\/+/, '');
 		this.host.innerText = parsedURL.host;
 		if (
 			this.host.innerText.length > 0 &&
