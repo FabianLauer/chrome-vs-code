@@ -74,7 +74,7 @@ async function isFile(filePath: string): Promise<boolean> {
 
 
 function extractAboutPageName(str: string): string {
-	return str.match(/<!-- *@about:\/\/([a-z\-]+) *-->/)[1];
+	return str.match(/<!-- *@about:\/\/([a-z0-9\-]+) *-->/)[1];
 }
 
 

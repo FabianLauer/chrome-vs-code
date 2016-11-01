@@ -9,7 +9,7 @@ declare function escape(str: string): string;
 	if (response.status === 200) {
 		score += 1;
 	}
-	if (response.getResponseHeader('Content-Type') === 'html') {
+	if (response.getResponseHeader('Content-Type') === 'text/html') {
 		score += 100;
 	}
 	return score;

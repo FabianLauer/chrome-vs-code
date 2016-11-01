@@ -78,9 +78,31 @@ export default class Server {
 	private createFileReaderRoute(url: string, contentType: string, reader: FileReader<string>): void {
 		this.httpServer.addHandler(HTTPServer.createURLFromString(url), async (request, response) => {
 			response.statusCode = 200;
-			response.setHeader('Content-Type', '');
+			response.setHeader('Content-Type', contentType);
 			response.end(await reader.getContent());
 		});
+	}
+
+
+	private async respondWithStatusCodeAboutPage(statusCode: number, response: http.ServerResponse): Promise<void> {
+		response.statusCode = statusCode;
+		response.setHeader('Content-Type', 'text/html');
+		const page = this.aboutPages.find(aboutPage => aboutPage.name === statusCode.toString());
+		if (typeof page === 'object' && page !== null) {
+			response.end(await page.reader.getContent());
+		} else {
+			response.end();
+		}
+	}
+
+
+	private async respondTo404(response: http.ServerResponse): Promise<void> {
+		return this.respondWithStatusCodeAboutPage(404, response);
+	}
+
+
+	private async respondTo500(response: http.ServerResponse): Promise<void> {
+		return this.respondWithStatusCodeAboutPage(500, response);
 	}
 
 
@@ -93,8 +115,7 @@ export default class Server {
 			this.delegateToProxy(`${this.previousBaseURL}/${request.url}`, request, response);
 		} else {
 			this.log(`[404]: ${HTTPServer.urlToString(request.url)}`);
-			response.statusCode = 404;
-			response.end();
+			this.respondTo404(response);
 		}
 	}
 
@@ -104,8 +125,7 @@ export default class Server {
 	 */
 	private handle500(error: Error, request: http.IncomingMessage, response: http.ServerResponse): void {
 		this.log(`[500]: ${HTTPServer.urlToString(request.url)}: ${error}`);
-		response.statusCode = 500;
-		response.end();
+		this.respondTo500(response);
 	}
 
 
@@ -144,8 +164,7 @@ export default class Server {
 		const name = requestURL.replace(/^about:\/+/, '');
 		const page = this.aboutPages.find(aboutPage => aboutPage.name === name);
 		if (typeof page !== 'object' || page === null) {
-			response.statusCode = 404;
-			response.end();
+			await this.respondTo404(response);
 		} else {
 			response.statusCode = 200;
 			response.end(await page.reader.getContent());
