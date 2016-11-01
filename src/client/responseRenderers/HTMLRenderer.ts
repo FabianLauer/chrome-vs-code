@@ -26,7 +26,7 @@ class HTMLRenderer extends ResponseRenderer {
 		const parsedDocument = document.implementation.createHTMLDocument('response');
 		parsedDocument.documentElement.innerHTML = response.responseText;
 		const parsedURL = HTMLRenderer.getBaseURLFromServerResponse(responseURI);
-		HTMLRenderer.updateAllURIAttributes(parsedDocument, `${parsedURL.protocol}//${parsedURL.host}`);
+		HTMLRenderer.updateAllURIAttributes(parsedDocument, parsedURL.protocol, `${parsedURL.protocol}//${parsedURL.host}`);
 		const headElement = parsedDocument.getElementsByTagName('head')[0];
 		if (typeof headElement === 'undefined') {
 			headHTML = '';
@@ -48,14 +48,20 @@ class HTMLRenderer extends ResponseRenderer {
 	}
 
 
-	private static updateAllURIAttributes(document: Document, baseURL: string): void {
+	private static updateAllURIAttributes(document: Document, baseProtocol: string, baseURL: string): void {
 		const elements = document.getElementsByTagName('*');
 		for (let i = 0; i < elements.length; i++) {
 			const element = elements[i];
 			for (let a = 0; a < element.attributes.length; a++) {
 				const attribute = element.attributes[a];
+				// full protocol in URI
 				if (/^[a-z]+?:\//.test(attribute.value)) {
 					attribute.value = `/load?${escape(attribute.value)}`;
+				}
+				// double slash as protocol shortcut
+				else if (/^:?\/\/+/.test(attribute.value)) {
+					attribute.value = attribute.value.replace(/^:?\/+/, '');
+					attribute.value = `/load?${baseProtocol}//${escape(attribute.value)}`;
 				} else if (attribute.name === 'src' || attribute.name === 'href' || attribute.name === 'xlink:href') {
 					attribute.value = `/load?${baseURL}/${escape(attribute.value)}`;
 				}
