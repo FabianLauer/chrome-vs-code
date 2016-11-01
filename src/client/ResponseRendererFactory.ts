@@ -62,8 +62,7 @@ export default class ResponseRendererFactory {
 
 
 	private static readonly FallbackRenderer = class FallbackRenderer extends ResponseRenderer {
-		protected async renderResponseConcrete(response: XMLHttpRequest): Promise<void> {
-			const url = unescape(((<string>(<any>response).responseURL) || '').replace(/^.*?\?/, ''));
+		protected async renderResponseConcrete(responseURI: string, response: XMLHttpRequest): Promise<void> {
 			await this.viewport.renderHTML(
 				`
 					<title>Rendering Error</title>
@@ -89,7 +88,7 @@ export default class ResponseRendererFactory {
 				`
 					<h1>This site can't be displayed.</h1>
 					<p>
-						The web page at <b>${url}</b> can not be displayed because no matching renderer was found.
+						The web page at <b>${responseURI}</b> can not be displayed because no matching renderer was found.
 					</p>
 					<a href='${BUG_REPORT_URL}' title='File a bug report'>Report this issue</a>
 				`

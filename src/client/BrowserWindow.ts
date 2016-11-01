@@ -80,7 +80,12 @@ export default class BrowserWindow {
 		const response = await this.request(uri);
 		const renderer = ResponseRendererFactory.getRenderer(this.viewport, response);
 		let statusIndicatorTicket = this.statusIndicator.show(`rendering ${uri}`);
-		await renderer.renderResponse(response);
+		const responseURI = response.getResponseHeader('actual-uri') || uri;
+		// update the browser bar if we were redirected
+		if (responseURI !== uri) {
+			this.browserBar.urlBar.setURL(responseURI, false);
+		}
+		await renderer.renderResponse(responseURI, response);
 		await this.browserBar.showLoadingProgress(100);
 		await this.browserBar.hideLoadingIndicator();
 		this.statusIndicator.hide(statusIndicatorTicket);

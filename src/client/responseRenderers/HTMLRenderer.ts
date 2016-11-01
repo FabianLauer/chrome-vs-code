@@ -17,14 +17,15 @@ declare function unescape(str: string): string;
 class HTMLRenderer extends ResponseRenderer {
 	/**
 	 * Renders a certain response in the renderer's current viewport.
+	 * @param responseURI The URI from which the response was loaded.
 	 * @param response The response to render.
 	 */
-	protected async renderResponseConcrete(response: XMLHttpRequest): Promise<void> {
+	protected async renderResponseConcrete(responseURI: string, response: XMLHttpRequest): Promise<void> {
 		var headHTML: string;
 		var bodyHTML: string;
 		const parsedDocument = document.implementation.createHTMLDocument('response');
 		parsedDocument.documentElement.innerHTML = response.responseText;
-		const parsedURL = HTMLRenderer.getBaseURLFromServerResponse(response);
+		const parsedURL = HTMLRenderer.getBaseURLFromServerResponse(responseURI);
 		HTMLRenderer.updateAllURIAttributes(parsedDocument, `${parsedURL.protocol}//${parsedURL.hostname}`);
 		const headElement = parsedDocument.getElementsByTagName('head')[0];
 		if (typeof headElement === 'undefined') {
@@ -42,8 +43,8 @@ class HTMLRenderer extends ResponseRenderer {
 	}
 
 
-	private static getBaseURLFromServerResponse(response: XMLHttpRequest) {
-		return HTMLRenderer.parseURL(unescape(((<string>(<any>response).responseURL) || '').replace(/^.*?\?/, '')));
+	private static getBaseURLFromServerResponse(responseURL: string) {
+		return HTMLRenderer.parseURL(responseURL.replace(/^.*?\?/, ''));
 	}
 
 

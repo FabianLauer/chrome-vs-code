@@ -121,12 +121,13 @@ export default class Server {
 
 	private async delegateToHttpProxy(requestURL: string, request: http.IncomingMessage, response: http.ServerResponse): Promise<void> {
 		return new Promise<void>(resolve => {
-			var requestFn: typeof http.get = http.get;
+			var requestFn: typeof http.get = require('follow-redirects').http.get;
 			if (HTTPServer.createURLFromString(requestURL).protocol === 'https:') {
-				requestFn = https.get;
+				requestFn = require('follow-redirects').https.get;
 			}
 			requestFn(requestURL, clientResponse => {
 				response.statusCode = clientResponse.statusCode;
+				response.setHeader('actual-uri', (<any>clientResponse).responseUrl);
 				for (const headerName in clientResponse.headers) {
 					response.setHeader(headerName, clientResponse.headers[headerName]);
 				}

@@ -12,18 +12,20 @@ abstract class ResponseRenderer {
 
 	/**
 	 * Renders a certain response in the renderer's current viewport.
+	 * @param responseURI The URI from which the response was loaded.
 	 * @param response The response to render.
 	 */
-	public async renderResponse(response: XMLHttpRequest): Promise<void> {
-		await this.renderResponseConcrete(response);
+	public async renderResponse(resposeURI: string, response: XMLHttpRequest): Promise<void> {
+		await this.renderResponseConcrete(resposeURI, response);
 	}
 
 
 	/**
 	 * Renders a certain response in the renderer's current viewport.
+	 * @param responseURI The URI from which the response was loaded.
 	 * @param response The response to render.
 	 */
-	protected abstract async renderResponseConcrete(response: XMLHttpRequest): Promise<void>;
+	protected abstract async renderResponseConcrete(resposeURI: string, response: XMLHttpRequest): Promise<void>;
 }
 
 export default ResponseRenderer;
