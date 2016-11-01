@@ -65,6 +65,12 @@ export default class URLBar implements IRenderable {
 		const parsedURL = parseURL(url);
 		this.protocol.innerText = parsedURL.protocol.replace(/\//g, '') + '//';
 		this.path.innerText = parsedURL.pathname.replace(/^\/+/, '');
+		if (typeof parsedURL.hash === 'string' && parsedURL.hash.length > 0) {
+			this.path.innerText += parsedURL.hash;
+		}
+		if (typeof parsedURL.search === 'string' && parsedURL.search.length > 0) {
+			this.path.innerText += parsedURL.search;
+		}
 		this.host.innerText = parsedURL.host;
 		if (
 			this.host.innerText.length > 0 &&
