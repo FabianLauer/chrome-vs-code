@@ -1,5 +1,4 @@
 import * as http from 'http';
-import * as https from 'https';
 import HTTPServer from './HTTPServer';
 import FileReader from './FileReader';
 import { format } from 'url';
@@ -131,10 +130,14 @@ export default class Server {
 
 	private async delegateToProxy(requestURL: string, request: http.IncomingMessage, response: http.ServerResponse): Promise<void> {
 		switch (HTTPServer.createURLFromString(requestURL).protocol) {
-			default:
+			case 'http:':
+			case 'https:':
 				return this.delegateToHttpProxy(requestURL, request, response);
 			case 'about:':
 				return this.delegateToAboutProxy(requestURL, request, response);
+			default:
+				this.respondTo404(response);
+				break;
 		}
 	}
 
