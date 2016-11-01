@@ -25,7 +25,7 @@ class HTMLRenderer extends ResponseRenderer {
 		parsedDocument.documentElement.innerHTML = response.responseText;
 		const parsedURL = HTMLRenderer.getBaseURLFromServerResponse(responseURI);
 		HTMLRenderer.updateAllURIAttributes(parsedDocument, parsedURL.protocol, `${parsedURL.protocol}//${parsedURL.host}`);
-		await this.viewport.renderHTML(parsedDocument.documentElement.innerHTML);
+		await this.viewport.renderHTML(parsedDocument.documentElement.outerHTML);
 	}
 
 
