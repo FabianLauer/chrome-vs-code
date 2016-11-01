@@ -2,6 +2,8 @@ import IRenderable from './IRenderable';
 import { Event } from '../utils/event';
 import { sleep } from '../utils';
 
+declare function escape(str: string): string;
+
 export default class Viewport implements IRenderable {
 	/**
 	 * Triggered after the viewport has navigated to another page.
@@ -49,10 +51,9 @@ export default class Viewport implements IRenderable {
 	}
 
 
-	public async renderHTML(headHTML: string, bodyHTML: string): Promise<void> {
-		this.createNewFrame();
-		this.frame.contentWindow.document.head.innerHTML = headHTML;
-		this.frame.contentWindow.document.body.innerHTML = bodyHTML;
+	public async renderHTML(html: string): Promise<void> {
+		// this.createNewFrame(`data:text/html;charset=utf-8,${escape(html)}`);
+		this.createNewFrame(html);
 		this.frame.contentWindow.onclick = e => {
 			e.preventDefault();
 			e.stopPropagation();
@@ -86,11 +87,14 @@ export default class Viewport implements IRenderable {
 	}
 
 
-	private createNewFrame(): void {
+	private createNewFrame(src?: string): void {
 		if (this.frame instanceof HTMLElement) {
 			this.frame.remove();
 		}
 		this.frame = document.createElement('iframe');
+		if (typeof src === 'string') {
+			(<any>this.frame).srcdoc = src;
+		}
 		this.overwriteBeforeUnloadInFrame();
 		this.outerElement.appendChild(this.frame);
 	}

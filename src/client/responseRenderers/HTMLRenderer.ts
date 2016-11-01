@@ -21,25 +21,11 @@ class HTMLRenderer extends ResponseRenderer {
 	 * @param response The response to render.
 	 */
 	protected async renderResponseConcrete(responseURI: string, response: XMLHttpRequest): Promise<void> {
-		var headHTML: string;
-		var bodyHTML: string;
 		const parsedDocument = document.implementation.createHTMLDocument('response');
 		parsedDocument.documentElement.innerHTML = response.responseText;
 		const parsedURL = HTMLRenderer.getBaseURLFromServerResponse(responseURI);
 		HTMLRenderer.updateAllURIAttributes(parsedDocument, parsedURL.protocol, `${parsedURL.protocol}//${parsedURL.host}`);
-		const headElement = parsedDocument.getElementsByTagName('head')[0];
-		if (typeof headElement === 'undefined') {
-			headHTML = '';
-		} else {
-			headHTML = headElement.innerHTML;
-		}
-		const bodyElement = parsedDocument.getElementsByTagName('body')[0];
-		if (typeof bodyElement === 'undefined') {
-			bodyHTML = '';
-		} else {
-			bodyHTML = bodyElement.innerHTML;
-		}
-		await this.viewport.renderHTML(headHTML, bodyHTML);
+		await this.viewport.renderHTML(parsedDocument.documentElement.innerHTML);
 	}
 
 

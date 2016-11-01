@@ -65,6 +65,9 @@ export default class ResponseRendererFactory {
 		protected async renderResponseConcrete(responseURI: string, response: XMLHttpRequest): Promise<void> {
 			await this.viewport.renderHTML(
 				`
+				<!DOCTYPE html>
+				<html>
+				<head>
 					<title>Rendering Error</title>
 					<style>
 						* {
@@ -84,13 +87,15 @@ export default class ResponseRendererFactory {
 							color: #666;
 						}
 					</style>
-				`,
-				`
+				</head>
+				<body>
 					<h1>This site can't be displayed.</h1>
 					<p>
 						The web page at <b>${responseURI}</b> can not be displayed because no matching renderer was found.
 					</p>
 					<a href='${BUG_REPORT_URL}' title='File a bug report'>Report this issue</a>
+				</body>
+				</html>
 				`
 			);
 		}
