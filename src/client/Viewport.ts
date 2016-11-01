@@ -175,7 +175,7 @@ export default class Viewport implements IRenderable {
 			let value = bindings[key];
 			if (typeof bindings[key] === 'function') {
 				const bindingID = Viewport.bindings.push(bindings[key]) - 1;
-				value = new Function(`window.parent.getBinding(${bindingID}).apply(undefined, arguments);`);
+				value = new Function(`return window.parent.getBinding(${bindingID}).apply(undefined, arguments);`);
 			}
 			members.push({
 				name: key,
@@ -195,7 +195,7 @@ export default class Viewport implements IRenderable {
 			propertyCode = propertyCode.slice(0, propertyCode.length - 2);
 			propertyCode += ' }';
 			return `Object.defineProperty(bindings, '${member.name}', ${propertyCode})`;
-		}).join('');
+		}).join(';');
 		(<any>this.frame.contentWindow).eval(`
 			(function() {
 				/* VS Code Browser Injected Bindings */
@@ -207,7 +207,9 @@ export default class Viewport implements IRenderable {
 					get: () => bindings
 				});
 				${js};
-				window.dispatchEvent(new Event('vscodeBrowserBindingsReady'));
+				bindings.initializeWebAPIs(window).then(function() {
+					window.dispatchEvent(new Event('vscodeBrowserBindingsReady'));
+				});
 			})();
 		`);
 	}

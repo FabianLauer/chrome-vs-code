@@ -4,6 +4,10 @@
  */
 interface IFrameBindings {
 	/**
+	 * Initializes the frame's web API bindings.
+	 */
+	initializeWebAPIs(frameWindow: Window): Promise<void>;
+	/**
 	 * Updates the browser location to another URI.
 	 * @param uri The URI to open.
 	 */

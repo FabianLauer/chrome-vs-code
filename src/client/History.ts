@@ -1,6 +1,8 @@
 import HistoryEntry from './HistoryEntry';
+import IReadonlyHistory from './IReadonlyHistory';
 
-export default class History<TEntry extends HistoryEntry> {
+export default class History<TEntry extends HistoryEntry>
+	implements IReadonlyHistory<TEntry> {
 	/**
 	 * Returns the current history entry.
 	 */

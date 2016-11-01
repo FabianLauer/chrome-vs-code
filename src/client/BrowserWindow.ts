@@ -3,11 +3,15 @@ import Viewport from './Viewport';
 import StatusIndicator from './StatusIndicator';
 import ResponseRendererFactory from './ResponseRendererFactory';
 import Dialog from './Dialog';
+import IReadonlyHistory from './IReadonlyHistory';
 import History from './History';
 import HistoryEntry from './HistoryEntry';
+import IFrameBindings from './IFrameBindings';
+import initializePrompts from './webapi/prompts';
 
 declare function escape(str: string): string;
 declare function unescape(str: string): string;
+
 
 /**
  * The complete browser window, including browser bar and viewport.
@@ -22,11 +26,7 @@ export default class BrowserWindow {
 			dialog => this.renderDialog(dialog),
 			url => this.load(url)
 		);
-		this.viewport = this.viewport || new Viewport(() => {
-			return {
-				load: uri => this.load(uri)
-			};
-		});
+		this.viewport = this.viewport || new Viewport(() => this.createFrameBindings());
 		this.history.push(new HistoryEntry('about://home', Date.now()));
 		this.viewport.onAfterNavigation.bind(this.handleViewportNavigation.bind(this));
 		this.viewport.onRequestNavigation.bind(this.handleNavigationRequestFromViewport.bind(this));
@@ -71,6 +71,11 @@ export default class BrowserWindow {
 		this.statusIndicator.hide(statusIndicatorTicket);
 		// resize the viewport when the window size changes
 		window.addEventListener('resize', () => this.expandBrowserBar(false));
+	}
+
+
+	public getHistory(): IReadonlyHistory<HistoryEntry> {
+		return this.history;
 	}
 
 
@@ -227,6 +232,26 @@ export default class BrowserWindow {
 	private async handleNavigationRequestFromViewport(targetURI: string): Promise<void> {
 		targetURI = unescape(((<string>targetURI) || '').replace(/^.*?\?/, ''));
 		await this.load(targetURI);
+	}
+
+
+	private createFrameBindings(): IFrameBindings {
+		const browserWindow = this;
+		return {
+			/**
+			 * Initializes the frame's web API bindings.
+			 */
+			async initializeWebAPIs(frameWindow: Window): Promise<void> {
+				await initializePrompts(browserWindow, frameWindow);
+			},
+			/**
+			 * Updates the browser location to another URI.
+			 * @param uri The URI to open.
+			 */
+			async load(uri: string): Promise<void> {
+				return browserWindow.load(uri);
+			}
+		};
 	}
 
 

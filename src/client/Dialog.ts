@@ -38,12 +38,28 @@ export default class Dialog implements IRenderable {
 
 
 	public getTitle(): string {
-		return this.titleElement.innerText.trim();
+		return this.titleElement.textContent.trim();
 	}
 
 
 	public setTitle(title: string): void {
 		this.titleElement.textContent = title;
+	}
+
+
+	public getContent(): string {
+		return this.bodyElement.innerHTML.trim();
+	}
+
+
+	public setContentAsText(text: string): void {
+		this.bodyElement.innerHTML = '';
+		this.bodyElement.textContent = text;
+	}
+
+
+	public setContentAsHTML(html: string): void {
+		this.bodyElement.innerHTML = html;
 	}
 
 
