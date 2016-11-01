@@ -24,6 +24,22 @@
 			}
 		</script>
 	</p>
+	<h3>window.prompt()</h3>
+	<p>
+		<button onclick="testPrompt()">Test (default value: New York)</button>
+		<p id="test-prompt-result"></p>
+		<script>
+			var resultElement = document.getElementById('test-prompt-result');
+			function testPrompt() {
+				window.prompt('Enter a city', 'New York').then(result => {
+					resultElement.innerHTML = 'typeof ' + typeof result + ', ' + result;
+				}).catch(reason => {
+					console.error(reason);
+					resultElement.innerHTML = 'Error! See console for more.';
+				});
+			}
+		</script>
+	</p>
 </section>
 
 <section>

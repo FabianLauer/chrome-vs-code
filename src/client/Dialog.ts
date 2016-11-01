@@ -59,8 +59,17 @@ export default class Dialog implements IRenderable {
 	}
 
 
-	public setContentAsHTML(html: string): void {
-		this.bodyElement.innerHTML = html;
+	public setContentAsHTML(...html: string[]): void;
+	public setContentAsHTML(...html: HTMLElement[]): void;
+	public setContentAsHTML(...html: any[]): void {
+		this.bodyElement.innerHTML = '';
+		html.forEach(part => {
+			if (typeof part === 'string') {
+				this.bodyElement.innerHTML += part;
+			} else {
+				this.bodyElement.appendChild(part);
+			}
+		});
 	}
 
 
