@@ -32,8 +32,8 @@
 		<button onclick="testConfirm()">Test</button>
 		<p id="test-confirm-result"></p>
 		<script>
-			var resultElement = document.getElementById('test-confirm-result');
 			function testConfirm() {
+				var resultElement = document.getElementById('test-confirm-result');
 				window.confirm('Are you sure?').then(result => {
 					resultElement.innerHTML = 'typeof ' + typeof result + ', ' + (!!result ? 'true' : 'false');
 				}).catch(reason => {
@@ -48,8 +48,8 @@
 		<button onclick="testPrompt()">Test (default value: New York)</button>
 		<p id="test-prompt-result"></p>
 		<script>
-			var resultElement = document.getElementById('test-prompt-result');
 			function testPrompt() {
+				var resultElement = document.getElementById('test-prompt-result');
 				window.prompt('Enter a city', 'New York').then(result => {
 					resultElement.innerHTML = 'typeof ' + typeof result + ', ' + result;
 				}).catch(reason => {
