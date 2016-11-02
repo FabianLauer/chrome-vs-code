@@ -1,20 +1,35 @@
 .button {
-	@icon_size: 1.7em;
+	@height: 1.7em;
+	float: left;
+	clear: none;
+	padding: .2em .5em;
+	margin: .3em;
 	cursor: pointer;
-	background: @icon_button_inactive_background;
+	background: @button_inactive_background;
 	opacity: 1;
 	transition: background 0.1s ease, opacity 0.1s ease;
-	.icon {
+	.icon, .text {
+		display: none;
 		float: left;
 		clear: none;
-		width: @icon_size;
-		height: @icon_size;
+		width: auto;
+		height: @height;
 		margin: 0 0.1em;
-		line-height: @icon_size;
+		line-height: @height;
 		text-align: center;
 	}
+	.icon {
+		width: @height;
+	}
+	&.has-icon .icon,
+	&.has-text-icon .icon {
+		display: block;
+	}
+	&.has-text .text {
+		display: block;
+	}
 	&:hover {
-		background: @icon_button_hover_background;
+		background: @button_hover_background;
 	}
 	&:active {
 		background: @icon_button_active_background;
@@ -22,6 +37,6 @@
 	&.disabled {
 		cursor: default;
 		opacity: 0.3;
-		background: @icon_button_inactive_background!important;
+		background: @button_active_background!important;
 	}
 }

@@ -60,7 +60,7 @@ export default class Dialog implements IRenderable {
 
 
 	public setContentAsHTML(...html: string[]): void;
-	public setContentAsHTML(...html: HTMLElement[]): void;
+	public setContentAsHTML(...html: Array<HTMLElement | Text>): void;
 	public setContentAsHTML(...html: any[]): void {
 		this.bodyElement.innerHTML = '';
 		html.forEach(part => {
@@ -73,7 +73,16 @@ export default class Dialog implements IRenderable {
 	}
 
 
-	public async addButton(button: Button): Promise<void> {
+	public async prependButton(button: Button): Promise<void> {
+		if (this.bottomBarElement.childElementCount === 0) {
+			return this.appendButton(button);
+		}
+		await button.render();
+		this.bottomBarElement.insertBefore(button.getDOM(), this.bottomBarElement.firstChild);
+	}
+
+
+	public async appendButton(button: Button): Promise<void> {
 		await button.render();
 		this.bottomBarElement.appendChild(button.getDOM());
 	}
