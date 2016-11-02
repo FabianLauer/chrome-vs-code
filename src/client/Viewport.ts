@@ -64,7 +64,6 @@ export default class Viewport implements IRenderable {
 
 	public async renderHTML(html: string): Promise<void> {
 		await this.createNewFrame(html);
-		this.bindClickHook();
 		this.overwriteBeforeUnloadInFrame();
 		// bind scroll listeners
 		this.frame.contentWindow.addEventListener('scroll', () => this.onScroll.trigger());
@@ -133,23 +132,13 @@ export default class Viewport implements IRenderable {
 			return;
 		}
 		this.frame.contentWindow.onbeforeunload = () => {
-			console.log('unload');
+			this.frame.style.display = 'none';
+			const loadHandler = () => {
+				this.frame.removeEventListener('load', loadHandler);
+				this.onAfterNavigation.trigger(this.frame.contentWindow.location.href);
+			};
+			this.frame.addEventListener('load', loadHandler);
 		};
-	}
-
-
-	private bindClickHook(): void {
-		this.frame.contentDocument.body.addEventListener('click', e => {
-			e.preventDefault();
-			e.stopPropagation();
-			const target: HTMLAnchorElement = <HTMLAnchorElement>e.target;
-			if (
-				target instanceof (<any>this.frame.contentWindow).HTMLAnchorElement &&
-				target.tagName.toLowerCase() === 'a'
-			) {
-				this.onRequestNavigation.trigger(target.href);
-			}
-		});
 	}
 
 
