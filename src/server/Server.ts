@@ -163,7 +163,7 @@ export default class Server {
 			if (HTTPServer.createURLFromString(requestURL).protocol === 'https:') {
 				requestFn = require('follow-redirects').https.get;
 			}
-			requestFn(requestURL, clientResponse => {
+			const clientRequest = requestFn(requestURL, clientResponse => {
 				response.statusCode = clientResponse.statusCode;
 				response.setHeader('actual-uri', (<any>clientResponse).responseUrl);
 				for (const headerName in clientResponse.headers) {
@@ -173,6 +173,17 @@ export default class Server {
 				clientResponse.on('data', (data: Buffer) => response.write(data));
 				clientResponse.on('end', () => response.end());
 				resolve();
+			});
+			clientRequest.on('error', (error: any) => {
+				if (
+					typeof error === 'object' &&
+					(error.code === 'ENOTFOUND' || error.code === 'ECONNREFUSED')
+				) {
+					this.respondTo404(response);
+				} else {
+					this.respondTo500(response);
+				}
+				console.error(error);
 			});
 		});
 	}
