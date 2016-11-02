@@ -42,6 +42,28 @@ export default class HTTPServer {
 
 
 	/**
+	 * Checks if the server is listening to a certain address.
+	 */
+	public isListeningTo(hostname: string, port: number): boolean {
+		hostname = hostname.trim();
+		return -1 !== this.servers.findIndex(server => {
+			const address = server.address();
+			if (address.port !== port) {
+				return false;
+			}
+			if (
+				hostname === address.address ||
+				(hostname === 'localhost' && address.address === '127.0.0.1') ||
+				(hostname === '127.0.0.1' && address.address === 'localhost')
+			) {
+				return true;
+			}
+			return false;
+		});
+	}
+
+
+	/**
 	 * Lets the server listen to a certain hostname and port.
 	 * @param hostname The hostname to listen to.
 	 * @param port The port to listen to.
@@ -120,7 +142,7 @@ export default class HTTPServer {
 	}
 
 
-	private servers: http.Server[] = [];
+	private readonly servers: http.Server[] = [];
 
 	/**
 	 * All of the server's request handler functions by URL.

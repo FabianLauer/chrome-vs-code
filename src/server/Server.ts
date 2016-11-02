@@ -136,15 +136,23 @@ export default class Server {
 
 
 	private async delegateToProxy(requestURL: string, request: http.IncomingMessage, response: http.ServerResponse): Promise<void> {
-		switch (HTTPServer.createURLFromString(requestURL).protocol) {
+		const parsedURL = HTTPServer.createURLFromString(requestURL);
+		// If the URL contains a port, check if the URL is actually an URL our HTTP server is listening to. If that's the case,
+		// cancel the request immediately.
+		if (
+			typeof parsedURL.port === 'string' && parsedURL.port.length > 0 &&
+			this.httpServer.isListeningTo(parsedURL.hostname, parseInt(parsedURL.port, 10))
+		) {
+			return this.respondTo404(response);
+		}
+		switch (parsedURL.protocol) {
 			case 'http:':
 			case 'https:':
 				return this.delegateToHttpProxy(requestURL, request, response);
 			case 'about:':
 				return this.delegateToAboutProxy(requestURL, request, response);
 			default:
-				this.respondTo404(response);
-				break;
+				return this.respondTo404(response);
 		}
 	}
 
