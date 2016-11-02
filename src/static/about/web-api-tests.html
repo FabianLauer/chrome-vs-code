@@ -3,6 +3,25 @@
 <h1>Web API Tests</h1>
 
 <section>
+	<h2>Overview</h2>
+	<ul id='index'></ul>
+	<script>
+		// build the page index after page load
+		setTimeout(function() {
+			const index = document.getElementById('index');
+			index.innerHTML = '';
+			const headings = document.getElementsByTagName('h2');
+			for (var i = 0; i < headings.length; i++) {
+				const heading = headings[i];
+				heading.id = (heading.id || heading.textContent).replace(/ /g, '-').toLowerCase();
+				index.innerHTML += '<li><a href="#' + heading.id + '">' + heading.textContent + '</a></li>';
+			}
+		}, 1);
+	</script>
+</section>
+
+
+<section>
 	<h2>Dialogs</h2>
 	<h3>window.alert()</h3>
 	<p>
