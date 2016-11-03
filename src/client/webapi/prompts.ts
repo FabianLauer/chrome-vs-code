@@ -33,6 +33,10 @@ async function addCloseButtonToDialog(dialog: Dialog, text = 'Close', append = t
  * @see http://w3c.github.io/html/webappapis.html#dom-window-alert
  */
 async function alert(browserWindow: BrowserWindow, message?: any): Promise<void> {
+	// hello github 😇
+	if (/for +security +reasons, +framing +is +not +allowed/i.test(message)) {
+		return;
+	}
 	// build the dialog
 	const dialog = await Dialog.create();
 	dialog.setTitle(`'${browserWindow.getHistory().getCurrent().uri}' says:`);
