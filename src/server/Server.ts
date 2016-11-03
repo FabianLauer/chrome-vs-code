@@ -208,7 +208,11 @@ export default class Server {
 				requestFn = require('follow-redirects').https.get;
 			}
 			delete request.headers.referer;
+			delete request.headers.Referer;
 			delete request.headers.host;
+			delete request.headers.Host;
+			delete request.headers.cookie;
+			delete request.headers.Cookie;
 			request.headers['User-Agent'] = 'Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36';
 			const options: http.RequestOptions = {
 				hostname: parsedRequestURL.hostname,
