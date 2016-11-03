@@ -213,7 +213,7 @@ export default class Server {
 			delete request.headers.Host;
 			delete request.headers.cookie;
 			delete request.headers.Cookie;
-			request.headers['User-Agent'] = 'Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36';
+			request.headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36';
 			const options: http.RequestOptions = {
 				hostname: parsedRequestURL.hostname,
 				path: parsedRequestURL.path,
