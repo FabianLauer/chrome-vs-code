@@ -59,7 +59,7 @@ class HTMLRenderer extends ResponseRenderer {
 				} else if (attribute.name === 'src' || attribute.name === 'href' || attribute.name === 'xlink:href') {
 					// relative links
 					if (!/^\//.test(attribute.value)) {
-						attribute.value = `/load?${parsedURL.protocol}//${parsedURL.host}/${parsedURL.pathname}/${escape(attribute.value)}`;
+						attribute.value = `/load?${parsedURL.protocol}//${parsedURL.host}/${parsedURL.path}/${escape(attribute.value)}`;
 					} else {
 						attribute.value = `/load?${baseURL}/${escape(attribute.value)}`;
 					}
