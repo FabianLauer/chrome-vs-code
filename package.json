@@ -42,6 +42,7 @@
     "vscode": "^0.11.0"
   },
   "dependencies": {
-    "follow-redirects": "^1.0.0"
+    "follow-redirects": "^1.0.0",
+    "normalize-url": "^1.7.0"
   }
 }

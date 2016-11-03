@@ -1,9 +1,19 @@
 import * as http from 'http';
 import HTTPServer from './HTTPServer';
 import FileReader from './FileReader';
-import { format } from 'url';
+import { Url, format } from 'url';
+const normalizeStringUrl: (url: string) => string = require('normalize-url');
 
 declare function unescape(str: string): string;
+
+
+function normalizeUrl(url: string | Url): string {
+	if (typeof url !== 'string') {
+		url = format(url);
+	}
+	return normalizeStringUrl(url);
+}
+
 
 export default class Server {
 	/**
@@ -27,9 +37,9 @@ export default class Server {
 				response: http.ServerResponse
 			) => {
 				var query = unescape(HTTPServer.createURLFromString(request.url).query.replace(/\?/, ''));
-				const url = HTTPServer.createURLFromString(query);
+				const url = this.convert(HTTPServer.createURLFromString(query));
 				// normalize the URL
-				query = format(url);
+				query = normalizeUrl(url);
 				if (base) {
 					this.previousBaseURL = `${url.protocol}//${url.host}/`;
 				}
@@ -63,6 +73,43 @@ export default class Server {
 		this.log('starting...');
 		await this.httpServer.listen(hostname, port);
 		this.log('...started!');
+	}
+
+
+	/**
+	 * Checks if this server is listening to a certain URL.
+	 */
+	private isListeningTo(url: string | Url): boolean {
+		if (typeof url === 'string') {
+			url = HTTPServer.createURLFromString(url);
+		}
+		// If the URL contains a port, check if the URL is actually an URL our HTTP server is listening to. If that's the case,
+		// cancel the request immediately.
+		if (
+			typeof url.port === 'string' && url.port.length > 0 &&
+			this.httpServer.isListeningTo(url.hostname, parseInt(url.port, 10))
+		) {
+			return true;
+		}
+	}
+
+
+	private convert(url: string | Url): Url {
+		if (typeof url === 'string') {
+			url = HTTPServer.createURLFromString(url);
+		}
+		if (
+			typeof this.previousBaseURL !== 'string' ||
+			this.previousBaseURL.length < 1 ||
+			!this.isListeningTo(url)
+		) {
+			return url;
+		}
+		const previousBaseURL = HTTPServer.createURLFromString(this.previousBaseURL);
+		url.protocol = previousBaseURL.protocol;
+		url.host = previousBaseURL.host;
+		url.port = previousBaseURL.port;
+		return url;
 	}
 
 
@@ -117,8 +164,9 @@ export default class Server {
 	 */
 	private handle404(request: http.IncomingMessage, response: http.ServerResponse): void {
 		if (typeof this.previousBaseURL === 'string' && !(/^[a-z]+:\//.test(request.url))) {
-			this.log(`[404 -> proxy]: ${request.url}`);
-			this.delegateToProxy(`${this.previousBaseURL}/${request.url}`, request, response);
+			const url = normalizeUrl(HTTPServer.createURLFromString(`${this.previousBaseURL}/${request.url}`));
+			this.log(`[404 -> proxy]: ${url}`);
+			this.delegateToProxy(url, request, response);
 		} else {
 			this.log(`[404]: ${HTTPServer.urlToString(request.url)}`);
 			this.respondTo404(response);
@@ -136,15 +184,10 @@ export default class Server {
 
 
 	private async delegateToProxy(requestURL: string, request: http.IncomingMessage, response: http.ServerResponse): Promise<void> {
-		const parsedURL = HTTPServer.createURLFromString(requestURL);
-		// If the URL contains a port, check if the URL is actually an URL our HTTP server is listening to. If that's the case,
-		// cancel the request immediately.
-		if (
-			typeof parsedURL.port === 'string' && parsedURL.port.length > 0 &&
-			this.httpServer.isListeningTo(parsedURL.hostname, parseInt(parsedURL.port, 10))
-		) {
+		if (this.isListeningTo(requestURL)) {
 			return this.respondTo404(response);
 		}
+		const parsedURL = HTTPServer.createURLFromString(requestURL);
 		switch (parsedURL.protocol) {
 			case 'http:':
 			case 'https:':
@@ -165,11 +208,13 @@ export default class Server {
 			}
 			const clientRequest = requestFn(requestURL, clientResponse => {
 				response.statusCode = clientResponse.statusCode;
-				response.setHeader('actual-uri', (<any>clientResponse).responseUrl);
+				response.setHeader('actual-uri', normalizeUrl((<any>clientResponse).responseUrl));
 				for (const headerName in clientResponse.headers) {
 					response.setHeader(headerName, clientResponse.headers[headerName]);
 				}
-				this.log(`[proxy: ${clientResponse.statusCode}] ${requestURL}`);
+				if (clientResponse.statusCode !== 200) {
+					this.log(`[proxy: ${clientResponse.statusCode}] ${requestURL}`);
+				}
 				clientResponse.on('data', (data: Buffer) => response.write(data));
 				clientResponse.on('end', () => response.end());
 				resolve();
@@ -183,7 +228,7 @@ export default class Server {
 				} else {
 					this.respondTo500(response);
 				}
-				console.error(error);
+				this.log(`[proxy: error] ${requestURL} : ${error.toString()}`);
 			});
 		});
 	}

@@ -27,8 +27,9 @@ export default class BrowserWindow {
 			url => this.load(url)
 		);
 		this.viewport = this.viewport || new Viewport(() => this.createFrameBindings());
+		(<any>window).browser = this;
 		this.history.push(new HistoryEntry('about://home', Date.now()));
-		this.viewport.onAfterNavigation.bind(this.handleViewportNavigation.bind(this));
+		this.viewport.onAfterNavigation.bind(this.handleViewportNavigating.bind(this));
 		this.viewport.onRequestNavigation.bind(this.handleNavigationRequestFromViewport.bind(this));
 	}
 
@@ -83,22 +84,31 @@ export default class BrowserWindow {
 	 * Loads a URI and renders it in the browser.
 	 * @param uri The URI to load.
 	 */
-	public async load(uri: string): Promise<void> {
-		this.history.push(new HistoryEntry(uri, Date.now()));
-		this.updateHistoryButtons();
+	public async load(uri: string, deferHistoryUdpate = false): Promise<void> {
+		if (deferHistoryUdpate) {
+			this.browserBar.showLoadingIndicator();
+			this.statusIndicator.show(`loading...`);
+		} else {
+			this.history.push(new HistoryEntry(uri, Date.now()));
+			this.updateHistoryButtons();
+			await this.browserBar.urlBar.setURL(uri);
+			this.statusIndicator.show(`loading ${uri}`);
+			await this.browserBar.showLoadingProgress(10);
+		}
 		const collapseBrowserBar = this.isBrowserBarCollapsed();
 		if (collapseBrowserBar) {
 			this.expandBrowserBar(true);
 		}
-		await this.browserBar.urlBar.setURL(uri);
-		this.statusIndicator.show(`loading ${uri}`);
-		await this.browserBar.showLoadingProgress(10);
 		const response = await this.request(uri);
 		const renderer = ResponseRendererFactory.getRenderer(this.viewport, response);
 		let statusIndicatorTicket = this.statusIndicator.show(`rendering ${uri}`);
 		const responseURI = response.getResponseHeader('actual-uri') || uri;
-		// update the browser bar if we were redirected
-		if (responseURI !== uri) {
+		// update the browser bar to the actual URL of the page we're now on
+		if (deferHistoryUdpate) {
+			this.browserBar.urlBar.setURL(responseURI, false);
+			this.history.push(new HistoryEntry(responseURI, Date.now()));
+			this.updateHistoryButtons();
+		} else if (responseURI !== uri) {
 			this.browserBar.urlBar.setURL(responseURI, false);
 		}
 		await renderer.renderResponse(responseURI, response);
@@ -223,9 +233,18 @@ export default class BrowserWindow {
 	}
 
 
-	private async handleViewportNavigation(uri: string): Promise<void> {
-		uri = unescape(((<string>uri) || '').replace(/^.*?\?/, ''));
-		await this.load(uri);
+	/// TODO: Make this work in all circumstances!
+	private isOwnURL(url: string): boolean {
+		return /localhost:8080\/load\?/.test(url);
+	}
+
+
+	private async handleViewportNavigating(uri: string): Promise<void> {
+		uri = unescape((<string>uri) || '');
+		if (this.isOwnURL(uri)) {
+			uri = uri.replace(/^.*?\?/, '');
+		}
+		await this.load(uri, true);
 	}
 
 
