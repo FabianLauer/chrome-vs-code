@@ -41,12 +41,12 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.window.showErrorMessage(reason);
 	};
 	const disposables: vscode.Disposable[] = [];
-	disposables.push(vscode.commands.registerCommand('extension.openWebBrowser', () => {
-		return vscode.commands.executeCommand('vscode.previewHtml', previewUri, vscode.ViewColumn.One, 'Web Browser')
-			.then(successHandler, errorHandler);
-	}));
 	disposables.push(vscode.commands.registerCommand('extension.openWebBrowserToSide', () => {
 		return vscode.commands.executeCommand('vscode.previewHtml', previewUri, vscode.ViewColumn.Two, 'Web Browser')
+			.then(successHandler, errorHandler);
+	}));
+	disposables.push(vscode.commands.registerCommand('extension.openWebBrowser', () => {
+		return vscode.commands.executeCommand('vscode.previewHtml', previewUri, vscode.ViewColumn.One, 'Web Browser')
 			.then(successHandler, errorHandler);
 	}));
 	disposables.forEach(disposable => context.subscriptions.push(disposable, registration));

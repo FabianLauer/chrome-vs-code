@@ -23,8 +23,7 @@ class HTMLRenderer extends ResponseRenderer {
 	protected async renderResponseConcrete(responseURI: string, response: XMLHttpRequest): Promise<void> {
 		const parsedDocument = document.implementation.createHTMLDocument('response');
 		parsedDocument.documentElement.innerHTML = response.responseText;
-		const parsedURL = HTMLRenderer.getBaseURLFromServerResponse(responseURI);
-		HTMLRenderer.updateAllURIAttributes(parsedDocument, parsedURL.protocol, `${parsedURL.protocol}//${parsedURL.host}`);
+		HTMLRenderer.updateAllURIAttributes(parsedDocument, responseURI);
 		await this.viewport.renderHTML(parsedDocument.documentElement.outerHTML);
 	}
 
@@ -34,7 +33,9 @@ class HTMLRenderer extends ResponseRenderer {
 	}
 
 
-	private static updateAllURIAttributes(document: Document, baseProtocol: string, baseURL: string): void {
+	private static updateAllURIAttributes(document: Document, responseURI: string): void {
+		const parsedURL = HTMLRenderer.getBaseURLFromServerResponse(responseURI);
+		const baseURL = `${parsedURL.protocol}//${parsedURL.host}`;
 		const elements = document.getElementsByTagName('*');
 		for (let i = 0; i < elements.length; i++) {
 			const element = elements[i];
@@ -50,9 +51,14 @@ class HTMLRenderer extends ResponseRenderer {
 				// double slash as protocol shortcut
 				else if (/^:?\/\/+/.test(attribute.value)) {
 					attribute.value = attribute.value.replace(/^:?\/+/, '');
-					attribute.value = `/load?${baseProtocol}//${escape(attribute.value)}`;
+					attribute.value = `/load?${parsedURL.protocol}//${escape(attribute.value)}`;
 				} else if (attribute.name === 'src' || attribute.name === 'href' || attribute.name === 'xlink:href') {
-					attribute.value = `/load?${baseURL}/${escape(attribute.value)}`;
+					// relative links
+					if (!/^\//.test(attribute.value)) {
+						attribute.value = `/load?${parsedURL.protocol}//${parsedURL.host}/${parsedURL.pathname}/${escape(attribute.value)}`;
+					} else {
+						attribute.value = `/load?${baseURL}/${escape(attribute.value)}`;
+					}
 				}
 			}
 		}
