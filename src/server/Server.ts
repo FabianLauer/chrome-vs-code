@@ -202,11 +202,20 @@ export default class Server {
 
 	private async delegateToHttpProxy(requestURL: string, request: http.IncomingMessage, response: http.ServerResponse): Promise<void> {
 		return new Promise<void>(resolve => {
-			var requestFn: typeof http.get = require('follow-redirects').http.get;
-			if (HTTPServer.createURLFromString(requestURL).protocol === 'https:') {
+			var requestFn: typeof http.request = require('follow-redirects').http.get;
+			const parsedRequestURL = HTTPServer.createURLFromString(requestURL);
+			if (parsedRequestURL.protocol === 'https:') {
 				requestFn = require('follow-redirects').https.get;
 			}
-			const clientRequest = requestFn(requestURL, clientResponse => {
+			delete request.headers.referer;
+			delete request.headers.host;
+			request.headers['User-Agent'] = 'Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36';
+			const options: http.RequestOptions = {
+				hostname: parsedRequestURL.hostname,
+				path: parsedRequestURL.path,
+				headers: request.headers
+			};
+			const clientRequest = requestFn(options, clientResponse => {
 				response.statusCode = clientResponse.statusCode;
 				response.setHeader('actual-uri', normalizeUrl((<any>clientResponse).responseUrl));
 				delete clientResponse.headers['x-frame-options'];
@@ -231,6 +240,7 @@ export default class Server {
 				}
 				this.log(`[proxy: error] ${requestURL} : ${error.toString()}`);
 			});
+			clientRequest.end();
 		});
 	}
 
