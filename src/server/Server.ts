@@ -58,7 +58,7 @@ export default class Server {
 			response.statusCode = 200;
 			response.setHeader('Content-Type', 'text/json');
 			response.end(JSON.stringify({
-				home: 'about://web-api-tests'
+				home: 'http://code.visualstudio.com'
 			}));
 		});
 	}
@@ -209,6 +209,7 @@ export default class Server {
 			const clientRequest = requestFn(requestURL, clientResponse => {
 				response.statusCode = clientResponse.statusCode;
 				response.setHeader('actual-uri', normalizeUrl((<any>clientResponse).responseUrl));
+				delete clientResponse.headers['x-frame-options'];
 				for (const headerName in clientResponse.headers) {
 					response.setHeader(headerName, clientResponse.headers[headerName]);
 				}
