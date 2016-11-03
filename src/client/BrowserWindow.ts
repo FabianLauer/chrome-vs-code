@@ -27,8 +27,8 @@ export default class BrowserWindow {
 			url => this.load(url)
 		);
 		this.viewport = this.viewport || new Viewport(() => this.createFrameBindings());
-		(<any>window).browser = this;
 		this.history.push(new HistoryEntry('about://home', Date.now()));
+		this.viewport.onBeginNavigation.bind(this.handleViewportBeginningNavigation.bind(this));
 		this.viewport.onAfterNavigation.bind(this.handleViewportNavigating.bind(this));
 		this.viewport.onRequestNavigation.bind(this.handleNavigationRequestFromViewport.bind(this));
 	}
@@ -236,6 +236,12 @@ export default class BrowserWindow {
 	/// TODO: Make this work in all circumstances!
 	private isOwnURL(url: string): boolean {
 		return /localhost:8080\/load\?/.test(url);
+	}
+
+
+	private async handleViewportBeginningNavigation(): Promise<void> {
+		this.expandBrowserBar();
+		this.browserBar.showLoadingIndicator();
 	}
 
 

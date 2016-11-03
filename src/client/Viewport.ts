@@ -22,6 +22,11 @@ export default class Viewport implements IRenderable {
 	public readonly onAfterNavigation = new Event<(uri: string) => void>();
 
 	/**
+	 * Triggered when the frame starts to navigate.
+	 */
+	public readonly onBeginNavigation = new Event<() => void>();
+
+	/**
 	 * Triggered when navigation is requested by the user, for example when clicking a link.
 	 */
 	public readonly onRequestNavigation = new Event<(targetURI: string) => void>();
@@ -131,14 +136,15 @@ export default class Viewport implements IRenderable {
 		if (typeof this.frame.contentWindow !== 'object' || this.frame.contentWindow === null) {
 			return;
 		}
-		this.frame.contentWindow.onbeforeunload = () => {
+		this.frame.contentWindow.addEventListener('beforeunload', () => {
 			this.frame.style.display = 'none';
+			this.onBeginNavigation.trigger();
 			const loadHandler = () => {
 				this.frame.removeEventListener('load', loadHandler);
 				this.onAfterNavigation.trigger(this.frame.contentWindow.location.href);
 			};
 			this.frame.addEventListener('load', loadHandler);
-		};
+		});
 	}
 
 
