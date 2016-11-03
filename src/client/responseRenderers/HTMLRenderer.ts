@@ -40,6 +40,9 @@ class HTMLRenderer extends ResponseRenderer {
 			const element = elements[i];
 			for (let a = 0; a < element.attributes.length; a++) {
 				const attribute = element.attributes[a];
+				if (attribute.name === 'target') {
+					element.removeAttributeNode(attribute);
+				}
 				// full protocol in URI
 				if (/^[a-z]+?:\//.test(attribute.value)) {
 					attribute.value = `/load?${escape(attribute.value)}`;
