@@ -44,6 +44,10 @@ class HTMLRenderer extends ResponseRenderer {
 				if (attribute.name === 'target') {
 					element.removeAttributeNode(attribute);
 				}
+				// skip all data URLs
+				if (/^data:/.test(attribute.value)) {
+					continue;
+				}
 				// full protocol in URI
 				if (/^[a-z]+?:\//.test(attribute.value)) {
 					attribute.value = `/load?${escape(attribute.value)}`;
