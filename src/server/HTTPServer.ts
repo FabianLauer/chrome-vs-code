@@ -91,6 +91,14 @@ export default class HTTPServer {
 
 
 	/**
+	 * Stops listening to all open sockets.
+	 */
+	public stop(): void {
+		this.servers.forEach(server => server.destroy());
+	}
+
+
+	/**
 	 * Checks if there's a request handler for a certain URL.
 	 * @param url The URL to check.
 	 */

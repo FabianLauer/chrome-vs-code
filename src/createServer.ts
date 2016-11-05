@@ -19,7 +19,7 @@ async function readFile(filePath: string): Promise<string> {
 
 class BrowserHTMLReader extends FileReader<string> {
 	protected async getContentConcrete() {
-		return readFile('./src/static/browser.html');
+		return readFile(`${__dirname}/../../src/static/browser.html`);
 	}
 }
 
@@ -95,7 +95,7 @@ class AboutFileReader extends FileReader<string> {
 					<title>about://${extractAboutPageName(fileContent)}</title>
 					<meta charset='utf-8'>
 					<style>
-						${await readFile('./src/static/about/about.css')}
+						${await readFile(`${__dirname}/../../src/static/about/about.css`)}
 					</style>
 				</head>
 				<body>
@@ -110,7 +110,7 @@ class AboutFileReader extends FileReader<string> {
 
 async function generateAboutPageReaders() {
 	const results: Array<{ name: string; reader: FileReader<string>; }> = [];
-	const filePaths = await getFilePathsInDirectory('./src/static/about/');
+	const filePaths = await getFilePathsInDirectory(`${__dirname}/../../src/static/about/`);
 	for (const filePath of filePaths) {
 		if (!(await isFile(filePath)) || !/\.html$/.test(filePath)) {
 			continue;
@@ -141,32 +141,12 @@ async function generateAboutPageReaders() {
 	return results;
 }
 
-///
-/// init:
-///
 
-process.on('uncaughtException', err => {
-	console.warn(err);
-	process.exit();
-});
-
-
-process.on('unhandledRejection', err => {
-	console.warn(err);
-	process.exit();
-});
-
-
-const PORT = parseInt(process.argv[2], 10);
-
-(async () => {
-	process.title = 'VS Code Browser Back End';
-	const server = new Server(
+export default async function createServer(): Promise<Server> {
+	return new Server(
 		new BrowserHTMLReader(),
-		new PreprocessorReader('browserify ./out/src/browser.js'),
-		new PreprocessorReader('lessc ./src/browser.less'),
+		new PreprocessorReader(`browserify ${__dirname}/browser.js`),
+		new PreprocessorReader(`lessc ${__dirname}/../../src/browser.less`),
 		await generateAboutPageReaders()
 	);
-	server.start('localhost', PORT);
-})();
-
+}

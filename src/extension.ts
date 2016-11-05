@@ -1,12 +1,29 @@
 import * as vscode from 'vscode';
-import * as cp from 'child_process';
 import * as net from 'net';
+import Server from './server/Server';
+import createServer from './createServer';
 
 
 ///
 /// init:
 ///
+
+
+process.on('uncaughtException', err => {
+	console.warn(err);
+	process.exit();
+});
+
+
+process.on('unhandledRejection', err => {
+	console.warn(err);
+	process.exit();
+});
+
+
 setTimeout(start, 500);
+
+
 
 
 class TextDocumentContentProvider implements vscode.TextDocumentContentProvider {
@@ -63,22 +80,17 @@ async function findFreePort(): Promise<number> {
 }
 
 
-interface IStartBackEndResult {
-	process: cp.ChildProcess;
-	port: number;
-}
+const outputChannel = vscode.window.createOutputChannel('VS Code Browser');
+var server: Server;
+var backEndPort: number;
+var context: vscode.ExtensionContext;
 
 
-async function startBackEnd(): Promise<IStartBackEndResult> {
-	return new Promise<IStartBackEndResult>(async (resolve, reject) => {
-		const port = await findFreePort();
-		const options: cp.SpawnOptions = {
-			cwd: `${__dirname}/../../`
-		};
-		log(`starting back end, cwd '${options.cwd}'`);
-		const process = cp.spawn('node', ['--use-strict', '--es_staging', `${__dirname}/server.js`, `${port}`], options);
-		resolve({ process, port });
-	});
+async function startBackEnd(): Promise<number> {
+	backEndPort = await findFreePort();
+	server = await createServer();
+	await server.start('localhost', backEndPort);
+	return backEndPort;
 }
 
 
@@ -122,12 +134,6 @@ function updateFrontEndCommands(context: vscode.ExtensionContext, backEndPort: n
 }
 
 
-var backEndProcess: cp.ChildProcess;
-var backEndPort: number;
-var context: vscode.ExtensionContext;
-const outputChannel = vscode.window.createOutputChannel('VS Code Browser');
-
-
 function log(message: any, ...additionalMessages: any[]): void {
 	additionalMessages.unshift(message);
 	let completeMessage = additionalMessages.join(' ');
@@ -145,23 +151,14 @@ function error(message: any, ...additionalMessages: any[]): void {
 
 async function start(): Promise<void> {
 	outputChannel.show();
-	log('VS Code Browser activated');
-	let result: IStartBackEndResult;
+	log('VS Code Browser activated', __dirname);
 	try {
-		result = await startBackEnd();
+		await startBackEnd();
 	} catch (err) {
 		vscode.window.showErrorMessage('Browser back end could not be started.');
 		error('back end failed to start', err);
 	}
-	log(`back end started, port ${result.port}`);
-	backEndProcess = result.process;
-	backEndPort = result.port;
-	backEndProcess.on('error', err => {
-		error(err);
-		vscode.window.showErrorMessage('The browser back end ran into a problem.');
-	});
-	backEndProcess.stdout.on('data', data => log((data || '').toString()));
-	backEndProcess.stderr.on('data', data => error((data || '').toString()));
+	log(`back end started, port ${backEndPort}`);
 	updateFrontEndCommands(context, backEndPort);
 }
 
@@ -179,7 +176,6 @@ export function activate(localContext: vscode.ExtensionContext): void {
  * Deactivates the extension.
  */
 export function deactivate(): void {
-	backEndProcess.kill();
-	log('back end stopped');
 	unregisterAllCommands();
+	server.stop();
 }

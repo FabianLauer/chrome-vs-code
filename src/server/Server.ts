@@ -77,6 +77,16 @@ export default class Server {
 
 
 	/**
+	 * Stops the server.
+	 */
+	public stop(): void {
+		this.log('stopping...');
+		this.httpServer.stop();
+		this.log('...stopped!');
+	}
+
+
+	/**
 	 * Checks if this server is listening to a certain URL.
 	 */
 	private isListeningTo(url: string | Url): boolean {
