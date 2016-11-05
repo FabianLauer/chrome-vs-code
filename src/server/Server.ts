@@ -235,12 +235,11 @@ export default class Server {
 				response.statusCode = clientResponse.statusCode;
 				response.setHeader('actual-uri', normalizeUrl((<any>clientResponse).responseUrl));
 				delete clientResponse.headers['x-frame-options'];
+				delete clientResponse.headers['content-security-policy'];
 				for (const headerName in clientResponse.headers) {
 					response.setHeader(headerName, clientResponse.headers[headerName]);
 				}
-				if (clientResponse.statusCode !== 200) {
-					this.log(`[proxy: ${clientResponse.statusCode}] ${requestURL}`);
-				}
+				this.log(`[proxy: ${clientResponse.statusCode}] ${requestURL}`);
 				clientResponse.on('data', (data: Buffer) => response.write(data));
 				clientResponse.on('end', () => response.end());
 				resolve();

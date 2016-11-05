@@ -116,7 +116,7 @@ function updateFrontEndCommands(context: vscode.ExtensionContext, backEndPort: n
 	}
 	const current = updateProvider(backEndPort);
 	current.provider.update(previewUri);
-	const successHandler = (success) => { /* do nothing */ };
+	const successHandler = () => { /* do nothing */ };
 	const errorHandler = (reason) => {
 		vscode.window.showErrorMessage(reason);
 	};
