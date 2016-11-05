@@ -274,6 +274,20 @@ export default class BrowserWindow {
 			 */
 			async load(uri: string): Promise<void> {
 				return browserWindow.load(uri);
+			},
+			/**
+			 * Attempts to show the address bar. Returns `true` when successful, `false` if not.
+			 */
+			async showAddressBar(): Promise<boolean> {
+				await browserWindow.expandBrowserBar();
+				return true;
+			},
+			/**
+			 * Attempts to hide the address bar. Returns `true` when successful, `false` if not.
+			 */
+			async hideAddressBar(): Promise<boolean> {
+				await browserWindow.collapseBrowserBar();
+				return true;
 			}
 		};
 	}
