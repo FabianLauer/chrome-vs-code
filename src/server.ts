@@ -1,7 +1,7 @@
 import Server from './server/Server';
 import FileReader from './server/FileReader';
-import * as fs from 'fs';
 import { execSync } from 'child_process';
+import * as fs from 'fs';
 
 
 async function readFile(filePath: string): Promise<string> {
@@ -141,6 +141,9 @@ async function generateAboutPageReaders() {
 	return results;
 }
 
+///
+/// init:
+///
 
 process.on('uncaughtException', err => {
 	console.warn(err);
@@ -154,13 +157,16 @@ process.on('unhandledRejection', err => {
 });
 
 
+const PORT = parseInt(process.argv[2], 10);
+
 (async () => {
+	process.title = 'VS Code Browser Back End';
 	const server = new Server(
 		new BrowserHTMLReader(),
 		new PreprocessorReader('browserify ./out/src/browser.js'),
 		new PreprocessorReader('lessc ./src/browser.less'),
 		await generateAboutPageReaders()
 	);
-	server.start('localhost', 8080);
+	server.start('localhost', PORT);
 })();
 

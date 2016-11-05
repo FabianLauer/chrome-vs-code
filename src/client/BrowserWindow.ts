@@ -233,9 +233,8 @@ export default class BrowserWindow {
 	}
 
 
-	/// TODO: Make this work in all circumstances!
 	private isOwnURL(url: string): boolean {
-		return /localhost:8080\/load\?/.test(url);
+		return new RegExp(window.location.host + '\/load(\/base)?\\?').test(url);
 	}
 
 
