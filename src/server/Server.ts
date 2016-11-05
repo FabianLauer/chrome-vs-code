@@ -21,12 +21,14 @@ export default class Server {
 	 * @param browserJS An object that reads the main JS file for the browser client.
 	 * @param browserCSS An object that reads the main CSS file for the browser client.
 	 * @param aboutPages An array containing readers for the `about:` pages.
+	 * @param logFunction A function that performs message logging.
 	 */
 	public constructor(
 		private browserHTML: FileReader<string>,
 		private browserJS: FileReader<string>,
 		private browserCSS: FileReader<string>,
-		private aboutPages: Array<{ name: string; reader: FileReader<string> }>
+		private aboutPages: Array<{ name: string; reader: FileReader<string> }>,
+		private logFunction: (message: string) => void
 	) {
 		this.createFileReaderRoute('/', 'text/html', this.browserHTML);
 		this.createFileReaderRoute('/browser.js', 'text/javascript', this.browserJS);
@@ -127,7 +129,7 @@ export default class Server {
 	 * Simple logging utility.
 	 */
 	private log(message: string): void {
-		process.stdout.write(`(server) ${message || 'empty message'} \n`);
+		this.logFunction(`(server) ${message || 'empty message'} \n`);
 	}
 
 

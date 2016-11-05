@@ -88,7 +88,7 @@ var context: vscode.ExtensionContext;
 
 async function startBackEnd(): Promise<number> {
 	backEndPort = await findFreePort();
-	server = await createServer();
+	server = await createServer(log);
 	await server.start('localhost', backEndPort);
 	return backEndPort;
 }

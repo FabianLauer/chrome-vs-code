@@ -1,6 +1,5 @@
 import Server from './server/Server';
 import FileReader from './server/FileReader';
-import { execSync } from 'child_process';
 import * as fs from 'fs';
 
 
@@ -17,32 +16,19 @@ async function readFile(filePath: string): Promise<string> {
 }
 
 
-class BrowserHTMLReader extends FileReader<string> {
-	protected async getContentConcrete() {
-		return readFile(`${__dirname}/../../src/static/browser.html`);
-	}
-}
-
-
-class PreprocessorReader extends FileReader<string> {
+class StaticFileReader extends FileReader<string> {
+	/**
+	 * Creates a new file reader.
+	 * @param path The path to the file.
+	 */
 	public constructor(
-		private command: string
+		private path: string
 	) {
 		super();
 	}
 
-
 	protected async getContentConcrete() {
-		return new Promise<string>((resolve, reject) => {
-			var code: string;
-			try {
-				code = execSync(this.command).toString();
-			} catch (err) {
-				reject(err);
-				return;
-			}
-			resolve(code);
-		});
+		return readFile(this.path);
 	}
 }
 
@@ -142,11 +128,12 @@ async function generateAboutPageReaders() {
 }
 
 
-export default async function createServer(): Promise<Server> {
+export default async function createServer(logFunction: (message: string) => void): Promise<Server> {
 	return new Server(
-		new BrowserHTMLReader(),
-		new PreprocessorReader(`browserify ${__dirname}/browser.js`),
-		new PreprocessorReader(`lessc ${__dirname}/../../src/browser.less`),
-		await generateAboutPageReaders()
+		new StaticFileReader(`${__dirname}/../../src/static/browser.html`),
+		new StaticFileReader(`${__dirname}/browser.all.js`),
+		new StaticFileReader(`${__dirname}/all.css`),
+		await generateAboutPageReaders(),
+		logFunction
 	);
 }
