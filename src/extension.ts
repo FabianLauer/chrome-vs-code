@@ -130,7 +130,11 @@ const outputChannel = vscode.window.createOutputChannel('VS Code Browser');
 
 function log(message: any, ...additionalMessages: any[]): void {
 	additionalMessages.unshift(message);
-	outputChannel.appendLine(additionalMessages.join(' '));
+	let completeMessage = additionalMessages.join(' ');
+	if (completeMessage.slice(-1) === '\n') {
+		completeMessage = completeMessage.slice(0, -1);
+	}
+	outputChannel.appendLine(completeMessage);
 }
 
 function error(message: any, ...additionalMessages: any[]): void {
