@@ -8,8 +8,25 @@ export default class BrowserConfiguration implements IBrowserConfiguration {
 	 */
 	public static createFromWorkspaceConfig(): BrowserConfiguration {
 		return new BrowserConfiguration(
-			BrowserConfiguration.getWorkspaceConfigOrFallback('home', BrowserConfiguration.isValidURL)
+			BrowserConfiguration.getWorkspaceConfigOrFallback(
+				'home',
+				BrowserConfiguration.isValidURL
+			),
+			BrowserConfiguration.getWorkspaceConfigOrFallback(
+				'autoToggleAddressBar',
+				BrowserConfiguration.isTypeof('boolean')
+			)
 		);
+	}
+
+
+	/**
+	 * Creates a function that checks if the `typeof` operation evaluates an expected result.
+	 */
+	private static isTypeof(
+		typeName: 'number' | 'string' | 'boolean' | 'symbol' | 'object' | 'function' | 'undefined'
+	): (value: any) => boolean {
+		return value => typeof value === typeName;
 	}
 
 
@@ -33,7 +50,8 @@ export default class BrowserConfiguration implements IBrowserConfiguration {
 
 
 	private constructor(
-		public readonly home: string
+		public readonly home: string,
+		public readonly autoToggleAddressBar: boolean
 	) { }
 
 
@@ -41,6 +59,7 @@ export default class BrowserConfiguration implements IBrowserConfiguration {
 	 * A browser configuration with fallback values.
 	 */
 	private static readonly defaultConfig = new BrowserConfiguration(
-		'http://code.visualstudio.com'
+		'http://code.visualstudio.com',
+		true
 	);
 }

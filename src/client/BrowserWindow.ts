@@ -97,7 +97,10 @@ export default class BrowserWindow {
 			this.statusIndicator.show(`loading ${uri}`);
 			await this.browserBar.showLoadingProgress(10);
 		}
-		const collapseBrowserBar = this.isBrowserBarCollapsed();
+		await this.refreshBrowserConfig();
+		const collapseBrowserBar =
+			this.isBrowserBarCollapsed() &&
+			(await this.getBrowserConfig()).autoToggleAddressBar;
 		if (collapseBrowserBar) {
 			this.expandBrowserBar(true);
 		}
@@ -119,7 +122,7 @@ export default class BrowserWindow {
 		this.statusIndicator.hide(statusIndicatorTicket);
 		// collapse the browser bar if it was collapsed before loading started
 		if (collapseBrowserBar) {
-			await this.browserBar.collapse();
+			await this.collapseBrowserBar();
 		}
 	}
 
@@ -212,7 +215,11 @@ export default class BrowserWindow {
 	}
 
 
-	private handleViewportScroll(): void {
+	private async handleViewportScroll(): Promise<void> {
+		const config = await this.getBrowserConfig();
+		if (!config.autoToggleAddressBar) {
+			return;
+		}
 		const now = Date.now();
 		if (now - this.lastViewportScroll.recordedTime <= 300) {
 			return;
@@ -261,6 +268,41 @@ export default class BrowserWindow {
 	}
 
 
+	/**
+	 * Loads and returns the current browser configuration from the back end.
+	 */
+	private async loadBrowserConfig(): Promise<IBrowserConfiguration> {
+		return new Promise<IBrowserConfiguration>((resolve, reject) => {
+			const request = new XMLHttpRequest();
+			request.onerror = reject;
+			request.onreadystatechange = () => {
+				if (request.readyState === XMLHttpRequest.DONE) {
+					resolve(JSON.parse(request.responseText));
+				}
+			};
+			request.open('GET', `/config`, true);
+			request.send();
+		});
+	}
+
+
+	/**
+	 * Returns the current browser configuration.
+	 */
+	private async getBrowserConfig(): Promise<IBrowserConfiguration> {
+		this.config = this.config || await this.loadBrowserConfig();
+		return this.config;
+	}
+
+
+	/**
+	 * Refreshes the configuration object returned by method `getBrowserConfig()`.
+	 */
+	private async refreshBrowserConfig(): Promise<void> {
+		this.config = await this.loadBrowserConfig();
+	}
+
+
 	private createFrameBindings(): IFrameBindings {
 		const browserWindow = this;
 		class FrameBindings implements IFrameBindings {
@@ -284,17 +326,7 @@ export default class BrowserWindow {
 			 * Returns the browser configuration as an object.
 			 */
 			public async getConfiguration(): Promise<IBrowserConfiguration> {
-				return new Promise<IBrowserConfiguration>((resolve, reject) => {
-					const request = new XMLHttpRequest();
-					request.onerror = reject;
-					request.onreadystatechange = () => {
-						if (request.readyState === XMLHttpRequest.DONE) {
-							resolve(JSON.parse(request.responseText));
-						}
-					};
-					request.open('GET', `/config`, true);
-					request.send();
-				});
+				return browserWindow.loadBrowserConfig();
 			}
 		}
 		if (/^about:\/\//.test(this.history.getCurrent().uri)) {
@@ -306,6 +338,10 @@ export default class BrowserWindow {
 
 
 	private readonly statusIndicator = new StatusIndicator();
+	/**
+	 * The current browser configuration. **Do not access this directly, use `getBrowserConfig()` instead.**
+	 */
+	private config: IBrowserConfiguration;
 	private history = new History();
 	private lastViewportScroll: {
 		recordedTime: number;

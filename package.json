@@ -42,6 +42,11 @@
           "description": "The URL of the browser's home page, including protocol and hostname.",
           "minLength": 3,
           "format": "uri"
+        },
+        "chromevscode.autoToggleAddressBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether to automatically hide and show the address bar. When active, the address bar will be hidden when the page is scrolled down and shown when the page is scrolled up."
         }
       }
     }
