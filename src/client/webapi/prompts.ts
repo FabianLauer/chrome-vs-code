@@ -32,7 +32,7 @@ async function addCloseButtonToDialog(dialog: Dialog, text = 'Close', append = t
  * Creates a dialog that implements `window.alert`.
  * @see http://w3c.github.io/html/webappapis.html#dom-window-alert
  */
-async function alert(browserWindow: BrowserWindow, message?: any): Promise<void> {
+export async function alert(browserWindow: BrowserWindow, message?: any): Promise<void> {
 	// hello github 😇
 	if (/for +security +reasons, +framing +is +not +allowed/i.test(message)) {
 		return;
@@ -49,20 +49,32 @@ async function alert(browserWindow: BrowserWindow, message?: any): Promise<void>
 }
 
 
-/**
- * Creates a dialog that implements `window.confirm`.
- * @see http://w3c.github.io/html/webappapis.html#dom-window-confirm
- */
-async function confirm(browserWindow: BrowserWindow, message?: any): Promise<boolean> {
+export function internalConfirm(
+	browserWindow: BrowserWindow,
+	title = `'${browserWindow.getHistory().getCurrent().uri}' says:`,
+	message?: any,
+	allowHTML = false,
+	yesButtonText = 'Yes',
+	noButtonText = 'No'
+): Promise<boolean> {
 	return new Promise<boolean>(async resolve => {
 		// build the dialog
 		const dialog = await Dialog.create();
-		dialog.setTitle(`'${browserWindow.getHistory().getCurrent().uri}' says:`);
-		dialog.setContentAsText(message || '');
+		dialog.setTitle(title);
+		if (allowHTML) {
+			dialog.setContentAsHTML(`
+				<iframe
+					style="border: none; width: 50vw; height: 60vh;"
+					src="data:text/html;base64,${btoa(message || '')}"
+					/>
+			`);
+		} else {
+			dialog.setContentAsText(message || '');
+		}
 		// dialog buttons
-		const noButton = await addCloseButtonToDialog(dialog, 'No');
+		const noButton = await addCloseButtonToDialog(dialog, noButtonText);
 		noButton.onClick.once(() => resolve(false));
-		const yesButton = await addCloseButtonToDialog(dialog, 'Yes');
+		const yesButton = await addCloseButtonToDialog(dialog, yesButtonText);
 		yesButton.onClick.once(() => resolve(true));
 		// render and open
 		browserWindow.renderDialog(dialog);
@@ -72,10 +84,19 @@ async function confirm(browserWindow: BrowserWindow, message?: any): Promise<boo
 
 
 /**
+ * Creates a dialog that implements `window.confirm`.
+ * @see http://w3c.github.io/html/webappapis.html#dom-window-confirm
+ */
+export async function confirm(browserWindow: BrowserWindow, message?: any): Promise<boolean> {
+	return internalConfirm(browserWindow, message, false);
+}
+
+
+/**
  * Creates a dialog that implements `window.prompt`.
  * @see http://w3c.github.io/html/webappapis.html#dom-window-prompt
  */
-async function prompt(browserWindow: BrowserWindow, message: any, defaultValue: any = ''): Promise<null | string> {
+export async function prompt(browserWindow: BrowserWindow, message: any, defaultValue: any = ''): Promise<null | string> {
 	return new Promise<null | string>(async resolve => {
 		// build the dialog's inner DOM
 		const messageElement = document.createTextNode(message || '');
@@ -102,7 +123,7 @@ async function prompt(browserWindow: BrowserWindow, message: any, defaultValue: 
  * Initializes the 'User Prompts' implementations on a certain window.
  * @param window The window to initialize the API on.
  */
-export default function initialize(browserWindow: BrowserWindow, window: Window): void {
+export function initialize(browserWindow: BrowserWindow, window: Window): void {
 	window.alert = (message?: any) => alert(browserWindow, message);
 	window.confirm = <any>((message?: any) => confirm(browserWindow, message));
 	window.prompt = <any>((message: any, defaultValue?: any) => prompt(browserWindow, message, defaultValue));

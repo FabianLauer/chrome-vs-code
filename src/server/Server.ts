@@ -24,6 +24,7 @@ export default class Server {
 	 * @param aboutPages An array containing readers for the `about:` pages.
 	 * @param logFunction A function that performs message logging.
 	 * @param getConfig A function that returns an object with browser configuration data.
+	 * @param updateConfig A function that updates the browser configuration.
 	 */
 	public constructor(
 		private browserHTML: FileReader<string>,
@@ -31,7 +32,8 @@ export default class Server {
 		private browserCSS: FileReader<string>,
 		private aboutPages: Array<{ name: string; reader: FileReader<string> }>,
 		private logFunction: (message: string) => void,
-		private getConfig: () => IBrowserConfiguration | Promise<IBrowserConfiguration>
+		private getConfig: () => IBrowserConfiguration | Promise<IBrowserConfiguration>,
+		private updateConfig: (data: { [section: string]: { [key: string]: any; }; }) => void | Promise<void>
 	) {
 		this.createFileReaderRoute('/', 'text/html', this.browserHTML);
 		this.createFileReaderRoute('/browser.js', 'text/javascript', this.browserJS);
@@ -59,10 +61,21 @@ export default class Server {
 			HTTPServer.createURLFromString('/load/base'),
 			createProxyHandler(true)
 		);
-		this.httpServer.addHandler(HTTPServer.createURLFromString('/config'), async (request, response) => {
+		this.httpServer.addHandler(HTTPServer.createURLFromString('/config/read'), async (request, response) => {
 			response.statusCode = 200;
 			response.setHeader('Content-Type', 'text/json');
 			response.end(JSON.stringify(await this.getConfig()));
+		});
+		this.httpServer.addHandler(HTTPServer.createURLFromString('/config/write'), async (request, response) => {
+			const parsedURL = HTTPServer.createURLFromString(request.url);
+			const data = JSON.parse(unescape(parsedURL.query));
+			if (typeof data !== 'object' || data === null || Object.keys(data).length === 0) {
+				this.log('blocked invalid request to update config');
+				this.respondTo500(response);
+			}
+			await this.updateConfig(data);
+			response.statusCode = 200;
+			response.end();
 		});
 	}
 

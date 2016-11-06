@@ -47,6 +47,16 @@
           "type": "boolean",
           "default": true,
           "description": "Whether to automatically hide and show the address bar. When active, the address bar will be hidden when the page is scrolled down and shown when the page is scrolled up."
+        },
+        "chromevscode.showWelcomePage": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether to show the welcome page instead of the home page when starting the browser."
+        },
+        "chromevscode.disclaimerReadAndAccepted": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the user (you) has read the the disclaimer and terms of use and accepts them. Those terms can be found at any time by browsing to 'about://disclaimer'."
         }
       }
     }

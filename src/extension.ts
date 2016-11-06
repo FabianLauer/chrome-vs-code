@@ -95,7 +95,24 @@ async function startBackEnd(): Promise<number> {
 		new StaticFileReader(`${__dirname}/all.css`),
 		await generateAboutPageReaders(),
 		log,
-		BrowserConfiguration.createFromWorkspaceConfig
+		BrowserConfiguration.createFromWorkspaceConfig,
+		async data => {
+			log('updating browser config:', JSON.stringify(data));
+			for (const section in data) {
+				/// TODO: Find out why the `udpate` method is missing in the `WorkspaceConfiguration` declaration.
+				const workspaceConfig = <any>vscode.workspace.getConfiguration(section);
+				for (const key in data[section]) {
+					await workspaceConfig.update(
+						// config name
+						key,
+						// config value
+						data[section][key],
+						// global = true
+						true
+					);
+				}
+			}
+		}
 	);
 	await server.start('localhost', backEndPort);
 	return backEndPort;

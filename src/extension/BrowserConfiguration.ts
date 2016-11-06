@@ -15,6 +15,14 @@ export default class BrowserConfiguration implements IBrowserConfiguration {
 			BrowserConfiguration.getWorkspaceConfigOrFallback(
 				'autoToggleAddressBar',
 				BrowserConfiguration.isTypeof('boolean')
+			),
+			BrowserConfiguration.getWorkspaceConfigOrFallback(
+				'showWelcomePage',
+				BrowserConfiguration.isTypeof('boolean')
+			),
+			BrowserConfiguration.getWorkspaceConfigOrFallback(
+				'disclaimerReadAndAccepted',
+				BrowserConfiguration.isTypeof('boolean')
 			)
 		);
 	}
@@ -51,7 +59,9 @@ export default class BrowserConfiguration implements IBrowserConfiguration {
 
 	private constructor(
 		public readonly home: string,
-		public readonly autoToggleAddressBar: boolean
+		public readonly autoToggleAddressBar: boolean,
+		public readonly showWelcomePage: boolean,
+		public readonly disclaimerReadAndAccepted: boolean
 	) { }
 
 
@@ -60,6 +70,8 @@ export default class BrowserConfiguration implements IBrowserConfiguration {
 	 */
 	private static readonly defaultConfig = new BrowserConfiguration(
 		'http://code.visualstudio.com',
-		true
+		true,
+		true,
+		false
 	);
 }

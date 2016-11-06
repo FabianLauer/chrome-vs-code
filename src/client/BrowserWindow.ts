@@ -9,7 +9,7 @@ import HistoryEntry from './HistoryEntry';
 import IFrameBindings from './IFrameBindings';
 import IPrivilegedFrameBindings from './IPrivilegedFrameBindings';
 import IBrowserConfiguration from '../server/IBrowserConfiguration';
-import initializePrompts from './webapi/prompts';
+import { internalConfirm, initialize as initializePrompts } from './webapi/prompts';
 
 declare function escape(str: string): string;
 declare function unescape(str: string): string;
@@ -28,8 +28,8 @@ export default class BrowserWindow {
 			dialog => this.renderDialog(dialog),
 			url => this.load(url)
 		);
+		this.history.push(new HistoryEntry('about://start', Date.now()));
 		this.viewport = this.viewport || new Viewport(() => this.createFrameBindings());
-		this.history.push(new HistoryEntry('about://home', Date.now()));
 		this.viewport.onBeginNavigation.bind(this.handleViewportBeginningNavigation.bind(this));
 		this.viewport.onAfterNavigation.bind(this.handleViewportNavigating.bind(this));
 		this.viewport.onRequestNavigation.bind(this.handleNavigationRequestFromViewport.bind(this));
@@ -82,11 +82,26 @@ export default class BrowserWindow {
 	}
 
 
+	public async loadInitialPage(): Promise<void> {
+		// load the initial page
+		const config = await this.getBrowserConfig();
+		let initialUrl = 'about://home';
+		if (config.showWelcomePage) {
+			initialUrl = 'about://welcome';
+		}
+		await this.load(initialUrl);
+		await this.updateBrowserConfigField('showWelcomePage', false);
+	}
+
+
 	/**
 	 * Loads a URI and renders it in the browser.
 	 * @param uri The URI to load.
 	 */
 	public async load(uri: string, deferHistoryUdpate = false): Promise<void> {
+		if (uri.trim() !== 'about://welcome' && !(await this.ensureDisclaimerAccepted())) {
+			return;
+		}
 		if (deferHistoryUdpate) {
 			this.browserBar.showLoadingIndicator();
 			this.statusIndicator.show(`loading...`);
@@ -192,6 +207,70 @@ export default class BrowserWindow {
 	}
 
 
+	/**
+	 * Checks if the user has accepted the disclaimer.
+	 */
+	private async wasDisclaimerAccepted(): Promise<boolean> {
+		const config = await this.getBrowserConfig();
+		return config.disclaimerReadAndAccepted;
+	}
+
+
+	/**
+	 * Presents the disclaimer to the user and asks to accept it.
+	 * Returns `true` when the user accepts it, `false` if not.
+	 */
+	private async askToAcceptDisclaimer(): Promise<boolean> {
+		if (this.disclaimerPromptVisible) {
+			return;
+		}
+		this.disclaimerPromptVisible = true;
+		const response = await this.request('about://disclaimer');
+		const accepted = await internalConfirm(
+			this,
+			`Accept 'Chrome VS Code' Terms of Use to continue browsing`,
+			response.responseText,
+			true,
+			'Accept Terms of Use',
+			'Don\'t accept'
+		);
+		this.disclaimerPromptVisible = false;
+		return accepted;
+	}
+
+
+	/**
+	 * Returns `true` when the user has accepted the disclaimer, `false` if not.
+	 */
+	private async ensureDisclaimerAccepted(): Promise<boolean> {
+		const notAccepted = () => {
+			this.viewport.renderHTML('');
+			this.browserBar.urlBar.setURL('about://welcome');
+		};
+		// disclaimer was already accepted
+		if (await this.wasDisclaimerAccepted()) {
+			return true;
+		}
+		// disclaimer was not accepted yet
+		const accepted = await this.askToAcceptDisclaimer();
+		// update the browser config
+		await this.updateBrowserConfigField('disclaimerReadAndAccepted', accepted);
+		if (!accepted) {
+			notAccepted();
+			return;
+		}
+		// Don't return the `accepted` value from above, but rather refresh the browser config
+		// and return the config value from 'disclaimerReadAndAccepted'. This way, we can make
+		// sure the config file is in sync.
+		await this.refreshBrowserConfig();
+		if (!(await this.getBrowserConfig()).disclaimerReadAndAccepted) {
+			notAccepted();
+			return false;
+		}
+		return true;
+	}
+
+
 	private updateHistoryButtons(): void {
 		// forward button
 		if (this.history.canGoForward()) {
@@ -262,6 +341,7 @@ export default class BrowserWindow {
 	}
 
 
+	/// TODO: Remove this. The event that calls this handler is not used by the `Viewport` anymore.
 	private async handleNavigationRequestFromViewport(targetURI: string): Promise<void> {
 		targetURI = unescape(((<string>targetURI) || '').replace(/^.*?\?/, ''));
 		await this.load(targetURI);
@@ -280,9 +360,38 @@ export default class BrowserWindow {
 					resolve(JSON.parse(request.responseText));
 				}
 			};
-			request.open('GET', `/config`, true);
+			request.open('GET', '/config/read', true);
 			request.send();
 		});
+	}
+
+
+	private async updateConfig(config: { [section: string]: { [key: string]: any; }; }): Promise<void> {
+		await new Promise<void>((resolve, reject) => {
+			const request = new XMLHttpRequest();
+			request.onerror = reject;
+			request.onreadystatechange = () => {
+				if (request.readyState === XMLHttpRequest.DONE) {
+					resolve();
+				}
+			};
+			request.open('GET', `/config/write?${escape(JSON.stringify(config))}`, true);
+			request.send();
+		});
+		await this.refreshBrowserConfig();
+	}
+
+
+	private async updateConfigField(section: string, key: string, value: any): Promise<void> {
+		const object: any = {};
+		object[section] = {};
+		object[section][key] = value;
+		return this.updateConfig(object);
+	}
+
+
+	private async updateBrowserConfigField(key: string, value: any): Promise<void> {
+		return this.updateConfigField('chromevscode', key, value);
 	}
 
 
@@ -319,18 +428,20 @@ export default class BrowserWindow {
 			 */
 			public async load(uri: string): Promise<void> {
 				return browserWindow.load(uri);
-			},
+			}
+
 			/**
 			 * Attempts to show the address bar. Returns `true` when successful, `false` if not.
 			 */
-			async showAddressBar(): Promise<boolean> {
+			public async showAddressBar(): Promise<boolean> {
 				await browserWindow.expandBrowserBar();
 				return true;
-			},
+			}
+
 			/**
 			 * Attempts to hide the address bar. Returns `true` when successful, `false` if not.
 			 */
-			async hideAddressBar(): Promise<boolean> {
+			public async hideAddressBar(): Promise<boolean> {
 				await browserWindow.collapseBrowserBar();
 				return true;
 			}
@@ -364,4 +475,8 @@ export default class BrowserWindow {
 		recordedTime: Date.now(),
 		scrollY: 0
 	};
+	/**
+	 * Returns `true` if the disclaimer prompt is currently visible.
+	 */
+	private disclaimerPromptVisible = false;
 }
