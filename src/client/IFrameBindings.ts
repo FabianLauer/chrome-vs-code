@@ -12,6 +12,14 @@ interface IFrameBindings {
 	 * @param uri The URI to open.
 	 */
 	load(uri: string): Promise<void>;
+	/**
+	 * Attempts to show the address bar. Returns `true` when successful, `false` if not.
+	 */
+	showAddressBar(): Promise<boolean>;
+	/**
+	 * Attempts to hide the address bar. Returns `true` when successful, `false` if not.
+	 */
+	hideAddressBar(): Promise<boolean>;
 }
 
 export default IFrameBindings;

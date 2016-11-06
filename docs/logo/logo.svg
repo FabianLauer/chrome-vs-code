@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1000px" height="1000px" viewBox="0 0 1000 1000" style="enable-background:new 0 0 1000 1000;" xml:space="preserve">
+	<g>
+		<polygon style="fill:#FDD400;" points="882,794.4 733.4,830.8 733.4,169.2 882,205.6" />
+		<polygon style="fill:#E62922;" points="882,794.4 733.4,830.8 118,277.1 235.2,239" />
+		<polygon style="fill:#038FD6;" points="882,205.6 733.4,169.2 118,722.9 235.2,761" />
+		<polygon style="fill:#42B839;" points="235.2,761 118,722.9 118,277.1 235.2,239" />
+		<g style="opacity:0.15;">
+			<polyline points="882,205.6 733.4,378.6 733.4,333.2" />
+			<polyline points="235.2,239 262.9,407.5 235.2,382.6" />
+			<polyline points="235.2,761 262.9,592.5 235.2,617.4" />
+			<path d="M882,794.4c0-6.9-148.6-167-148.6-167v39.4" />
+			<polygon points="582.9,537.6 504.5,624.9 450.4,576.2 539.2,500" />
+		</g>
+	</g>
+</svg>
