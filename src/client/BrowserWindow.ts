@@ -131,7 +131,15 @@ export default class BrowserWindow {
 		} else if (responseURI !== uri) {
 			this.browserBar.urlBar.setURL(responseURI, false);
 		}
+		// render the actual response
 		await renderer.renderResponse(responseURI, response);
+		// render the favicon
+		const icon = await renderer.generateFavicon(responseURI, response);
+		if (typeof icon === 'string') {
+			this.browserBar.urlBar.setFavicon(icon);
+		} else {
+			this.browserBar.urlBar.setFavicon(undefined);
+		}
 		await this.browserBar.showLoadingProgress(100);
 		await this.browserBar.hideLoadingIndicator();
 		this.statusIndicator.hide(statusIndicatorTicket);

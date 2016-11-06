@@ -24,6 +24,9 @@ export default class URLBar implements IRenderable {
 			this.input.focus();
 		});
 		this.outerElement.classList.add('url-bar');
+		// icon
+		this.faviconElement.classList.add('favicon');
+		this.outerElement.appendChild(this.faviconElement);
 		// loading bar
 		this.loadingBar.classList.add('loading-bar');
 		this.hideLoadingIndicator();
@@ -44,6 +47,19 @@ export default class URLBar implements IRenderable {
 		this.formattedView.appendChild(this.formattedViewWrapper);
 		this.formattedView.classList.add('formatted-view');
 		this.outerElement.appendChild(this.formattedView);
+	}
+
+
+	/**
+	 * Updates the favicon source.
+	 * @param uri The favicon's source URI. Set this to `undefined` to remove the icon.
+	 */
+	public setFavicon(uri: string): void {
+		if (typeof uri !== 'string' || uri.length === 0) {
+			this.faviconElement.style.backgroundImage = '';
+		} else {
+			this.faviconElement.style.backgroundImage = `url(${uri})`;
+		}
 	}
 
 
@@ -157,6 +173,7 @@ export default class URLBar implements IRenderable {
 
 
 	private readonly outerElement = document.createElement('div');
+	private readonly faviconElement =  document.createElement('div');
 	private readonly loadingBar = document.createElement('div');
 	private readonly input = document.createElement('input');
 	private readonly formattedView = document.createElement('div');

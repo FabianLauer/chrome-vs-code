@@ -7,7 +7,7 @@ abstract class ResponseRenderer {
 	 */
 	public constructor(
 		protected readonly viewport: Viewport
-	) {}
+	) { }
 
 
 	/**
@@ -15,8 +15,20 @@ abstract class ResponseRenderer {
 	 * @param responseURI The URI from which the response was loaded.
 	 * @param response The response to render.
 	 */
-	public async renderResponse(resposeURI: string, response: XMLHttpRequest): Promise<void> {
-		await this.renderResponseConcrete(resposeURI, response);
+	public async renderResponse(responseURI: string, response: XMLHttpRequest): Promise<void> {
+		await this.renderResponseConcrete(responseURI, response);
+	}
+
+
+	/**
+	 * Attempts to generate a favicon for the rendered response.
+	 * @param responseURI The URI from which the response was loaded.
+	 * @param response The response to render.
+	 */
+	public async generateFavicon(responseURI: string, response: XMLHttpRequest): Promise<string | void> {
+		if (typeof this.generateFaviconConcrete === 'function') {
+			return this.generateFaviconConcrete(responseURI, response);
+		}
 	}
 
 
@@ -25,7 +37,15 @@ abstract class ResponseRenderer {
 	 * @param responseURI The URI from which the response was loaded.
 	 * @param response The response to render.
 	 */
-	protected abstract async renderResponseConcrete(resposeURI: string, response: XMLHttpRequest): Promise<void>;
+	protected abstract async renderResponseConcrete(responseURI: string, response: XMLHttpRequest): Promise<void>;
+
+
+	/**
+	 * Attempts to generate a favicon for the rendered response.
+	 * @param responseURI The URI from which the response was loaded.
+	 * @param response The response to render.
+	 */
+	protected async generateFaviconConcrete?(responseURI: string, response: XMLHttpRequest): Promise<string | void>;
 }
 
 export default ResponseRenderer;
