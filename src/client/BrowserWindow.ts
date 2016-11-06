@@ -7,6 +7,8 @@ import IReadonlyHistory from './IReadonlyHistory';
 import History from './History';
 import HistoryEntry from './HistoryEntry';
 import IFrameBindings from './IFrameBindings';
+import IPrivilegedFrameBindings from './IPrivilegedFrameBindings';
+import IBrowserConfiguration from '../server/IBrowserConfiguration';
 import initializePrompts from './webapi/prompts';
 
 declare function escape(str: string): string;
@@ -261,21 +263,45 @@ export default class BrowserWindow {
 
 	private createFrameBindings(): IFrameBindings {
 		const browserWindow = this;
-		return {
+		class FrameBindings implements IFrameBindings {
 			/**
 			 * Initializes the frame's web API bindings.
 			 */
-			async initializeWebAPIs(frameWindow: Window): Promise<void> {
+			public async initializeWebAPIs(frameWindow: Window): Promise<void> {
 				await initializePrompts(browserWindow, frameWindow);
-			},
+			}
+
 			/**
 			 * Updates the browser location to another URI.
 			 * @param uri The URI to open.
 			 */
-			async load(uri: string): Promise<void> {
+			public async load(uri: string): Promise<void> {
 				return browserWindow.load(uri);
 			}
-		};
+		}
+		class PrivilegedFrameBindings extends FrameBindings implements IPrivilegedFrameBindings {
+			/**
+			 * Returns the browser configuration as an object.
+			 */
+			public async getConfiguration(): Promise<IBrowserConfiguration> {
+				return new Promise<IBrowserConfiguration>((resolve, reject) => {
+					const request = new XMLHttpRequest();
+					request.onerror = reject;
+					request.onreadystatechange = () => {
+						if (request.readyState === XMLHttpRequest.DONE) {
+							resolve(JSON.parse(request.responseText));
+						}
+					};
+					request.open('GET', `/config`, true);
+					request.send();
+				});
+			}
+		}
+		if (/^about:\/\//.test(this.history.getCurrent().uri)) {
+			return new PrivilegedFrameBindings();
+		} else {
+			return new FrameBindings();
+		}
 	}
 
 

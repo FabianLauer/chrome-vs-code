@@ -166,7 +166,22 @@ export default class Viewport implements IRenderable {
 		const bindings = this.getFrameBindings();
 		Viewport.bindings.splice(0, Viewport.bindings.length);
 		(<any>window).getBinding = (bindingID: number) => Viewport.bindings[bindingID];
-		for (const key in bindings) {
+		let memberNames: string[] = [];
+		let last: any = bindings;
+		while (true) {
+			last = Object.getPrototypeOf(last);
+			if (last === Object.prototype) {
+				break;
+			}
+			memberNames = memberNames.concat(Object.getOwnPropertyNames(last));
+		}
+		memberNames = memberNames.filter(name => {
+			return (
+				name !== 'constructor' &&
+				typeof bindings[name] === 'function'
+			);
+		});
+		for (const key of memberNames) {
 			let value = bindings[key];
 			if (typeof bindings[key] === 'function') {
 				const bindingID = Viewport.bindings.push(bindings[key]) - 1;

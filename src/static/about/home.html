@@ -3,21 +3,12 @@
 
 <script>
 	window.addEventListener('vscodeBrowserBindingsReady', function() {
-		const request = new XMLHttpRequest();
-		request.onerror = (e) => {
-			console.error(e);
-		};
-		request.onreadystatechange = () => {
-			if (request.readyState === XMLHttpRequest.DONE) {
-				const config = JSON.parse(request.responseText);
-				// prevent an infinite loop reloading this page over and over again
-				if (config.home.trim() === 'about://home') {
-					return;
-				}
-				window.vscodeBrowser.load(config.home);
+		window.vscodeBrowser.getConfiguration().then(function(config) {
+			// prevent an infinite loop reloading this page over and over again
+			if (config.home.trim() === 'about://home') {
+				return;
 			}
-		};
-		request.open('GET', `/config`, true);
-		request.send();
+			window.vscodeBrowser.load(config.home);
+		});
 	});
 </script>
