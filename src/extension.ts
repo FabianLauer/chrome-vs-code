@@ -175,7 +175,6 @@ function error(message: any, ...additionalMessages: any[]): void {
 
 
 async function start(): Promise<void> {
-	outputChannel.show();
 	log('VS Code Browser activated', __dirname);
 	try {
 		await startBackEnd();
