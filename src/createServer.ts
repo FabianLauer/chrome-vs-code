@@ -16,7 +16,7 @@ async function readFile(filePath: string): Promise<string> {
 }
 
 
-class StaticFileReader extends FileReader<string> {
+export class StaticFileReader extends FileReader<string> {
 	/**
 	 * Creates a new file reader.
 	 * @param path The path to the file.
@@ -94,7 +94,7 @@ class AboutFileReader extends FileReader<string> {
 }
 
 
-async function generateAboutPageReaders() {
+export async function generateAboutPageReaders() {
 	const results: Array<{ name: string; reader: FileReader<string>; }> = [];
 	const filePaths = await getFilePathsInDirectory(`${__dirname}/../../src/static/about/`);
 	for (const filePath of filePaths) {
@@ -125,15 +125,4 @@ async function generateAboutPageReaders() {
 		reader: new AboutFileReader('index', indexHTML)
 	});
 	return results;
-}
-
-
-export default async function createServer(logFunction: (message: string) => void): Promise<Server> {
-	return new Server(
-		new StaticFileReader(`${__dirname}/../../src/static/browser.html`),
-		new StaticFileReader(`${__dirname}/browser.all.js`),
-		new StaticFileReader(`${__dirname}/all.css`),
-		await generateAboutPageReaders(),
-		logFunction
-	);
 }

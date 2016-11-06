@@ -1,6 +1,7 @@
 import * as http from 'http';
 import HTTPServer from './HTTPServer';
 import FileReader from './FileReader';
+import IBrowserConfiguration from './IBrowserConfiguration';
 import { Url, format } from 'url';
 const normalizeStringUrl: (url: string) => string = require('normalize-url');
 
@@ -22,13 +23,15 @@ export default class Server {
 	 * @param browserCSS An object that reads the main CSS file for the browser client.
 	 * @param aboutPages An array containing readers for the `about:` pages.
 	 * @param logFunction A function that performs message logging.
+	 * @param getConfig A function that returns an object with browser configuration data.
 	 */
 	public constructor(
 		private browserHTML: FileReader<string>,
 		private browserJS: FileReader<string>,
 		private browserCSS: FileReader<string>,
 		private aboutPages: Array<{ name: string; reader: FileReader<string> }>,
-		private logFunction: (message: string) => void
+		private logFunction: (message: string) => void,
+		private getConfig: () => IBrowserConfiguration | Promise<IBrowserConfiguration>
 	) {
 		this.createFileReaderRoute('/', 'text/html', this.browserHTML);
 		this.createFileReaderRoute('/browser.js', 'text/javascript', this.browserJS);
@@ -56,12 +59,10 @@ export default class Server {
 			HTTPServer.createURLFromString('/load/base'),
 			createProxyHandler(true)
 		);
-		this.httpServer.addHandler(HTTPServer.createURLFromString('/config'), (request, response) => {
+		this.httpServer.addHandler(HTTPServer.createURLFromString('/config'), async (request, response) => {
 			response.statusCode = 200;
 			response.setHeader('Content-Type', 'text/json');
-			response.end(JSON.stringify({
-				home: 'http://code.visualstudio.com'
-			}));
+			response.end(JSON.stringify(await this.getConfig()));
 		});
 	}
 

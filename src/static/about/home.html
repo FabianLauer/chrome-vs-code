@@ -10,6 +10,10 @@
 		request.onreadystatechange = () => {
 			if (request.readyState === XMLHttpRequest.DONE) {
 				const config = JSON.parse(request.responseText);
+				// prevent an infinite loop reloading this page over and over again
+				if (config.home.trim() === 'about://home') {
+					return;
+				}
 				window.vscodeBrowser.load(config.home);
 			}
 		};

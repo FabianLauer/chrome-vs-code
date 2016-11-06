@@ -31,6 +31,19 @@
           "command": "extension.openWebBrowserToSide"
         }
       ]
+    },
+    "configuration": {
+      "type": "object",
+      "title": "Chrome VS Code",
+      "properties": {
+        "chromevscode.home": {
+          "type": "string",
+          "default": "https://code.visualstudio.com",
+          "description": "The URL of the browser's home page, including protocol and hostname.",
+          "minLength": 3,
+          "format": "uri"
+        }
+      }
     }
   },
   "scripts": {
