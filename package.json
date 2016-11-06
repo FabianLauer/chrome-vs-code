@@ -2,7 +2,7 @@
   "name": "vscode-browser",
   "description": "A web browser for VS Code.",
   "version": "0.0.1",
-  "publisher": "Fabian Lauer",
+  "publisher": "fabianlauer",
   "preview": true,
   "engines": {
     "vscode": "^0.10.7"

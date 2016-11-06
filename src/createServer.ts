@@ -1,11 +1,6 @@
 import FileReader from './server/FileReader';
 import * as fs from 'fs';
-
-
-/**
- * Path to the 'static' directory.
- */
-const staticDirPath = `${__dirname}/../../src/static/`;
+import { STATIC_DIR } from './config';
 
 
 async function readFile(filePath: string): Promise<string> {
@@ -86,7 +81,7 @@ class AboutFileReader extends FileReader<string> {
 					<title>about://${extractAboutPageName(fileContent)}</title>
 					<meta charset='utf-8'>
 					<style>
-						${await readFile(`${staticDirPath}/about/about.css`)}
+						${await readFile(`${STATIC_DIR}/about/about.css`)}
 					</style>
 				</head>
 				<body>
@@ -101,7 +96,7 @@ class AboutFileReader extends FileReader<string> {
 
 export async function generateAboutPageReaders() {
 	const results: Array<{ name: string; reader: FileReader<string>; }> = [];
-	const filePaths = await getFilePathsInDirectory(`${staticDirPath}/about/`);
+	const filePaths = await getFilePathsInDirectory(`${STATIC_DIR}/about/`);
 	for (const filePath of filePaths) {
 		if (!(await isFile(filePath)) || !/\.html$/.test(filePath)) {
 			continue;
