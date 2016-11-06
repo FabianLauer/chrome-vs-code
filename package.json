@@ -62,9 +62,9 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "node ./node_modules/vscode/bin/compile && make",
-    "compile": "node ./node_modules/vscode/bin/compile -p ./ && make",
-    "postinstall": "node ./node_modules/vscode/bin/install && make"
+    "vscode:prepublish": "make clean && node ./node_modules/vscode/bin/compile && make all",
+    "compile": "make clean && node ./node_modules/vscode/bin/compile -p ./ && make all",
+    "postinstall": "make clean && node ./node_modules/vscode/bin/install && make all"
   },
   "devDependencies": {
     "less": "^2.7.1",
