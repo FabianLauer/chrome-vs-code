@@ -12,7 +12,8 @@ export default class Viewport implements IRenderable {
 	 *                         frame created by this viewport.
 	 */
 	public constructor(
-		private readonly getFrameBindings: () => IFrameBindings
+		private readonly getFrameBindings: () => IFrameBindings,
+		private readonly defaultScrollBehaviour: ScrollBehavior = 'smooth'
 	) { }
 
 
@@ -65,6 +66,7 @@ export default class Viewport implements IRenderable {
 	public async renderHTML(html: string): Promise<void> {
 		await this.createNewFrame(html);
 		this.overwriteBeforeUnloadInFrame();
+		this.injectAnchorClickListener();
 		// bind scroll listeners
 		this.frame.contentWindow.addEventListener('scroll', () => this.onScroll.trigger());
 		this.frame.contentWindow.document.addEventListener('scroll', () => this.onScroll.trigger());
@@ -89,6 +91,26 @@ export default class Viewport implements IRenderable {
 			x: this.frame.contentWindow.scrollX,
 			y: this.frame.contentWindow.scrollY
 		};
+	}
+
+
+	/**
+	 * Scrolls the viewport to a fragment.
+	 * @param hash The fragment to scroll to.
+	 * @param behavior The scroll behavior to use.
+	 */
+	public jumpToFragment(fragmentIdentifier: string, behavior: ScrollBehavior = this.defaultScrollBehaviour): void {
+		fragmentIdentifier = fragmentIdentifier.replace(/^#/, '');
+		let target =
+			this.frame.contentDocument.getElementById(fragmentIdentifier) ||
+			// If the fragment identifier didn't point to an element with an ID, try to find
+			// an element with a name attribute that matches the fragment identifier.
+			this.frame.contentDocument.querySelector(`[name="${fragmentIdentifier}"]`);
+		// Cancel if the fragment couldn't be found.
+		if (typeof target === 'undefined' || target === null) {
+			return;
+		}
+		target.scrollIntoView(<ScrollIntoViewOptions>{ behavior: behavior });
 	}
 
 
@@ -217,6 +239,22 @@ export default class Viewport implements IRenderable {
 				});
 			})();
 		`);
+	}
+
+
+	private injectAnchorClickListener(): void {
+		this.frame.contentWindow.addEventListener('click', event => {
+			const target = <HTMLAnchorElement>event.target;
+			if (!(target instanceof (<any>this.frame.contentWindow).HTMLAnchorElement)) {
+				return;
+			}
+			/// TODO: This does not find href's that have both hash and path/host.
+			if (/^#/.test(target.getAttribute('href'))) {
+				event.preventDefault();
+				event.stopPropagation();
+				this.jumpToFragment(target.getAttribute('href'));
+			}
+		});
 	}
 
 

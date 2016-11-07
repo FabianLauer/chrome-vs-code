@@ -94,8 +94,13 @@ class HTMLRenderer extends ResponseRenderer {
 				if (attribute.name !== 'src' && attribute.name !== 'href' && attribute.name !== 'xlink:href') {
 					continue;
 				}
-				// skip all data URLs
-				if (/^data:/.test(attribute.value)) {
+				// skip all...
+				if (
+					// data URIs
+					/^data:/.test(attribute.value) ||
+					// hash only links (e.g. href="#foo")
+					/^#/.test(attribute.value)
+				) {
 					continue;
 				}
 				// full protocol in URI
