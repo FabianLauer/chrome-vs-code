@@ -122,8 +122,8 @@ export default class BrowserWindow {
 		}
 		const response = await this.request(uri);
 		const renderer = ResponseRendererFactory.getRenderer(this.viewport, response);
-		let statusIndicatorTicket = this.statusIndicator.show(`rendering ${uri}`);
 		const responseURI = response.getResponseHeader('actual-uri') || uri;
+		let statusIndicatorTicket = this.statusIndicator.show(`rendering ${responseURI}`);
 		// update the browser bar to the actual URL of the page we're now on
 		if (deferHistoryUdpate) {
 			this.browserBar.urlBar.setURL(responseURI, false);
