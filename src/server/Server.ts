@@ -323,7 +323,7 @@ export default class Server {
 			};
 			const clientRequest = requestFn(options, clientResponse => {
 				response.statusCode = clientResponse.statusCode;
-				response.setHeader('actual-uri', normalizeUrl((<any>clientResponse).responseUrl));
+				response.setHeader('actual-uri', (<any>clientResponse).responseUrl);
 				delete clientResponse.headers['x-frame-options'];
 				delete clientResponse.headers['content-security-policy'];
 				for (const headerName in clientResponse.headers) {
