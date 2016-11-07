@@ -62,7 +62,7 @@ class HTMLRenderer extends ResponseRenderer {
 		parsedDocument.documentElement.innerHTML = response.responseText;
 		HTMLRenderer.updateAllURIAttributes(parsedDocument, responseURI);
 		// update the cache
-		HTMLRenderer.lastRecentParsed = HTMLRenderer.lastRecentParsed || <any>{ };
+		HTMLRenderer.lastRecentParsed = HTMLRenderer.lastRecentParsed || <any>{};
 		HTMLRenderer.lastRecentParsed.responseURI = responseURI;
 		HTMLRenderer.lastRecentParsed.response = response;
 		HTMLRenderer.lastRecentParsed.parsedDocument = parsedDocument;
@@ -76,6 +76,8 @@ class HTMLRenderer extends ResponseRenderer {
 
 
 	private static updateAllURIAttributes(document: Document, responseURI: string): void {
+		responseURI = responseURI.trim();
+		const parsedResponseURL = parseURL(responseURI);
 		const parsedURL = HTMLRenderer.getBaseURLFromServerResponse(responseURI);
 		const baseURL = `${parsedURL.protocol}//${parsedURL.host}`;
 		const elements = document.getElementsByTagName('*');
@@ -83,8 +85,12 @@ class HTMLRenderer extends ResponseRenderer {
 			const element = elements[i];
 			for (let a = 0; a < element.attributes.length; a++) {
 				const attribute = element.attributes[a];
+				// remove 'target' attributes to prevent pages attempting to open another tab/window
 				if (attribute.name === 'target') {
 					element.removeAttributeNode(attribute);
+				}
+				if (attribute.name !== 'src' && attribute.name !== 'href' && attribute.name !== 'xlink:href') {
+					continue;
 				}
 				// skip all data URLs
 				if (/^data:/.test(attribute.value)) {
@@ -98,13 +104,19 @@ class HTMLRenderer extends ResponseRenderer {
 				else if (/^:?\/\/+/.test(attribute.value)) {
 					attribute.value = attribute.value.replace(/^:?\/+/, '');
 					attribute.value = `/load?${parsedURL.protocol}//${escape(attribute.value)}`;
-				} else if (attribute.name === 'src' || attribute.name === 'href' || attribute.name === 'xlink:href') {
-					// relative links
-					if (!/^\//.test(attribute.value)) {
-						attribute.value = `/load?${parsedURL.protocol}//${parsedURL.host}/${parsedURL.path}/${escape(attribute.value)}`;
-					} else {
-						attribute.value = `/load?${baseURL}/${escape(attribute.value)}`;
+				}
+				// URIs without protocol, host and leading slash
+				else if (!/^\//.test(attribute.value)) {
+					// if the page URI ends with a slash, treat the URI in the attribute as relative to the page URI
+					if (/\/$/.test(parsedResponseURL.pathname)) {
+						attribute.value = `/load?${parsedResponseURL.protocol}//${parsedResponseURL.host}/${parsedResponseURL.path}/${escape(attribute.value)}`;
 					}
+					// otherwise, treat the URI in the attribute value as relative to the host
+					else {
+						attribute.value = `/load?${parsedResponseURL.protocol}//${parsedResponseURL.host}/${escape(attribute.value)}`;
+					}
+				} else {
+					attribute.value = `/load?${baseURL}/${escape(attribute.value)}`;
 				}
 			}
 		}
