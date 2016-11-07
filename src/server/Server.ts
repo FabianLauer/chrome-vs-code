@@ -18,7 +18,6 @@ function normalizeUrl(url: string | Url): string {
 
 export default class Server {
 	/**
-	 * @param browserHTML An object that reads the main HTML file for the browser client.
 	 * @param browserJS An object that reads the main JS file for the browser client.
 	 * @param browserCSS An object that reads the main CSS file for the browser client.
 	 * @param aboutPages An array containing readers for the `about:` pages.
@@ -27,7 +26,6 @@ export default class Server {
 	 * @param updateConfig A function that updates the browser configuration.
 	 */
 	public constructor(
-		private browserHTML: FileReader<string>,
 		private browserJS: FileReader<string>,
 		private browserCSS: FileReader<string>,
 		private aboutPages: Array<{ name: string; reader: FileReader<string> }>,
@@ -35,7 +33,21 @@ export default class Server {
 		private getConfig: () => IBrowserConfiguration | Promise<IBrowserConfiguration>,
 		private updateConfig: (data: { [section: string]: { [key: string]: any; }; }) => void | Promise<void>
 	) {
-		this.createFileReaderRoute('/', 'text/html', this.browserHTML);
+		this.httpServer.addHandler(HTTPServer.createURLFromString('/'), (request, response) => {
+			response.statusCode = 200;
+			response.end(`
+				<!DOCTYPE html>
+				<html>
+					<head>
+						<meta charset="utf-8" />
+					</head>
+					<body class="vscode-light">
+						<link rel="stylesheet" type="text/css" href="browser.css">
+						<script src="browser.js"></script>
+					</body>
+				</html>
+			`);
+		});
 		this.createFileReaderRoute('/browser.js', 'text/javascript', this.browserJS);
 		this.createFileReaderRoute('/browser.css', 'text/css', this.browserCSS);
 		const createProxyHandler = (base: boolean) => {

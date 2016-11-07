@@ -2,7 +2,6 @@ import * as vscode from 'vscode';
 import * as net from 'net';
 import Server from './server/Server';
 import BrowserConfiguration from './extension/BrowserConfiguration';
-import { STATIC_DIR } from './config';
 import { StaticFileReader, generateAboutPageReaders } from './createServer';
 
 
@@ -91,7 +90,6 @@ var context: vscode.ExtensionContext;
 async function startBackEnd(): Promise<number> {
 	backEndPort = await findFreePort();
 	server = new Server(
-		new StaticFileReader(`${STATIC_DIR}/browser.html`),
 		new StaticFileReader(`${__dirname}/browser.all.js`),
 		new StaticFileReader(`${__dirname}/all.css`),
 		await generateAboutPageReaders(),
