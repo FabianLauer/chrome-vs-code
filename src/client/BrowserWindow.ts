@@ -34,7 +34,6 @@ export default class BrowserWindow {
 		this.viewport = this.viewport || new Viewport(() => this.createFrameBindings());
 		this.viewport.onBeginNavigation.bind(this.handleViewportBeginningNavigation.bind(this));
 		this.viewport.onAfterNavigation.bind(this.handleViewportNavigating.bind(this));
-		this.viewport.onRequestNavigation.bind(this.handleNavigationRequestFromViewport.bind(this));
 	}
 
 
@@ -360,13 +359,6 @@ export default class BrowserWindow {
 			uri = uri.replace(/^.*?\?/, '');
 		}
 		await this.load(uri, true);
-	}
-
-
-	/// TODO: Remove this. The event that calls this handler is not used by the `Viewport` anymore.
-	private async handleNavigationRequestFromViewport(targetURI: string): Promise<void> {
-		targetURI = unescape(((<string>targetURI) || '').replace(/^.*?\?/, ''));
-		await this.load(targetURI);
 	}
 
 

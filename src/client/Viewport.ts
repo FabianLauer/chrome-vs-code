@@ -27,11 +27,6 @@ export default class Viewport implements IRenderable {
 	public readonly onBeginNavigation = new Event<() => void>();
 
 	/**
-	 * Triggered when navigation is requested by the user, for example when clicking a link.
-	 */
-	public readonly onRequestNavigation = new Event<(targetURI: string) => void>();
-
-	/**
 	 * Triggered when the viewport is scrolling.
 	 */
 	public readonly onScroll = new Event<() => void>();
