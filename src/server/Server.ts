@@ -2,7 +2,9 @@ import * as http from 'http';
 import HTTPServer from './HTTPServer';
 import FileReader from './FileReader';
 import IBrowserConfiguration from './IBrowserConfiguration';
+import InternalRoute from './InternalRoute';
 import { Url, format } from 'url';
+import { createHash } from 'crypto';
 const normalizeStringUrl: (url: string) => string = require('normalize-url');
 
 declare function unescape(str: string): string;
@@ -18,6 +20,37 @@ function normalizeUrl(url: string | Url): string {
 
 export default class Server {
 	/**
+	 * Generates a route map with URLs that are almoost impossible to be found by websites hosted by this browser. 
+	 */
+	public static generateSafeInternalRouteMap(): Map<InternalRoute, string> {
+		const map = new Map<InternalRoute, string>();
+		for (const keyAsString in InternalRoute) {
+			const key = parseInt(keyAsString, 10);
+			// skipt enum literals, use only the numeric keys
+			if (isNaN(key) || !isFinite(key) || typeof key !== 'number') {
+				continue;
+			}
+			// generate a random hash for the URL and prepend a slash so the server can resolve it
+			let hash: string;
+			const ensureUnique = () => {
+				hash = Server.generateRandomHash();
+				for (const value of map.values()) {
+					if (hash === value) {
+						ensureUnique();
+						return;
+					}
+				}
+			};
+			ensureUnique();
+			// actually update the hash
+			map.set(key, hash);
+		}
+		return map;
+	}
+
+
+	/**
+	 * @param internalRouteMap Maps internal route IDs to the URLs under which they can be found.
 	 * @param browserJS An object that reads the main JS file for the browser client.
 	 * @param browserCSS An object that reads the main CSS file for the browser client.
 	 * @param aboutPages An array containing readers for the `about:` pages.
@@ -26,6 +59,7 @@ export default class Server {
 	 * @param updateConfig A function that updates the browser configuration.
 	 */
 	public constructor(
+		private internalRouteMap: Map<InternalRoute, string>,
 		private browserJS: FileReader<string>,
 		private browserCSS: FileReader<string>,
 		private aboutPages: Array<{ name: string; reader: FileReader<string> }>,
@@ -34,7 +68,16 @@ export default class Server {
 		private updateConfig: (data: { [section: string]: { [key: string]: any; }; }) => void | Promise<void>
 	) {
 		this.httpServer.addHandler(HTTPServer.createURLFromString('/'), (request, response) => {
+			this.respondTo404(response);
+		});
+		this.httpServer.addHandler(this.getInternalRoutePath(InternalRoute.BrowserHTML), (request, response) => {
 			response.statusCode = 200;
+			let mapTransportScript = `
+				var map = new Map();
+			`;
+			for (const entry of this.internalRouteMap.entries()) {
+				mapTransportScript += `map.set(${entry[0]}, '${entry[1]}');\n`;
+			}
 			response.end(`
 				<!DOCTYPE html>
 				<html>
@@ -42,14 +85,21 @@ export default class Server {
 						<meta charset="utf-8" />
 					</head>
 					<body class="vscode-light">
-						<link rel="stylesheet" type="text/css" href="browser.css">
-						<script src="browser.js"></script>
+						<link rel="stylesheet" type="text/css" href="${this.internalRouteMap.get(InternalRoute.BrowserCSS)}">
+						<script>
+							(function() {
+								'use strict';
+								${mapTransportScript}
+								window.CHROME_VS_CODE_INTERNAL_ROUTE_MAP = map;
+							}());
+						</script>
+						<script src="${this.internalRouteMap.get(InternalRoute.BrowserJS)}"></script>
 					</body>
 				</html>
 			`);
 		});
-		this.createFileReaderRoute('/browser.js', 'text/javascript', this.browserJS);
-		this.createFileReaderRoute('/browser.css', 'text/css', this.browserCSS);
+		this.createFileReaderRoute(InternalRoute.BrowserJS, 'text/javascript', this.browserJS);
+		this.createFileReaderRoute(InternalRoute.BrowserCSS, 'text/css', this.browserCSS);
 		const createProxyHandler = (base: boolean) => {
 			return async (
 				request: http.IncomingMessage,
@@ -66,29 +116,35 @@ export default class Server {
 			};
 		};
 		this.httpServer.addHandler(
-			HTTPServer.createURLFromString('/load'),
+			this.getInternalRoutePath(InternalRoute.Load),
 			createProxyHandler(false)
 		);
 		this.httpServer.addHandler(
-			HTTPServer.createURLFromString('/load/base'),
+			this.getInternalRoutePath(InternalRoute.LoadBase),
 			createProxyHandler(true)
 		);
-		this.httpServer.addHandler(HTTPServer.createURLFromString('/config/read'), async (request, response) => {
-			response.statusCode = 200;
-			response.setHeader('Content-Type', 'text/json');
-			response.end(JSON.stringify(await this.getConfig()));
-		});
-		this.httpServer.addHandler(HTTPServer.createURLFromString('/config/write'), async (request, response) => {
-			const parsedURL = HTTPServer.createURLFromString(request.url);
-			const data = JSON.parse(unescape(parsedURL.query));
-			if (typeof data !== 'object' || data === null || Object.keys(data).length === 0) {
-				this.log('blocked invalid request to update config');
-				this.respondTo500(response);
+		this.httpServer.addHandler(
+			this.getInternalRoutePath(InternalRoute.ConfigRead),
+			async (request, response) => {
+				response.statusCode = 200;
+				response.setHeader('Content-Type', 'text/json');
+				response.end(JSON.stringify(await this.getConfig()));
 			}
-			await this.updateConfig(data);
-			response.statusCode = 200;
-			response.end();
-		});
+		);
+		this.httpServer.addHandler(
+			this.getInternalRoutePath(InternalRoute.ConfigWrite),
+			async (request, response) => {
+				const parsedURL = HTTPServer.createURLFromString(request.url);
+				const data = JSON.parse(unescape(parsedURL.query));
+				if (typeof data !== 'object' || data === null || Object.keys(data).length === 0) {
+					this.log('blocked invalid request to update config');
+					this.respondTo500(response);
+				}
+				await this.updateConfig(data);
+				response.statusCode = 200;
+				response.end();
+			}
+		);
 	}
 
 
@@ -132,6 +188,14 @@ export default class Server {
 	}
 
 
+	/**
+	 * Returns the URL to an internal route.
+	 */
+	private getInternalRoutePath(route: InternalRoute): Url {
+		return HTTPServer.createURLFromString(this.internalRouteMap.get(route));
+	}
+
+
 	private convert(url: string | Url): Url {
 		if (typeof url === 'string') {
 			url = HTTPServer.createURLFromString(url);
@@ -166,8 +230,8 @@ export default class Server {
 	 * @param contentType The value of the content type header to respond.
 	 * @param reader The object to read the response text for.
 	 */
-	private createFileReaderRoute(url: string, contentType: string, reader: FileReader<string>): void {
-		this.httpServer.addHandler(HTTPServer.createURLFromString(url), async (request, response) => {
+	private createFileReaderRoute(route: InternalRoute, contentType: string, reader: FileReader<string>): void {
+		this.httpServer.addHandler(this.getInternalRoutePath(route), async (request, response) => {
 			response.statusCode = 200;
 			response.setHeader('Content-Type', contentType);
 			response.end(await reader.getContent());
@@ -296,6 +360,14 @@ export default class Server {
 			response.end(await page.reader.getContent());
 		}
 		this.log(`[about: ${response.statusCode}] ${requestURL}`);
+	}
+
+
+	/**
+	 * Generates a random sha hash.
+	 */
+	private static generateRandomHash(): string {
+		return '/' + createHash('sha256').update(Math.random() + Date.now().toString(32)).digest('hex');
 	}
 
 

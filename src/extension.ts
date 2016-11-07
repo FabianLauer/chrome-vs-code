@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import * as net from 'net';
 import Server from './server/Server';
+import InternalRoute from './server/InternalRoute';
 import BrowserConfiguration from './extension/BrowserConfiguration';
 import { StaticFileReader, generateAboutPageReaders } from './createServer';
 
@@ -42,7 +43,7 @@ class TextDocumentContentProvider implements vscode.TextDocumentContentProvider 
 					width="100%"
 					height="100%"
 					frameborder="0"
-					src="http://localhost:${this.backEndPort}"
+					src="http://localhost:${this.backEndPort}${internalRouteMap.get(InternalRoute.BrowserHTML)}"
 					style="
 						position: absolute;
 						left: 0;
@@ -85,11 +86,13 @@ const outputChannel = vscode.window.createOutputChannel('VS Code Browser');
 var server: Server;
 var backEndPort: number;
 var context: vscode.ExtensionContext;
+var internalRouteMap = Server.generateSafeInternalRouteMap();
 
 
 async function startBackEnd(): Promise<number> {
 	backEndPort = await findFreePort();
 	server = new Server(
+		internalRouteMap,
 		new StaticFileReader(`${__dirname}/browser.all.js`),
 		new StaticFileReader(`${__dirname}/all.css`),
 		await generateAboutPageReaders(),
@@ -181,7 +184,7 @@ async function start(): Promise<void> {
 		vscode.window.showErrorMessage('Browser back end could not be started.');
 		error('back end failed to start', err);
 	}
-	log(`back end started, port ${backEndPort}`);
+	log(`back end started, url http://localhost:${backEndPort}${internalRouteMap.get(InternalRoute.BrowserHTML)}`);
 	updateFrontEndCommands(context, backEndPort);
 }
 

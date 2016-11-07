@@ -1,5 +1,7 @@
 import ResponseRenderer from '../ResponseRenderer';
 import ResponseRendererFactory from '../ResponseRendererFactory';
+import resolveInternalRoute from '../internalRouteMapReader';
+import InternalRoute from '../../server/InternalRoute';
 import { parseURL } from '../../utils';
 
 declare function escape(str: string): string;
@@ -98,25 +100,27 @@ class HTMLRenderer extends ResponseRenderer {
 				}
 				// full protocol in URI
 				if (/^[a-z]+?:\//.test(attribute.value)) {
-					attribute.value = `/load?${escape(attribute.value)}`;
+					attribute.value = `${resolveInternalRoute(InternalRoute.Load)}?${escape(attribute.value)}`;
 				}
 				// double slash as protocol shortcut
 				else if (/^:?\/\/+/.test(attribute.value)) {
 					attribute.value = attribute.value.replace(/^:?\/+/, '');
-					attribute.value = `/load?${parsedURL.protocol}//${escape(attribute.value)}`;
+					attribute.value = `${resolveInternalRoute(InternalRoute.Load)}?${parsedURL.protocol}//${escape(attribute.value)}`;
 				}
 				// URIs without protocol, host and leading slash
 				else if (!/^\//.test(attribute.value)) {
 					// if the page URI ends with a slash, treat the URI in the attribute as relative to the page URI
 					if (/\/$/.test(parsedResponseURL.pathname)) {
-						attribute.value = `/load?${parsedResponseURL.protocol}//${parsedResponseURL.host}/${parsedResponseURL.path}/${escape(attribute.value)}`;
+						attribute.value =
+							resolveInternalRoute(InternalRoute.Load) +
+							`?${parsedResponseURL.protocol}//${parsedResponseURL.host}/${parsedResponseURL.path}/${escape(attribute.value)}`;
 					}
 					// otherwise, treat the URI in the attribute value as relative to the host
 					else {
-						attribute.value = `/load?${parsedResponseURL.protocol}//${parsedResponseURL.host}/${escape(attribute.value)}`;
+						attribute.value = `${resolveInternalRoute(InternalRoute.Load)}?${parsedResponseURL.protocol}//${parsedResponseURL.host}/${escape(attribute.value)}`;
 					}
 				} else {
-					attribute.value = `/load?${baseURL}/${escape(attribute.value)}`;
+					attribute.value = `${resolveInternalRoute(InternalRoute.Load)}?${baseURL}/${escape(attribute.value)}`;
 				}
 			}
 		}

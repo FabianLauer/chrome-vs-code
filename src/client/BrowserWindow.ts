@@ -1,3 +1,5 @@
+import resolveInternalRoute from './internalRouteMapReader';
+import InternalRoute from '../server/InternalRoute';
 import BrowserBar from './BrowserBar';
 import Viewport from './Viewport';
 import StatusIndicator from './StatusIndicator';
@@ -209,7 +211,7 @@ export default class BrowserWindow {
 					this.browserBar.showLoadingIndicator();
 				}
 			};
-			request.open('GET', `/load/base?${escape(uri)}`, true);
+			request.open('GET', `${resolveInternalRoute(InternalRoute.LoadBase)}?${escape(uri)}`, true);
 			request.send();
 		});
 	}
@@ -329,8 +331,20 @@ export default class BrowserWindow {
 	}
 
 
-	private isOwnURL(url: string): boolean {
-		return new RegExp(window.location.host + '\/load(\/base)?\\?').test(url);
+	private isInternalURL(url: string): boolean {
+		const getInternalRouteRegex = (routeIdentifier: InternalRoute) => {
+			const asString = resolveInternalRoute(routeIdentifier)
+				// remove any leading slashes
+				.replace(/^\//, '')
+				// escape all slashes (except the leading one removed above)
+				.replace(/\//, '\\/');
+			return new RegExp(`${window.location.host}\/+${asString}`);
+		};
+
+		return (
+			getInternalRouteRegex(InternalRoute.Load).test(url) ||
+			getInternalRouteRegex(InternalRoute.LoadBase).test(url)
+		);
 	}
 
 
@@ -342,7 +356,7 @@ export default class BrowserWindow {
 
 	private async handleViewportNavigating(uri: string): Promise<void> {
 		uri = unescape((<string>uri) || '');
-		if (this.isOwnURL(uri)) {
+		if (this.isInternalURL(uri)) {
 			uri = uri.replace(/^.*?\?/, '');
 		}
 		await this.load(uri, true);
@@ -368,7 +382,7 @@ export default class BrowserWindow {
 					resolve(JSON.parse(request.responseText));
 				}
 			};
-			request.open('GET', '/config/read', true);
+			request.open('GET', resolveInternalRoute(InternalRoute.ConfigRead), true);
 			request.send();
 		});
 	}
@@ -383,7 +397,7 @@ export default class BrowserWindow {
 					resolve();
 				}
 			};
-			request.open('GET', `/config/write?${escape(JSON.stringify(config))}`, true);
+			request.open('GET', `${resolveInternalRoute(InternalRoute.ConfigWrite)}?${escape(JSON.stringify(config))}`, true);
 			request.send();
 		});
 		await this.refreshBrowserConfig();
