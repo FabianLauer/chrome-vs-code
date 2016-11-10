@@ -11,8 +11,8 @@ export default class ResponseRendererFactory {
 	/**
 	 * Decorator for `ResponseRenderer` implementations.
 	 * @param score A function that checks whether the decorated renderer is capable of rendering
-	 *              a certain server response. If two or more registered renderer classes register
-	 *              are applicable to render a response, the one with the highest score is used.
+	 *              a certain server response. If two or more registered renderer classes are
+	 *              applicable to render a response, the one with the highest score is used.
 	 */
 	public static register(score: (response: XMLHttpRequest) => number) {
 		return (target: typeof ResponseRenderer) => {
@@ -58,6 +58,8 @@ export default class ResponseRendererFactory {
 
 
 	private static readonly registry = new Map<(response: XMLHttpRequest) => number, typeof ResponseRenderer>();
+
+	/// TODO: Instances aggregated in here are never cleaned up.
 	private static readonly instancesByViewport = new Map<Viewport, ResponseRenderer[]>();
 
 

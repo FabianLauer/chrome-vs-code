@@ -3,6 +3,8 @@ import HTTPServer from './HTTPServer';
 import FileReader from './FileReader';
 import IBrowserConfiguration from './IBrowserConfiguration';
 import InternalRoute from './InternalRoute';
+import IVirtualRequest from './IVirtualRequest';
+import OutgoingRequestHandler from './OutgoingRequestHandler';
 import { Url, format } from 'url';
 import { createHash } from 'crypto';
 const normalizeStringUrl: (url: string) => string = require('normalize-url');
@@ -291,62 +293,31 @@ export default class Server {
 		}
 		const parsedURL = HTTPServer.createURLFromString(requestURL);
 		switch (parsedURL.protocol) {
-			case 'http:':
-			case 'https:':
-				return this.delegateToHttpProxy(requestURL, request, response);
 			case 'about:':
 				return this.delegateToAboutProxy(requestURL, request, response);
 			default:
-				return this.respondTo404(response);
-		}
-	}
-
-
-	private async delegateToHttpProxy(requestURL: string, request: http.IncomingMessage, response: http.ServerResponse): Promise<void> {
-		return new Promise<void>(resolve => {
-			var requestFn: typeof http.request = require('follow-redirects').http.get;
-			const parsedRequestURL = HTTPServer.createURLFromString(requestURL);
-			if (parsedRequestURL.protocol === 'https:') {
-				requestFn = require('follow-redirects').https.get;
-			}
-			delete request.headers.referer;
-			delete request.headers.Referer;
-			delete request.headers.host;
-			delete request.headers.Host;
-			delete request.headers.cookie;
-			delete request.headers.Cookie;
-			request.headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36';
-			const options: http.RequestOptions = {
-				hostname: parsedRequestURL.hostname,
-				path: parsedRequestURL.path,
-				headers: request.headers
-			};
-			const clientRequest = requestFn(options, clientResponse => {
-				response.statusCode = clientResponse.statusCode;
-				response.setHeader('actual-uri', (<any>clientResponse).responseUrl);
-				delete clientResponse.headers['x-frame-options'];
-				delete clientResponse.headers['content-security-policy'];
-				for (const headerName in clientResponse.headers) {
-					response.setHeader(headerName, clientResponse.headers[headerName]);
-				}
-				this.log(`[proxy: ${clientResponse.statusCode}] ${requestURL}`);
-				clientResponse.on('data', (data: Buffer) => response.write(data));
-				clientResponse.on('end', () => response.end());
-				resolve();
-			});
-			clientRequest.on('error', (error: any) => {
-				if (
-					typeof error === 'object' &&
-					(error.code === 'ENOTFOUND' || error.code === 'ECONNREFUSED')
-				) {
-					this.respondTo404(response);
-				} else {
+				const virtualRequest = <IVirtualRequest>{
+					url: requestURL
+				};
+				try {
+					await OutgoingRequestHandler.handleRequest(
+						virtualRequest,
+						request,
+						response,
+						message => this.log(message),
+						(status) => {
+							switch (status) {
+								default:
+									return this.respondTo500(response);
+								case 404:
+									return this.respondTo404(response);
+							}
+						}
+					);
+				} catch (err) {
 					this.respondTo500(response);
 				}
-				this.log(`[proxy: error] ${requestURL} : ${error.toString()}`);
-			});
-			clientRequest.end();
-		});
+		}
 	}
 
 
