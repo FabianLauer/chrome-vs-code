@@ -40,6 +40,7 @@ class TextDocumentContentProvider implements vscode.TextDocumentContentProvider 
 		return `
 			<body>
 				<iframe
+					id='browser-frame'
 					width="100%"
 					height="100%"
 					frameborder="0"
@@ -50,7 +51,42 @@ class TextDocumentContentProvider implements vscode.TextDocumentContentProvider 
 						right: 0;
 						bottom: 0;
 						top: 0;
-					" />
+					">
+				</iframe>
+				<script>
+					var frame = document.getElementById('browser-frame');
+
+					// watch the body element for CSS class name changes and update the
+					// theme after every change:
+					new MutationObserver(function(mutations) {
+						mutations.forEach(updateTheme);
+					}).observe(document.body, {
+						attributes: true,
+						childList: false,
+						characterData: false
+					});
+
+					try {
+						updateTheme();
+					} catch (err) {
+						// if the first attempt didn't work, wait a while and try again:
+						setTimeout(updateTheme, 1000);
+						// just to make sure:
+						setTimeout(updateTheme, 4000);
+					}
+
+					function updateTheme() {
+						var theme;
+						if (document.body.classList.contains('vscode-light')) {
+							theme = 'light';
+						} else if (document.body.classList.contains('vscode-dark')) {
+							theme = 'dark';
+						} else if (document.body.classList.contains('vscode-vscode-high-contrast')) {
+							theme = 'high-contrast';
+						}
+						frame.contentWindow.setChromeVSCodeTheme(theme);
+					}
+				</script>
 			</body>
 		`;
 	}
