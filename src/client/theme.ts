@@ -1,5 +1,5 @@
 /**
- * This function is called by the extensions HTML preview.
+ * This function is called by the extension's HTML preview to sync the browser client's with VS Code's theme.
  * @param theme The theme to set.
  */
 export default function setChromeVSCodeTheme(theme: 'light' | 'dark' | 'high-contrast') {
