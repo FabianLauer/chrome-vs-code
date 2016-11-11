@@ -123,12 +123,12 @@ async function startBackEnd(): Promise<number> {
 
 function updateProvider(backEndPort: number) {
 	const provider = new TextDocumentContentProvider(backEndPort);
-	const registration = vscode.workspace.registerTextDocumentContentProvider('css-preview', provider);
+	const registration = vscode.workspace.registerTextDocumentContentProvider('chromevscode', provider);
 	return { provider, registration };
 }
 
 
-const previewUri = vscode.Uri.parse('css-preview://authority/css-preview');
+const previewUri = vscode.Uri.parse('chromevscode://');
 const registeredCommands: vscode.Disposable[] = [];
 
 
