@@ -81,7 +81,7 @@ class TextDocumentContentProvider implements vscode.TextDocumentContentProvider 
 							theme = 'light';
 						} else if (document.body.classList.contains('vscode-dark')) {
 							theme = 'dark';
-						} else if (document.body.classList.contains('vscode-vscode-high-contrast')) {
+						} else if (document.body.classList.contains('vscode-high-contrast')) {
 							theme = 'high-contrast';
 						}
 						frame.contentWindow.setChromeVSCodeTheme(theme);
