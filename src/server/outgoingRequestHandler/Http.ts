@@ -3,6 +3,9 @@ import IVirtualRequest from '../IVirtualRequest';
 import { parse as parseUrl } from 'url';
 import { IncomingMessage, ServerResponse, request as httpRequest, RequestOptions } from 'http';
 
+/**
+ * Request handler for `http://` and `https://` URLs.
+ */
 @OutgoingRequestHandler.register((virtualRequest, request) => {
 	const protocol = parseUrl(virtualRequest.url).protocol;
 	return protocol === 'http:' || protocol === 'https:' ? 1 : 0;

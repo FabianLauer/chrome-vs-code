@@ -124,3 +124,4 @@ export default OutgoingRequestHandler;
 //
 
 import './outgoingRequestHandler/Http';
+import './outgoingRequestHandler/File';
