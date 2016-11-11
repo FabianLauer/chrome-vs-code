@@ -15,13 +15,22 @@ declare function escape(str: string): string;
 })
 class ImageRenderer extends ResponseRenderer {
 	/**
+	 * Attempts to generate a favicon for the rendered response.
+	 * @param responseURI The URI from which the response was loaded.
+	 * @param response The response to render.
+	 */
+	protected async generateFaviconConcrete?(responseURI: string, response: XMLHttpRequest): Promise<string | void> {
+		return (await ImageRenderer.loadImageFromResponse(response)).src;
+	}
+
+
+	/**
 	 * Renders a certain response in the renderer's current viewport.
 	 * @param responseURI The URI from which the response was loaded.
 	 * @param response The response to render.
 	 */
 	protected async renderResponseConcrete(responseURI: string, response: XMLHttpRequest): Promise<void> {
-		const contentType = response.getResponseHeader('Content-Type');
-		const image = await ImageRenderer.loadImage(`data:${contentType};base64,${response.responseText}`);
+		const image = await ImageRenderer.loadImageFromResponse(response);
 		await this.viewport.renderHTML(`
 			<!DOCTYPE html>
 			<html>
@@ -61,6 +70,12 @@ class ImageRenderer extends ResponseRenderer {
 				</body>
 			</html>
 		`);
+	}
+
+
+	private static async loadImageFromResponse(response: XMLHttpRequest): Promise<HTMLImageElement> {
+		const contentType = response.getResponseHeader('Content-Type');
+		return ImageRenderer.loadImage(`data:${contentType};base64,${response.responseText}`);
 	}
 
 
