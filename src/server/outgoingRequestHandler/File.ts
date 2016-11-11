@@ -25,7 +25,6 @@ export default class File extends OutgoingRequestHandler {
 		response: ServerResponse
 	): Promise<void> {
 		const url = parseUrl(virtualRequest.url);
-		this.log(url.path);
 		const stats = await File.stat(url.path);
 		if (stats.isFile()) {
 			return this.handleFileRequest(url, response);
@@ -41,7 +40,7 @@ export default class File extends OutgoingRequestHandler {
 		const files = await File.readDir(directoryURL.path);
 		files.unshift('.', '..');
 		response.statusCode = 200;
-		response.setHeader('content-type', 'text/html');
+		response.setHeader('Content-Type', 'text/html');
 		const fileListItems = files.map(file => {
 			return `
 				<li>
@@ -69,8 +68,9 @@ export default class File extends OutgoingRequestHandler {
 	private async handleFileRequest(fileURL: Url, response: ServerResponse): Promise<void> {
 		const content = await File.readFile(fileURL.path);
 		response.statusCode = 200;
-		response.setHeader('content-type', mime.lookup(fileURL.path));
-		response.end(content);
+		response.setHeader('Content-Type', mime.lookup(fileURL.path));
+		response.setHeader('Content-Disposition', `inline; filename="${fileURL.pathname}"`);
+		response.end(content.toString('base64'));
 	}
 
 
