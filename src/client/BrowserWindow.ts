@@ -11,7 +11,7 @@ import HistoryEntry from './HistoryEntry';
 import IFrameBindings from './IFrameBindings';
 import IPrivilegedFrameBindings from './IPrivilegedFrameBindings';
 import IBrowserConfiguration from '../server/IBrowserConfiguration';
-import BrowserConfiguration from './BrowserConfiguration';
+import WritableBrowserConfig from './WritableBrowserConfig';
 import * as configSection from './BrowserConfigSection';
 import { internalConfirm, initialize as initializePrompts } from './webapi/prompts';
 
@@ -448,7 +448,7 @@ export default class BrowserWindow {
 
 	private readonly statusIndicator = new StatusIndicator();
 	private readonly history = new History();
-	private readonly config = new BrowserConfiguration();
+	private readonly config = new WritableBrowserConfig();
 	private autoToggleAddressBar = true;
 	private lastViewportScroll: {
 		recordedTime: number;
