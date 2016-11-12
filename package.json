@@ -18,20 +18,10 @@
         "title": "Open Web Browser"
       },
       {
-        "command": "extension.openWebBrowserToSide",
-        "title": "Open Web Browser to the Side"
+        "command": "extension.openWebBrowserSplitView",
+        "title": "Open Web Browser (Split View)"
       }
     ],
-    "menus": {
-      "editor/title": [
-        {
-          "command": "extension.openWebBrowser"
-        },
-        {
-          "command": "extension.openWebBrowserToSide"
-        }
-      ]
-    },
     "configuration": {
       "type": "object",
       "title": "Chrome VS Code",

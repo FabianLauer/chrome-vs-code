@@ -185,7 +185,7 @@ function updateFrontEndCommands(context: vscode.ExtensionContext, backEndPort: n
 	};
 	// unregisterAllCommands();
 	log(`registering commands for back end at ${backEndPort}`);
-	registeredCommands.push(vscode.commands.registerCommand('extension.openWebBrowserToSide', () => {
+	registeredCommands.push(vscode.commands.registerCommand('extension.openWebBrowserSplitView', () => {
 		return vscode.commands.executeCommand('vscode.previewHtml', previewUri, vscode.ViewColumn.Two, 'Web Browser')
 			.then(successHandler, errorHandler);
 	}));
