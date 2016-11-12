@@ -49,6 +49,15 @@ export async function alert(browserWindow: BrowserWindow, message?: any): Promis
 }
 
 
+/**
+ * Shows a customizable confirm dialog.
+ * **This must not be exposed to web pages.**
+ * @param title The dialog title.
+ * @param message A message to show in the dialog.
+ * @param allowHTML Whether to allow HTML in the dialog message or not.
+ * @param yesButtonText An optional override for the confirmation button's text.
+ * @param yesButtonText An optional override for the refuse button's text.
+ */
 export function internalConfirm(
 	browserWindow: BrowserWindow,
 	title = `'${browserWindow.getHistory().getCurrent().uri}' says:`,
@@ -88,7 +97,7 @@ export function internalConfirm(
  * @see http://w3c.github.io/html/webappapis.html#dom-window-confirm
  */
 export async function confirm(browserWindow: BrowserWindow, message?: any): Promise<boolean> {
-	return internalConfirm(browserWindow, message, false);
+	return internalConfirm(browserWindow, undefined, message, false);
 }
 
 
