@@ -8,6 +8,7 @@ import OutgoingRequestHandler from './OutgoingRequestHandler';
 import { getHostsMap } from './util/hosts';
 import { Url, format } from 'url';
 import { createHash } from 'crypto';
+/* tslint:disable:no-var-requires */
 const normalizeStringUrl: (url: string) => string = require('normalize-url');
 
 declare function unescape(str: string): string;
@@ -135,14 +136,6 @@ export default class Server {
 			}
 		);
 		this.httpServer.addHandler(
-			this.getInternalRoutePath(InternalRoute.Hosts),
-			async (request, response) => {
-				response.statusCode = 200;
-				response.setHeader('Content-Type', 'text/json');
-				response.end(JSON.stringify(await getHostsMap()));
-			}
-		);
-		this.httpServer.addHandler(
 			this.getInternalRoutePath(InternalRoute.ConfigWrite),
 			async (request, response) => {
 				const parsedURL = HTTPServer.createURLFromString(request.url);
@@ -154,6 +147,14 @@ export default class Server {
 				await this.updateConfig(data);
 				response.statusCode = 200;
 				response.end();
+			}
+		);
+		this.httpServer.addHandler(
+			this.getInternalRoutePath(InternalRoute.Hosts),
+			async (request, response) => {
+				response.statusCode = 200;
+				response.setHeader('Content-Type', 'text/json');
+				response.end(JSON.stringify(await getHostsMap()));
 			}
 		);
 	}
