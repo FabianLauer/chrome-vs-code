@@ -7,7 +7,6 @@ import IVirtualRequest from './IVirtualRequest';
 import OutgoingRequestHandler from './OutgoingRequestHandler';
 import { getHostsMap } from './util/hosts';
 import { Url, format } from 'url';
-import { createHash } from 'crypto';
 /* tslint:disable:no-var-requires */
 const normalizeStringUrl: (url: string) => string = require('normalize-url');
 
@@ -23,36 +22,6 @@ function normalizeUrl(url: string | Url): string {
 
 
 export default class Server {
-	/**
-	 * Generates a route map with URLs that are almoost impossible to be found by websites hosted by this browser. 
-	 */
-	public static generateSafeInternalRouteMap(): Map<InternalRoute, string> {
-		const map = new Map<InternalRoute, string>();
-		for (const keyAsString in InternalRoute) {
-			const key = parseInt(keyAsString, 10);
-			// skipt enum literals, use only the numeric keys
-			if (isNaN(key) || !isFinite(key) || typeof key !== 'number') {
-				continue;
-			}
-			// generate a random hash for the URL and prepend a slash so the server can resolve it
-			let hash: string;
-			const ensureUnique = () => {
-				hash = Server.generateRandomHash();
-				for (const value of map.values()) {
-					if (hash === value) {
-						ensureUnique();
-						return;
-					}
-				}
-			};
-			ensureUnique();
-			// actually update the hash
-			map.set(key, hash);
-		}
-		return map;
-	}
-
-
 	/**
 	 * @param internalRouteMap Maps internal route IDs to the URLs under which they can be found.
 	 * @param browserJS An object that reads the main JS file for the browser client.
@@ -341,14 +310,6 @@ export default class Server {
 			response.end(await page.reader.getContent());
 		}
 		this.log(`[about: ${response.statusCode}] ${requestURL}`);
-	}
-
-
-	/**
-	 * Generates a random sha hash.
-	 */
-	private static generateRandomHash(): string {
-		return '/' + createHash('sha256').update(Math.random() + Date.now().toString(32)).digest('hex');
 	}
 
 
