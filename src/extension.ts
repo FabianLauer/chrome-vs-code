@@ -13,13 +13,11 @@ import { StaticFileReader, generateAboutPageReaders } from './createServer';
 
 process.on('uncaughtException', err => {
 	console.warn(err);
-	process.exit();
 });
 
 
 process.on('unhandledRejection', err => {
 	console.warn(err);
-	process.exit();
 });
 
 
