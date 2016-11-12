@@ -11,6 +11,8 @@ import HistoryEntry from './HistoryEntry';
 import IFrameBindings from './IFrameBindings';
 import IPrivilegedFrameBindings from './IPrivilegedFrameBindings';
 import IBrowserConfiguration from '../server/IBrowserConfiguration';
+import BrowserConfiguration from './BrowserConfiguration';
+import * as configSection from './BrowserConfigSection';
 import { internalConfirm, initialize as initializePrompts } from './webapi/prompts';
 
 declare function escape(str: string): string;
@@ -85,9 +87,8 @@ export default class BrowserWindow {
 
 	public async loadInitialPage(): Promise<void> {
 		// load the initial page
-		const config = await this.getBrowserConfig();
 		let initialUrl = 'about://home';
-		if (config.showWelcomePage) {
+		if (await this.config.get(configSection.showWelcomePage)) {
 			initialUrl = 'about://welcome';
 		}
 		await this.load(initialUrl);
@@ -113,10 +114,9 @@ export default class BrowserWindow {
 			this.statusIndicator.show(`loading ${uri}`);
 			await this.browserBar.showLoadingProgress(10);
 		}
-		await this.refreshBrowserConfig();
-		const collapseBrowserBar =
-			this.isBrowserBarCollapsed() &&
-			(await this.getBrowserConfig()).autoToggleAddressBar;
+		// refresh the `autoToggleAddressBar` config
+		this.autoToggleAddressBar = await this.config.get(configSection.autoToggleAddressBar);
+		const collapseBrowserBar = this.isBrowserBarCollapsed() && this.autoToggleAddressBar;
 		if (collapseBrowserBar) {
 			this.expandBrowserBar(true);
 		}
@@ -217,15 +217,6 @@ export default class BrowserWindow {
 
 
 	/**
-	 * Checks if the user has accepted the disclaimer.
-	 */
-	private async wasDisclaimerAccepted(): Promise<boolean> {
-		const config = await this.getBrowserConfig();
-		return config.disclaimerReadAndAccepted;
-	}
-
-
-	/**
 	 * Presents the disclaimer to the user and asks to accept it.
 	 * Returns `true` when the user accepts it, `false` if not.
 	 */
@@ -257,7 +248,7 @@ export default class BrowserWindow {
 			this.browserBar.urlBar.setURL('about://welcome');
 		};
 		// disclaimer was already accepted
-		if (await this.wasDisclaimerAccepted()) {
+		if (await this.config.get(configSection.disclaimerReadAndAccepted)) {
 			return true;
 		}
 		// disclaimer was not accepted yet
@@ -271,8 +262,7 @@ export default class BrowserWindow {
 		// Don't return the `accepted` value from above, but rather refresh the browser config
 		// and return the config value from 'disclaimerReadAndAccepted'. This way, we can make
 		// sure the config file is in sync.
-		await this.refreshBrowserConfig();
-		if (!(await this.getBrowserConfig()).disclaimerReadAndAccepted) {
+		if (!(await this.config.get(configSection.disclaimerReadAndAccepted))) {
 			notAccepted();
 			return false;
 		}
@@ -304,8 +294,7 @@ export default class BrowserWindow {
 
 
 	private async handleViewportScroll(): Promise<void> {
-		const config = await this.getBrowserConfig();
-		if (!config.autoToggleAddressBar) {
+		if (!this.autoToggleAddressBar) {
 			return;
 		}
 		const now = Date.now();
@@ -320,9 +309,8 @@ export default class BrowserWindow {
 		// scrolling down:
 		if (currentScrollY > this.lastViewportScroll.scrollY) {
 			this.collapseBrowserBar();
-		}
-		// scrolling up:
-		else {
+		} else {
+			// scrolling up:
 			this.expandBrowserBar();
 		}
 		this.lastViewportScroll.recordedTime = now;
@@ -392,7 +380,6 @@ export default class BrowserWindow {
 			request.open('GET', `${resolveInternalRoute(InternalRoute.ConfigWrite)}?${escape(JSON.stringify(config))}`, true);
 			request.send();
 		});
-		await this.refreshBrowserConfig();
 	}
 
 
@@ -406,23 +393,6 @@ export default class BrowserWindow {
 
 	private async updateBrowserConfigField(key: string, value: any): Promise<void> {
 		return this.updateConfigField('chromevscode', key, value);
-	}
-
-
-	/**
-	 * Returns the current browser configuration.
-	 */
-	private async getBrowserConfig(): Promise<IBrowserConfiguration> {
-		this.config = this.config || await this.loadBrowserConfig();
-		return this.config;
-	}
-
-
-	/**
-	 * Refreshes the configuration object returned by method `getBrowserConfig()`.
-	 */
-	private async refreshBrowserConfig(): Promise<void> {
-		this.config = await this.loadBrowserConfig();
 	}
 
 
@@ -477,11 +447,9 @@ export default class BrowserWindow {
 
 
 	private readonly statusIndicator = new StatusIndicator();
-	/**
-	 * The current browser configuration. **Do not access this directly, use `getBrowserConfig()` instead.**
-	 */
-	private config: IBrowserConfiguration;
-	private history = new History();
+	private readonly history = new History();
+	private readonly config = new BrowserConfiguration();
+	private autoToggleAddressBar = true;
 	private lastViewportScroll: {
 		recordedTime: number;
 		scrollY: number;
@@ -490,7 +458,7 @@ export default class BrowserWindow {
 		scrollY: 0
 	};
 	/**
-	 * Returns `true` if the disclaimer prompt is currently visible.
+	 * This is `true` if the disclaimer prompt is currently visible.
 	 */
 	private disclaimerPromptVisible = false;
 }
