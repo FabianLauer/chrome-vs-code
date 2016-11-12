@@ -1,6 +1,6 @@
 {
-  "name": "vscode-browser",
-  "description": "A web browser for VS Code.",
+  "name": "chrome-vs-code",
+  "description": "Browse the web in VS Code.",
   "version": "0.0.1",
   "publisher": "fabianlauer",
   "preview": true,
@@ -9,6 +9,14 @@
   },
   "activationEvents": [
     "*"
+  ],
+  "displayName": "Chrome VS Code",
+  "galleryBanner": {
+    "color": "#ffffff",
+    "theme": "dark"
+  },
+  "categories": [
+    "Other"
   ],
   "icon": "./out/src/static/logo-128x128.png",
   "main": "./out/src/extension",
