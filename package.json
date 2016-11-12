@@ -10,6 +10,7 @@
   "activationEvents": [
     "*"
   ],
+  "icon": "./out/src/static/logo-128x128.png",
   "main": "./out/src/extension",
   "contributes": {
     "commands": [
