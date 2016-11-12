@@ -26,7 +26,11 @@ enum InternalRoute {
 	/**
 	 * The URL to the config writer.
 	 */
-	ConfigWrite
+	ConfigWrite,
+	/**
+	 * The URL to the hostnames API.
+	 */
+	Hosts
 }
 
 export default InternalRoute;

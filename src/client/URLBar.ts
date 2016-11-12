@@ -1,4 +1,5 @@
 import IRenderable from './IRenderable';
+import URLInterpreter from './URLInterpreter';
 import { Event } from '../utils/event';
 import { parseURL } from '../utils';
 
@@ -32,8 +33,8 @@ export default class URLBar implements IRenderable {
 		this.hideLoadingIndicator();
 		this.outerElement.appendChild(this.loadingBar);
 		// input
-		this.input.addEventListener('blur', this.handleInputBlur.bind(this));
 		this.input.addEventListener('keyup', e => this.handleInputChange(e));
+		this.input.addEventListener('blur', this.handleInputBlur.bind(this));
 		this.input.placeholder = 'Enter an address';
 		this.outerElement.appendChild(this.input);
 		// formatted view
@@ -152,26 +153,18 @@ export default class URLBar implements IRenderable {
 	}
 
 
-	private handleInputChange(e: KeyboardEvent): void {
+	private async handleInputChange(e: KeyboardEvent): Promise<void> {
 		// only trigger change event on enter
 		if (e.keyCode !== 13) {
 			return;
 		}
-		// fall back to 'http://' if no protocol was provided
-		if (
-			// no protocol at all:
-			!(/^[a-z]+\:\//.test(this.input.value)) ||
-			// only a leading double slash
-			/^\/+/.test(this.input.value)
-		) {
-			this.input.value = this.input.value.replace(/^[a-z]*\:?\/+/, '');
-			this.input.value = `http://${this.input.value}`;
-		}
+		this.input.value = await this.urlInterpreter.interpret(this.input.value);
 		this.onChange.trigger();
 		this.input.blur();
 	}
 
 
+	private readonly urlInterpreter = new URLInterpreter();
 	private readonly outerElement = document.createElement('div');
 	private readonly faviconElement =  document.createElement('div');
 	private readonly loadingBar = document.createElement('div');

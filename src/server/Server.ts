@@ -5,6 +5,7 @@ import IBrowserConfiguration from './IBrowserConfiguration';
 import InternalRoute from './InternalRoute';
 import IVirtualRequest from './IVirtualRequest';
 import OutgoingRequestHandler from './OutgoingRequestHandler';
+import { getHostsMap } from './util/hosts';
 import { Url, format } from 'url';
 import { createHash } from 'crypto';
 const normalizeStringUrl: (url: string) => string = require('normalize-url');
@@ -131,6 +132,14 @@ export default class Server {
 				response.statusCode = 200;
 				response.setHeader('Content-Type', 'text/json');
 				response.end(JSON.stringify(await this.getConfig()));
+			}
+		);
+		this.httpServer.addHandler(
+			this.getInternalRoutePath(InternalRoute.Hosts),
+			async (request, response) => {
+				response.statusCode = 200;
+				response.setHeader('Content-Type', 'text/json');
+				response.end(JSON.stringify(await getHostsMap()));
 			}
 		);
 		this.httpServer.addHandler(
