@@ -1,5 +1,6 @@
 import resolveInternalRoute from './internalRouteMapReader';
 import InternalRoute from '../server/InternalRoute';
+import URLBar from './URLBar';
 import BrowserBar from './BrowserBar';
 import Viewport from './Viewport';
 import StatusIndicator from './StatusIndicator';
@@ -24,11 +25,12 @@ declare function unescape(str: string): string;
  */
 export default class BrowserWindow {
 	constructor(
+		private readonly config = new WritableBrowserConfig(),
 		private readonly browserBar?: BrowserBar,
 		private readonly viewport?: Viewport
 	) {
 		this.browserBar = this.browserBar || new BrowserBar(
-			undefined,
+			new URLBar(this.config),
 			dialog => this.renderDialog(dialog),
 			url => this.load(url)
 		);
@@ -448,7 +450,6 @@ export default class BrowserWindow {
 
 	private readonly statusIndicator = new StatusIndicator();
 	private readonly history = new History();
-	private readonly config = new WritableBrowserConfig();
 	private autoToggleAddressBar = true;
 	private lastViewportScroll: {
 		recordedTime: number;

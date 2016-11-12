@@ -1,5 +1,6 @@
 import IRenderable from './IRenderable';
 import URLInterpreter from './URLInterpreter';
+import ReadonlyBrowserConfig from './ReadonlyBrowserConfig';
 import { Event } from '../utils/event';
 import { parseURL } from '../utils';
 
@@ -7,6 +8,16 @@ import { parseURL } from '../utils';
  * The browser's URL bar component.
  */
 export default class URLBar implements IRenderable {
+	/**
+	 * Creates a new `URLBar`.
+	 * @param config A browser configuration reader.
+	 */
+	public constructor(
+		readonly config: ReadonlyBrowserConfig,
+		private readonly urlInterpreter = new URLInterpreter(config)
+	) { }
+
+
 	/**
 	 * Triggered when the URL bar's value has changed.
 	 */
@@ -35,7 +46,7 @@ export default class URLBar implements IRenderable {
 		// input
 		this.input.addEventListener('keyup', e => this.handleInputChange(e));
 		this.input.addEventListener('blur', this.handleInputBlur.bind(this));
-		this.input.placeholder = 'Enter an address';
+		this.input.placeholder = 'Enter an address or search the web';
 		this.outerElement.appendChild(this.input);
 		// formatted view
 		this.protocol.classList.add('protocol');
@@ -164,7 +175,6 @@ export default class URLBar implements IRenderable {
 	}
 
 
-	private readonly urlInterpreter = new URLInterpreter();
 	private readonly outerElement = document.createElement('div');
 	private readonly faviconElement =  document.createElement('div');
 	private readonly loadingBar = document.createElement('div');

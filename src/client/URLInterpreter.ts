@@ -2,6 +2,8 @@ import { parse, format } from 'url';
 import resolveInternalRoute from './internalRouteMapReader';
 import InternalRoute from '../server/InternalRoute';
 import IHostsMap from '../server/util/IHostsMap';
+import * as configSection from './BrowserConfigSection';
+import ReadonlyBrowserConfig from './ReadonlyBrowserConfig';
 
 /**
  * URL interpreters are objects that 
@@ -9,8 +11,11 @@ import IHostsMap from '../server/util/IHostsMap';
 export default class URLInterpreter {
 	/**
 	 * Creates a new `URLInterpreter`.
+	 * @param config A browser configuration reader.
 	 */
-	public constructor() { /* do nothing */ }
+	public constructor(
+		private config: ReadonlyBrowserConfig
+	) { /* do nothing */ }
 
 
 	/**
@@ -43,7 +48,8 @@ export default class URLInterpreter {
 	 * @param search The text to search for.
 	 */
 	private async getSearchURL(search: string): Promise<string> {
-		return `http://www.google.com/search?q=${encodeURIComponent(search)}`;
+		const url = await this.config.get(configSection.webSearchURL);
+		return url.replace(/\${searchTerm}/g, encodeURIComponent(search));
 	}
 
 

@@ -11,7 +11,7 @@ import { sleep } from '../utils';
  */
 export default class BrowserBar implements IRenderable {
 	constructor(
-		public readonly urlBar: URLBar = new URLBar(),
+		public readonly urlBar: URLBar,
 		private renderDialog: (dialog: Dialog) => Promise<void>,
 		private openURL: (url: string) => Promise<void>
 	) { }

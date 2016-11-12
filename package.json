@@ -57,6 +57,12 @@
           "type": "boolean",
           "default": false,
           "description": "Whether the user (you) has read the the disclaimer and terms of use and accepts them. Those terms can be found at any time by browsing to 'about://disclaimer'."
+        },
+        "chromevscode.webSearchURL": {
+          "type": "string",
+          "minLength": 7,
+          "default": "http://www.google.com/search?q=${searchTerm}",
+          "description": "A URL to search the web with. The search term is made available as `${searchTerm}`."
         }
       }
     }

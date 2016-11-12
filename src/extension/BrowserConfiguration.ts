@@ -23,6 +23,10 @@ export default class BrowserConfiguration implements IBrowserConfiguration {
 			BrowserConfiguration.getWorkspaceConfigOrFallback(
 				'disclaimerReadAndAccepted',
 				BrowserConfiguration.isTypeof('boolean')
+			),
+			BrowserConfiguration.getWorkspaceConfigOrFallback(
+				'webSearchURL',
+				BrowserConfiguration.isTypeof('string')
 			)
 		);
 	}
@@ -61,7 +65,8 @@ export default class BrowserConfiguration implements IBrowserConfiguration {
 		public readonly home: string,
 		public readonly autoToggleAddressBar: boolean,
 		public readonly showWelcomePage: boolean,
-		public readonly disclaimerReadAndAccepted: boolean
+		public readonly disclaimerReadAndAccepted: boolean,
+		public readonly webSearchURL: string
 	) { }
 
 
@@ -72,6 +77,7 @@ export default class BrowserConfiguration implements IBrowserConfiguration {
 		'http://code.visualstudio.com',
 		true,
 		true,
-		false
+		false,
+		'http://www.google.com/search?q=${searchTerm}'
 	);
 }

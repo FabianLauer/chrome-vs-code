@@ -34,3 +34,8 @@ export const showWelcomePage = BrowserConfigSectionSymbol.create<boolean>('showW
  * Whether the user has read the the disclaimer and terms of use and accepts them.
  */
 export const disclaimerReadAndAccepted = BrowserConfigSectionSymbol.create<boolean>('disclaimerReadAndAccepted');
+
+/**
+ * A URL to search the web with.
+ */
+export const webSearchURL = BrowserConfigSectionSymbol.create<string>('webSearchURL');
