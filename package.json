@@ -55,7 +55,7 @@
         "chromevscode.disclaimerReadAndAccepted": {
           "type": "boolean",
           "default": false,
-          "description": "Whether the user (you) has read the the disclaimer and terms of use and accepts them. Those terms can be found at any time by browsing to 'about://disclaimer'."
+          "description": "Whether the user (you) has read the disclaimer and terms of use and accepts them. Those terms can be found at any time by browsing to 'about://disclaimer'."
         },
         "chromevscode.webSearchURL": {
           "type": "string",
