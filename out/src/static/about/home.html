@@ -1,0 +1,14 @@
+<!-- @about://home -->
+
+
+<script>
+	window.addEventListener('vscodeBrowserBindingsReady', function() {
+		window.vscodeBrowser.getConfiguration().then(function(config) {
+			// prevent an infinite loop reloading this page over and over again
+			if (config.home.trim() === 'about://home') {
+				return;
+			}
+			window.vscodeBrowser.load(config.home);
+		});
+	});
+</script>

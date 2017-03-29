@@ -1,0 +1,92 @@
+<!-- @about://web-api-tests -->
+
+<h1>Web API Tests</h1>
+
+<section>
+	<h2>Overview</h2>
+	<ul id='index'></ul>
+	<script>
+		// build the page index after page load
+		setTimeout(function() {
+			const index = document.getElementById('index');
+			index.innerHTML = '';
+			const headings = document.getElementsByTagName('h2');
+			for (var i = 0; i < headings.length; i++) {
+				const heading = headings[i];
+				heading.id = (heading.id || heading.textContent).replace(/ /g, '-').toLowerCase();
+				index.innerHTML += '<li><a href="#' + heading.id + '">' + heading.textContent + '</a></li>';
+			}
+		}, 1);
+	</script>
+</section>
+
+
+<section>
+	<h2>Dialogs</h2>
+	<h3>window.alert()</h3>
+	<p>
+		<button onclick="window.alert('This is a test message.')">Test</button>
+	</p>
+	<h3>window.confirm()</h3>
+	<p>
+		<button onclick="testConfirm()">Test</button>
+		<p id="test-confirm-result"></p>
+		<script>
+			function testConfirm() {
+				var resultElement = document.getElementById('test-confirm-result');
+				window.confirm('Are you sure?').then(result => {
+					resultElement.innerHTML = 'typeof ' + typeof result + ', ' + (!!result ? 'true' : 'false');
+				}).catch(reason => {
+					console.error(reason);
+					resultElement.innerHTML = 'Error! See console for more.';
+				});
+			}
+		</script>
+	</p>
+	<h3>window.prompt()</h3>
+	<p>
+		<button onclick="testPrompt()">Test (default value: New York)</button>
+		<p id="test-prompt-result"></p>
+		<script>
+			function testPrompt() {
+				var resultElement = document.getElementById('test-prompt-result');
+				window.prompt('Enter a city', 'New York').then(result => {
+					resultElement.innerHTML = 'typeof ' + typeof result + ', ' + result;
+				}).catch(reason => {
+					console.error(reason);
+					resultElement.innerHTML = 'Error! See console for more.';
+				});
+			}
+		</script>
+	</p>
+</section>
+
+<section>
+	<h2>Webcam Access</h2>
+	<button onclick="testWebcam()">Test</button>
+	<br>
+	<br>
+	<video autoplay="true" id="webcam-video-player" style="width: 300px; height: 300px; background: #aaa;"></video>
+	<p id="webcam-info"></p>
+	<script type="text/javascript">
+		function testWebcam() {
+			const video = document.querySelector("#webcam-video-player");
+			navigator.getUserMedia =
+				navigator.getUserMedia ||
+				navigator.webkitGetUserMedia;
+			if (navigator.getUserMedia) {
+				document.querySelector("#webcam-info").innerHTML += 'navigator.getUserMedia is supported' + '<br>';
+				navigator.getUserMedia(
+					{ video: true },
+					function(stream) {
+						video.src = window.URL.createObjectURL(stream);
+					}, function(error) {
+						console.log(error);
+					}
+				);
+			} else {
+				document.querySelector("#webcam-info").innerHTML += 'navigator.getUserMedia is not supported' + '<br>';
+			}
+		}
+	</script>
+</section>

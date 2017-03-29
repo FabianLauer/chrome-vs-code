@@ -1,0 +1,28 @@
+* {
+	font-family: system, -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif!important;
+}
+
+body {
+	box-sizing: border-box;
+	padding: 10vh 10vw;
+	font-size: 0.8em;
+	color: #242424;
+	background: #fff;
+}
+
+section {
+	display: block;
+	float: left;
+	clear: both;
+	width: 100%;
+	height: auto;
+	margin: 2em 0;
+}
+
+p {
+	line-height: 1.3em;
+}
+
+a {
+	color: #666;
+}

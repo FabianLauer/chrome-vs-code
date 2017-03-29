@@ -1,0 +1,284 @@
+<!-- @about://welcome -->
+
+<style>
+	html,
+	body,
+	#wrapper {
+		position: relative;
+		float: left;
+		width: 100%;
+		height: auto;
+		min-height: 100vh;
+		margin: 0;
+		padding: 0;
+		overflow: auto;
+		font-size: 15px;
+		font-family: system, -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif!important;
+		color: #242424;
+	}
+	
+	html {
+		height: 100vh;
+	}
+	
+	#wrapper {
+		-webkit-font-smoothing: antialiased;
+		background-color: #fff;
+		transition: background-color 1s ease, transform 1s ease;
+	}
+	
+	#wrapper.initial {
+		transform: scale(1.03);
+		/*background-color: #212121;*/
+	}
+	
+	.logo {
+		display: block;
+		float: left;
+		clear: both;
+		position: relative;
+		width: 10em;
+		height: 10em;
+		margin-top: 15vh;
+		left: 50%;
+		transform: translateX(-50%);
+		filter: drop-shadow(0.5em 1em 0.1em rgba(0, 0, 0, 0.05));
+		transition: filter 1s ease;
+	}
+	
+	.initial .logo {
+		filter: drop-shadow(1em 2.5em 1.5em rgba(0, 0, 0, 0.1));
+	}
+	
+	h1 {
+		position: relative;
+		float: left;
+		clear: both;
+		width: 100%;
+		opacity: 1;
+		transition: opacity 1s 0.5s ease;
+	}
+	
+	.initial h1 {
+		opacity: 0;
+	}
+	
+	h1 > * {
+		position: relative;
+		display: block;
+		float: left;
+		clear: both;
+		width: auto;
+		left: 50%;
+		transform: translateX(-50%);
+		text-align: center;
+		font-weight: 100;
+	}
+	
+	h1 strong {
+		position: relative;
+		margin-bottom: 0.3em;
+		color: inherit;
+		text-transform: uppercase;
+	}
+	
+	h1 strong small {
+		position: absolute;
+		left: 100%;
+		top: 0.6em;
+		padding: 0.1em 0.5em;
+		transform: translateX(0.5em);
+		font-size: 0.36em;
+		font-weight: 800;
+		background: #fdd400;
+	}
+	
+	h1 span {
+		font-size: 0.6em;
+		color: #777;
+	}
+	
+	.welcome-menu {
+		position: relative;
+		float: left;
+		clear: both;
+		width: auto;
+		margin: 3em 0 5em;
+		left: 50%;
+		transform: translateX(-50%);
+		opacity: 1;
+		transition: opacity 1s 1.5s ease;
+	}
+	
+	.initial .welcome-menu {
+		opacity: 0;
+	}
+	
+	.welcome-menu ul,
+	.welcome-menu li {
+		display: block;
+		float: left;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	
+	.welcome-menu ul {
+		display: flex;
+		width: 90vh;
+		flex-direction: row;
+	}
+	
+	@media all and (max-width: 1024px) {
+		.welcome-menu ul {
+			flex-direction: column;
+			height: 7em;
+		}
+	}
+	
+	.welcome-menu li {
+		clear: none;
+		box-sizing: border-box;
+		flex-basis: 33%;
+		padding: 0 0.5em;
+	}
+	
+	.welcome-menu a {
+		position: relative;
+		float: left;
+		display: block;
+		width: auto;
+		height: auto;
+		left: 50%;
+		transform: translateX(-50%);
+		text-align: center;
+		font-weight: 400;
+		color: #777;
+		text-transform: uppercase;
+		text-decoration: none;
+		cursor: pointer;
+		transition: color 0.2s ease;
+	}
+	
+	.welcome-menu a,
+	.welcome-menu a::after {
+		transition: color 0.2s ease, background-color 0.2s ease;
+	}
+	
+	.welcome-menu a:hover {
+		color: #038fd6;
+	}
+	
+	.welcome-menu a::after {
+		content: '';
+		position: absolute;
+		width: 100%;
+		height: 2px;
+		left: 0;
+		bottom: -0.3em;
+		background-color: #eee;
+	}
+	
+	.welcome-menu a:hover::after {
+		background-color: #038fd6;
+	}
+	
+	.about {
+		float: none;
+		clear: both;
+		width: 90vw;
+		max-width: 500px;
+		height: auto;
+		margin: 0 auto;
+		opacity: 1;
+		transition: opacity 1s 2.5s ease;
+	}
+	
+	.initial .about {
+		opacity: 0;
+	}
+	
+	.about h2 {
+		font-size: 1.4em;
+		font-weight: 200;
+		text-transform: uppercase;
+		text-align: center;
+	}
+	
+	.about p {
+		line-height: 1.3em;
+		font-size: 0.9em;
+		font-weight: 200;
+	}
+</style>
+
+<script>
+	var started = false;
+
+	function start() {
+		if (started) {
+			return;
+		}
+		document.getElementById('wrapper').classList.remove('initial');
+		setTimeout(function() {
+			window.vscodeBrowser.showAddressBar();
+		}, 5000);
+	}
+
+	setTimeout(start, 1200);
+
+	window.addEventListener('vscodeBrowserBindingsReady', function() {
+		window.vscodeBrowser.hideAddressBar().then(function() {
+			setTimeout(start, 300);
+		});
+	});
+</script>
+
+<div id="wrapper" class="initial">
+
+	<svg class="logo" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+		x="0px" y="0px" width="1000px" height="1000px" viewBox="0 0 1000 1000" xml:space="preserve">
+		<g>
+			<polygon style="fill:#FDD400;" points="882,794.4 733.4,830.8 733.4,169.2 882,205.6" />
+			<polygon style="fill:#E62922;" points="882,794.4 733.4,830.8 118,277.1 235.2,239" />
+			<polygon style="fill:#038FD6;" points="882,205.6 733.4,169.2 118,722.9 235.2,761" />
+			<polygon style="fill:#42B839;" points="235.2,761 118,722.9 118,277.1 235.2,239" />
+			<g style="opacity:0.15;">
+				<polyline points="882,205.6 733.4,378.6 733.4,333.2" />
+				<polyline points="235.2,239 262.9,407.5 235.2,382.6" />
+				<polyline points="235.2,761 262.9,592.5 235.2,617.4" />
+				<path d="M882,794.4c0-6.9-148.6-167-148.6-167v39.4" />
+				<polygon points="582.9,537.6 504.5,624.9 450.4,576.2 539.2,500" />
+			</g>
+		</g>
+	</svg>
+
+
+	<h1>
+		<strong>Chrome VS Code <small>Preview</small></strong>
+		<span>Google Chrome meets Visual Studio Code.</span>
+	</h1>
+
+	<nav class="welcome-menu">
+		<ul>
+			<li>
+				<a href="http://github.com">Contribute</a>
+			</li>
+			<li>
+				<a href="about://home">Start browsing already!</a>
+			</li>
+			<li>
+				<a href="http://github.com">Report an Issue</a>
+			</li>
+		</ul>
+	</nav>
+
+	<!--
+	<div class="about">
+		<h2>Welcome to the Chrome VS Code Preview</h2>
+		<p>
+		</p>
+	</div>
+	-->
+
+</div>

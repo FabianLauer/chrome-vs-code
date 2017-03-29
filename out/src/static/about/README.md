@@ -1,0 +1,1 @@
+This directory contains all pages available under the `about:` protocol.
