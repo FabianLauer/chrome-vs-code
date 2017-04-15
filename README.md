@@ -51,7 +51,7 @@ Unfortunately, some issues are probably here to stay:
 
 VS Code has the capability of showing so called *virtual documents* in editor tabs. They are normally used to render previews for HTML, CSS, SVG, Markdown files and so on. Chrome VS Code renders its GUI inside such a virtual document.
 
-Virtual documents live in a sandbox, though. This means that communication with a virtual document via JavaScript is limited by the same origin policy, thus just loading any website, say google.com, inside a virtual document will immediately prevent the JavaScript code 'surrounding' the virtual document from accessing the loaded web page. This is where it becomes tricky: In order for a browser to control web pages (UI and code injection), the both the browser and the webpage must be loaded from the same origin.
+Virtual documents live in a sandbox, though. This means that communication with a virtual document via JavaScript is limited by the same origin policy, thus just loading any website, say google.com, inside a virtual document will immediately prevent the JavaScript code 'surrounding' the virtual document from accessing the loaded web page. This is where it becomes tricky: In order for a browser to control web pages (UI and code injection), both the browser and the webpage must be loaded from the same origin.
 
 To do this, Chrome VS Code runs a proxy server in the extension process through which requests are redirected. While not particularly elegant, it allows to circumvent the SOP.
 
