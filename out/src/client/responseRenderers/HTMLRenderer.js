@@ -8,17 +8,18 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments)).next());
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const ResponseRenderer_1 = require('../ResponseRenderer');
-const ResponseRendererFactory_1 = require('../ResponseRendererFactory');
-const internalRouteMapReader_1 = require('../internalRouteMapReader');
-const InternalRoute_1 = require('../../server/InternalRoute');
-const utils_1 = require('../../utils');
-let HTMLRenderer_1 = class HTMLRenderer extends ResponseRenderer_1.default {
+Object.defineProperty(exports, "__esModule", { value: true });
+const ResponseRenderer_1 = require("../ResponseRenderer");
+const ResponseRendererFactory_1 = require("../ResponseRendererFactory");
+const internalRouteMapReader_1 = require("../internalRouteMapReader");
+const InternalRoute_1 = require("../../server/InternalRoute");
+const utils_1 = require("../../utils");
+let HTMLRenderer = HTMLRenderer_1 = class HTMLRenderer extends ResponseRenderer_1.default {
     /**
      * Renders a certain response in the renderer's current viewport.
      * @param responseURI The URI from which the response was loaded.
@@ -124,7 +125,6 @@ let HTMLRenderer_1 = class HTMLRenderer extends ResponseRenderer_1.default {
         }
     }
 };
-let HTMLRenderer = HTMLRenderer_1;
 HTMLRenderer.ownFavicon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAABKVBMVEUAAAD+1ABCuDnsJhwFlN7sJyL/2gDnDCXnxAQAmumTOENHqjY9rz0wxz5Muik5sU3ULS8AlOdSqDbXJx8Mj8wAmOUmzz1Mvh7iKSMAkt2jMTVIwzQ5wDr/4wD/9wABkN0Dj9aNGRUBWYYzmDoDj9bnJiFSqzcAhP+3IxsAh/MKkNL//QD/5gBnEg8Dj9bJeguJs2HAOhcznam0TycHhdgVmKTeFRYpj01nlzSTKxIwnLH+GREHjNp3IA791AABlN5CuDkCkNP/MSbsKSEAi/oAoPUAiPUCj9kHhdTtESj/7wD/4AAAme8Bkd0Wis0eir0/tkAxyTw6wTtGrTZGvDFNySzmFSflJSPdIiHmISDUxh7ZMR7lGx7/Dxz4xQX/GQPr1wDuyADwDAAssYJaAAAAPnRSTlMAm5zEv6eIfHH19PPy8PDh4N/c29bRzs7MysW2ta+uqaWRj42Mi4iDgH9/enl4c3JuZGJCQT08OzggHRcSAvY0/88AAACvSURBVBjTY8ALtIysUPh6jm4iBgwWakKqEL6Ko4tHlCyDTGBwJCuIr+Do5p/ozcjAFMQd48zMwMDi7q7J4W0HFHAQM46Nl2Cxt1dn0LEDC/AyWAv4uXKaMDCwQQT4GGwEXe25zOAC4qYu9qJSSc7sDNpggRAeD19JBgZm53B2Di+ggHRogI88yFpWp7DoBC9GBnNlfiWIwxSdPCPi5JCdruvkKayP4hkNQ0tbDB8DAOyhGpl7KuXzAAAAAElFTkSuQmCC';
 HTMLRenderer = HTMLRenderer_1 = __decorate([
     ResponseRendererFactory_1.default.register(response => {
@@ -138,6 +138,6 @@ HTMLRenderer = HTMLRenderer_1 = __decorate([
         return score;
     })
 ], HTMLRenderer);
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = HTMLRenderer;
+var HTMLRenderer_1;
 //# sourceMappingURL=HTMLRenderer.js.map

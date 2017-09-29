@@ -8,14 +8,15 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments)).next());
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const ResponseRenderer_1 = require('../ResponseRenderer');
-const ResponseRendererFactory_1 = require('../ResponseRendererFactory');
-let ImageRenderer_1 = class ImageRenderer extends ResponseRenderer_1.default {
+Object.defineProperty(exports, "__esModule", { value: true });
+const ResponseRenderer_1 = require("../ResponseRenderer");
+const ResponseRendererFactory_1 = require("../ResponseRendererFactory");
+let ImageRenderer = ImageRenderer_1 = class ImageRenderer extends ResponseRenderer_1.default {
     /**
      * Attempts to generate a favicon for the rendered response.
      * @param responseURI The URI from which the response was loaded.
@@ -92,7 +93,6 @@ let ImageRenderer_1 = class ImageRenderer extends ResponseRenderer_1.default {
         });
     }
 };
-let ImageRenderer = ImageRenderer_1;
 ImageRenderer = ImageRenderer_1 = __decorate([
     ResponseRendererFactory_1.default.register(response => {
         var score = 0;
@@ -105,6 +105,6 @@ ImageRenderer = ImageRenderer_1 = __decorate([
         return score;
     })
 ], ImageRenderer);
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = ImageRenderer;
+var ImageRenderer_1;
 //# sourceMappingURL=ImageRenderer.js.map

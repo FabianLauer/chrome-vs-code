@@ -30,10 +30,10 @@ export default class BrowserBackend extends Disposable {
 			this.documentContentProvider = undefined;
 			this.documentContentProviderRegistration.dispose();
 			this.documentContentProviderRegistration = undefined;
-			delete this.logWriter;
-			delete this.serverPort;
-			delete this.internalRouteMap;
-			delete this.previewUriScheme;
+			(this.logWriter as any) = undefined;
+			(this.serverPort as any) = undefined;
+			(this.internalRouteMap as any) = undefined;
+			(this.previewUriScheme as any) = undefined;
 		});
 		this.previewUri = Uri.parse(`${this.previewUriScheme}://`);
 	}
@@ -98,11 +98,11 @@ export default class BrowserBackend extends Disposable {
 			this.aboutPageReaders,
 			this.logWriter.writeLine.bind(this.logWriter),
 			BrowserConfiguration.createFromWorkspaceConfig,
-			async data => {
+			async (data) => {
 				this.logWriter.writeLine('updating browser config:', JSON.stringify(data));
 				for (const section in data) {
 					/// TODO: Find out why the `udpate` method is missing in the `WorkspaceConfiguration` declaration.
-					const workspaceConfig = <any>workspace.getConfiguration(section);
+					const workspaceConfig = workspace.getConfiguration(section) as any;
 					for (const key in data[section]) {
 						await workspaceConfig.update(
 							// config name

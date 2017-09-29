@@ -72,6 +72,8 @@
     "postinstall": "make clean && node ./node_modules/vscode/bin/install && make all"
   },
   "devDependencies": {
+    "browserify": "^14.4.0",
+    "coffee": "^4.1.0",
     "less": "^2.7.1",
     "less-plugin-clean-css": "^1.5.1",
     "prefix-css": "0.0.6",

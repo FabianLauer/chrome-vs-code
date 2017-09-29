@@ -6,4 +6,4 @@ clean:
 all:
 	cp -r src/static/ out/src/static
 	coffee ./scripts/compileLessCss.coffee
-	browserify ./out/src/browser.js > ./out/src/browser.all.js
+	./node_modules/.bin/browserify ./out/src/browser.js > ./out/src/browser.all.js

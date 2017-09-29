@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * Parses a URL into its parts. **Requires the DOM to work.**
  * @param url The URL to parse.
@@ -20,7 +21,6 @@ function parseURL(url) {
         hash: link.hash
     };
 }
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = parseURL;
 ;
 //# sourceMappingURL=parseURL.js.map

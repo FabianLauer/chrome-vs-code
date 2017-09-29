@@ -2,11 +2,12 @@
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments)).next());
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * Protocol proxies are objects that a server can use to delegate requests to.
  * Depending on its protocol (http, https, file, etc), a request will be handed
@@ -83,11 +84,10 @@ class OutgoingRequestHandler {
  * Holds all classes that have registered using `ProtocolProxy.register()` along with their score functions.
  */
 OutgoingRequestHandler.registry = new Map();
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = OutgoingRequestHandler;
 //
 // import concrete classes:
 //
-require('./outgoingRequestHandler/Http');
-require('./outgoingRequestHandler/File');
+require("./outgoingRequestHandler/Http");
+require("./outgoingRequestHandler/File");
 //# sourceMappingURL=OutgoingRequestHandler.js.map

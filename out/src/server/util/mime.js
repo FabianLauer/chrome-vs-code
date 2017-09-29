@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const mimetype = require('mimetype');
 // override the default mime type:
 mimetype.default_type = 'tetx/plain';
