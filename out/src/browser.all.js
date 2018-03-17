@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
 (function (global){
 /*! https://mths.be/punycode v1.4.1 by @mathias */
 ;(function(root) {
@@ -1471,15 +1471,14 @@ module.exports = {
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
+        step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const BrowserWindow_1 = require("./client/BrowserWindow");
+const BrowserWindow_1 = require('./client/BrowserWindow');
 // Import the theme file. We don't need to import any symbols, the file takes care of that itself.
-require("./client/theme");
+require('./client/theme');
 (() => __awaiter(this, void 0, void 0, function* () {
     const browser = new BrowserWindow_1.default();
     yield browser.render();
@@ -1491,16 +1490,15 @@ require("./client/theme");
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
+        step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const IconButton_1 = require("./IconButton");
-const MainMenuDialog_1 = require("./MainMenuDialog");
-const event_1 = require("../utils/event");
-const utils_1 = require("../utils");
+const IconButton_1 = require('./IconButton');
+const MainMenuDialog_1 = require('./MainMenuDialog');
+const event_1 = require('../utils/event');
+const utils_1 = require('../utils');
 /**
  * Controller for the browser top bar.
  */
@@ -1636,12 +1634,12 @@ class BrowserBar {
         this.backButton.disable();
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = BrowserBar;
 
 },{"../utils":35,"../utils/event":34,"./IconButton":15,"./MainMenuDialog":16}],9:[function(require,module,exports){
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const TypedSymbol_1 = require("../utils/TypedSymbol");
+const TypedSymbol_1 = require('../utils/TypedSymbol');
 class BrowserConfigSectionSymbol extends TypedSymbol_1.default {
     /**
      * Creates a new typed symbol for a browser configuration section.
@@ -1677,24 +1675,23 @@ exports.webSearchURL = BrowserConfigSectionSymbol.create('webSearchURL');
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
+        step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const internalRouteMapReader_1 = require("./internalRouteMapReader");
-const InternalRoute_1 = require("../server/InternalRoute");
-const URLBar_1 = require("./URLBar");
-const BrowserBar_1 = require("./BrowserBar");
-const Viewport_1 = require("./Viewport");
-const StatusIndicator_1 = require("./StatusIndicator");
-const ResponseRendererFactory_1 = require("./ResponseRendererFactory");
-const History_1 = require("./History");
-const HistoryEntry_1 = require("./HistoryEntry");
-const WritableBrowserConfig_1 = require("./WritableBrowserConfig");
-const configSection = require("./BrowserConfigSection");
-const prompts_1 = require("./webapi/prompts");
+const internalRouteMapReader_1 = require('./internalRouteMapReader');
+const InternalRoute_1 = require('../server/InternalRoute');
+const URLBar_1 = require('./URLBar');
+const BrowserBar_1 = require('./BrowserBar');
+const Viewport_1 = require('./Viewport');
+const StatusIndicator_1 = require('./StatusIndicator');
+const ResponseRendererFactory_1 = require('./ResponseRendererFactory');
+const History_1 = require('./History');
+const HistoryEntry_1 = require('./HistoryEntry');
+const WritableBrowserConfig_1 = require('./WritableBrowserConfig');
+const configSection = require('./BrowserConfigSection');
+const prompts_1 = require('./webapi/prompts');
 /**
  * The complete browser window, including browser bar and viewport.
  */
@@ -1858,9 +1855,11 @@ class BrowserWindow {
         return __awaiter(this, void 0, void 0, function* () {
             const updateViewportHeight = overlayMode ?
                 // in overlay mode, the viewport is at 100% height:
-                () => this.viewport.updateHeight(document.body.getBoundingClientRect().height, true) :
+                // in overlay mode, the viewport is at 100% height:
+                    () => this.viewport.updateHeight(document.body.getBoundingClientRect().height, true) :
                 // if not in overlay mode, fit the viewport into available horizontal space:
-                () => this.updateViewportHeight(true);
+                // if not in overlay mode, fit the viewport into available horizontal space:
+                    () => this.updateViewportHeight(true);
             yield Promise.all([
                 this.browserBar.expand(),
                 updateViewportHeight()
@@ -2119,6 +2118,7 @@ class BrowserWindow {
         }
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = BrowserWindow;
 
 },{"../server/InternalRoute":32,"./BrowserBar":8,"./BrowserConfigSection":9,"./History":13,"./HistoryEntry":14,"./ResponseRendererFactory":19,"./StatusIndicator":20,"./URLBar":21,"./Viewport":23,"./WritableBrowserConfig":24,"./internalRouteMapReader":25,"./webapi/prompts":30}],11:[function(require,module,exports){
@@ -2126,13 +2126,12 @@ exports.default = BrowserWindow;
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
+        step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const event_1 = require("../utils/event");
+const event_1 = require('../utils/event');
 class Button {
     constructor() {
         /**
@@ -2235,6 +2234,7 @@ class Button {
         this.onClick.suspend();
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = Button;
 
 },{"../utils/event":34}],12:[function(require,module,exports){
@@ -2242,13 +2242,12 @@ exports.default = Button;
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
+        step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const utils_1 = require("../utils");
+const utils_1 = require('../utils');
 class Dialog {
     constructor() {
         this.outerElement = document.createElement('div');
@@ -2365,6 +2364,7 @@ class Dialog {
         return this.rendered;
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = Dialog;
 
 },{"../utils":35}],13:[function(require,module,exports){
@@ -2372,13 +2372,12 @@ exports.default = Dialog;
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
+        step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const HistoryEntry_1 = require("./HistoryEntry");
+const HistoryEntry_1 = require('./HistoryEntry');
 class History {
     constructor() {
         this.entries = [];
@@ -2429,17 +2428,18 @@ class History {
         });
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = History;
 
 },{"./HistoryEntry":14}],14:[function(require,module,exports){
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 class HistoryEntry {
     constructor(uri, timestamp) {
         this.uri = uri;
         this.timestamp = timestamp;
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = HistoryEntry;
 
 },{}],15:[function(require,module,exports){
@@ -2447,13 +2447,12 @@ exports.default = HistoryEntry;
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
+        step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const event_1 = require("../utils/event");
+const event_1 = require('../utils/event');
 class IconButton {
     constructor() {
         /**
@@ -2497,6 +2496,7 @@ class IconButton {
         this.onClick.suspend();
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = IconButton;
 
 },{"../utils/event":34}],16:[function(require,module,exports){
@@ -2504,15 +2504,14 @@ exports.default = IconButton;
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
+        step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const Dialog_1 = require("./Dialog");
-const IconButton_1 = require("./IconButton");
-const config_1 = require("../config");
+const Dialog_1 = require('./Dialog');
+const IconButton_1 = require('./IconButton');
+const config_1 = require('../config');
 class MainMenuCard extends IconButton_1.default {
     constructor(icon, text, clickHandler) {
         super();
@@ -2577,6 +2576,7 @@ class MainMenuDialog extends Dialog_1.default {
         });
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = MainMenuDialog;
 
 },{"../config":31,"./Dialog":12,"./IconButton":15}],17:[function(require,module,exports){
@@ -2584,14 +2584,13 @@ exports.default = MainMenuDialog;
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
+        step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const internalRouteMapReader_1 = require("./internalRouteMapReader");
-const InternalRoute_1 = require("../server/InternalRoute");
+const internalRouteMapReader_1 = require('./internalRouteMapReader');
+const InternalRoute_1 = require('../server/InternalRoute');
 class ReadonlyBrowserConfig {
     get(key) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -2618,6 +2617,7 @@ class ReadonlyBrowserConfig {
         });
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = ReadonlyBrowserConfig;
 
 },{"../server/InternalRoute":32,"./internalRouteMapReader":25}],18:[function(require,module,exports){
@@ -2625,12 +2625,11 @@ exports.default = ReadonlyBrowserConfig;
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
+        step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
 class ResponseRenderer {
     /**
      * Creates a renderer.
@@ -2662,6 +2661,7 @@ class ResponseRenderer {
         });
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = ResponseRenderer;
 
 },{}],19:[function(require,module,exports){
@@ -2669,14 +2669,13 @@ exports.default = ResponseRenderer;
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
+        step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const ResponseRenderer_1 = require("./ResponseRenderer");
-const config_1 = require("../config");
+const ResponseRenderer_1 = require('./ResponseRenderer');
+const config_1 = require('../config');
 /**
  * @singleton
  */
@@ -2765,22 +2764,23 @@ ResponseRendererFactory.FallbackRenderer = class FallbackRenderer extends Respon
 				`);
         });
     }
-};
+}
+;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = ResponseRendererFactory;
 // import all response renderers:
-require("./responseRenderers");
+require('./responseRenderers');
 
 },{"../config":31,"./ResponseRenderer":18,"./responseRenderers":28}],20:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
+        step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
 class StatusIndicator {
     constructor() {
         this.outerElement = document.createElement('div');
@@ -2814,6 +2814,7 @@ class StatusIndicator {
         this.outerElement.innerText = '';
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = StatusIndicator;
 
 },{}],21:[function(require,module,exports){
@@ -2821,15 +2822,14 @@ exports.default = StatusIndicator;
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
+        step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const URLInterpreter_1 = require("./URLInterpreter");
-const event_1 = require("../utils/event");
-const utils_1 = require("../utils");
+const URLInterpreter_1 = require('./URLInterpreter');
+const event_1 = require('../utils/event');
+const utils_1 = require('../utils');
 /**
  * The browser's URL bar component.
  */
@@ -2994,6 +2994,7 @@ class URLBar {
         });
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = URLBar;
 
 },{"../utils":35,"../utils/event":34,"./URLInterpreter":22}],22:[function(require,module,exports){
@@ -3001,16 +3002,15 @@ exports.default = URLBar;
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
+        step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const url_1 = require("url");
-const internalRouteMapReader_1 = require("./internalRouteMapReader");
-const InternalRoute_1 = require("../server/InternalRoute");
-const configSection = require("./BrowserConfigSection");
+const url_1 = require('url');
+const internalRouteMapReader_1 = require('./internalRouteMapReader');
+const InternalRoute_1 = require('../server/InternalRoute');
+const configSection = require('./BrowserConfigSection');
 /**
  * URL interpreters are objects that
  */
@@ -3078,6 +3078,7 @@ class URLInterpreter {
         });
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = URLInterpreter;
 
 },{"../server/InternalRoute":32,"./BrowserConfigSection":9,"./internalRouteMapReader":25,"url":5}],23:[function(require,module,exports){
@@ -3085,14 +3086,13 @@ exports.default = URLInterpreter;
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
+        step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const event_1 = require("../utils/event");
-const utils_1 = require("../utils");
+const event_1 = require('../utils/event');
+const utils_1 = require('../utils');
 class Viewport {
     /**
      * Creates a new viewport.
@@ -3322,6 +3322,7 @@ class Viewport {
     }
 }
 Viewport.bindings = [];
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = Viewport;
 
 },{"../utils":35,"../utils/event":34}],24:[function(require,module,exports){
@@ -3329,15 +3330,14 @@ exports.default = Viewport;
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
+        step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const internalRouteMapReader_1 = require("./internalRouteMapReader");
-const InternalRoute_1 = require("../server/InternalRoute");
-const ReadonlyBrowserConfig_1 = require("./ReadonlyBrowserConfig");
+const internalRouteMapReader_1 = require('./internalRouteMapReader');
+const InternalRoute_1 = require('../server/InternalRoute');
+const ReadonlyBrowserConfig_1 = require('./ReadonlyBrowserConfig');
 class WritableBrowserConfig extends ReadonlyBrowserConfig_1.default {
     set(key, value) {
         return this.updateConfigField('chromevscode', key.name, value);
@@ -3366,11 +3366,11 @@ class WritableBrowserConfig extends ReadonlyBrowserConfig_1.default {
         });
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = WritableBrowserConfig;
 
 },{"../server/InternalRoute":32,"./ReadonlyBrowserConfig":17,"./internalRouteMapReader":25}],25:[function(require,module,exports){
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * Returns the path to an internal route.
  * @param route The internal route to get the path to.
@@ -3378,6 +3378,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 function get(route) {
     return CHROME_VS_CODE_INTERNAL_ROUTE_MAP.get(route);
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = get;
 
 },{}],26:[function(require,module,exports){
@@ -3391,18 +3392,17 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
+        step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const ResponseRenderer_1 = require("../ResponseRenderer");
-const ResponseRendererFactory_1 = require("../ResponseRendererFactory");
-const internalRouteMapReader_1 = require("../internalRouteMapReader");
-const InternalRoute_1 = require("../../server/InternalRoute");
-const utils_1 = require("../../utils");
-let HTMLRenderer = HTMLRenderer_1 = class HTMLRenderer extends ResponseRenderer_1.default {
+const ResponseRenderer_1 = require('../ResponseRenderer');
+const ResponseRendererFactory_1 = require('../ResponseRendererFactory');
+const internalRouteMapReader_1 = require('../internalRouteMapReader');
+const InternalRoute_1 = require('../../server/InternalRoute');
+const utils_1 = require('../../utils');
+let HTMLRenderer_1 = class HTMLRenderer extends ResponseRenderer_1.default {
     /**
      * Renders a certain response in the renderer's current viewport.
      * @param responseURI The URI from which the response was loaded.
@@ -3508,6 +3508,7 @@ let HTMLRenderer = HTMLRenderer_1 = class HTMLRenderer extends ResponseRenderer_
         }
     }
 };
+let HTMLRenderer = HTMLRenderer_1;
 HTMLRenderer.ownFavicon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAABKVBMVEUAAAD+1ABCuDnsJhwFlN7sJyL/2gDnDCXnxAQAmumTOENHqjY9rz0wxz5Muik5sU3ULS8AlOdSqDbXJx8Mj8wAmOUmzz1Mvh7iKSMAkt2jMTVIwzQ5wDr/4wD/9wABkN0Dj9aNGRUBWYYzmDoDj9bnJiFSqzcAhP+3IxsAh/MKkNL//QD/5gBnEg8Dj9bJeguJs2HAOhcznam0TycHhdgVmKTeFRYpj01nlzSTKxIwnLH+GREHjNp3IA791AABlN5CuDkCkNP/MSbsKSEAi/oAoPUAiPUCj9kHhdTtESj/7wD/4AAAme8Bkd0Wis0eir0/tkAxyTw6wTtGrTZGvDFNySzmFSflJSPdIiHmISDUxh7ZMR7lGx7/Dxz4xQX/GQPr1wDuyADwDAAssYJaAAAAPnRSTlMAm5zEv6eIfHH19PPy8PDh4N/c29bRzs7MysW2ta+uqaWRj42Mi4iDgH9/enl4c3JuZGJCQT08OzggHRcSAvY0/88AAACvSURBVBjTY8ALtIysUPh6jm4iBgwWakKqEL6Ko4tHlCyDTGBwJCuIr+Do5p/ozcjAFMQd48zMwMDi7q7J4W0HFHAQM46Nl2Cxt1dn0LEDC/AyWAv4uXKaMDCwQQT4GGwEXe25zOAC4qYu9qJSSc7sDNpggRAeD19JBgZm53B2Di+ggHRogI88yFpWp7DoBC9GBnNlfiWIwxSdPCPi5JCdruvkKayP4hkNQ0tbDB8DAOyhGpl7KuXzAAAAAElFTkSuQmCC';
 HTMLRenderer = HTMLRenderer_1 = __decorate([
     ResponseRendererFactory_1.default.register(response => {
@@ -3521,8 +3522,8 @@ HTMLRenderer = HTMLRenderer_1 = __decorate([
         return score;
     })
 ], HTMLRenderer);
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = HTMLRenderer;
-var HTMLRenderer_1;
 
 },{"../../server/InternalRoute":32,"../../utils":35,"../ResponseRenderer":18,"../ResponseRendererFactory":19,"../internalRouteMapReader":25}],27:[function(require,module,exports){
 "use strict";
@@ -3535,15 +3536,14 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
+        step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const ResponseRenderer_1 = require("../ResponseRenderer");
-const ResponseRendererFactory_1 = require("../ResponseRendererFactory");
-let ImageRenderer = ImageRenderer_1 = class ImageRenderer extends ResponseRenderer_1.default {
+const ResponseRenderer_1 = require('../ResponseRenderer');
+const ResponseRendererFactory_1 = require('../ResponseRendererFactory');
+let ImageRenderer_1 = class ImageRenderer extends ResponseRenderer_1.default {
     /**
      * Attempts to generate a favicon for the rendered response.
      * @param responseURI The URI from which the response was loaded.
@@ -3620,6 +3620,7 @@ let ImageRenderer = ImageRenderer_1 = class ImageRenderer extends ResponseRender
         });
     }
 };
+let ImageRenderer = ImageRenderer_1;
 ImageRenderer = ImageRenderer_1 = __decorate([
     ResponseRendererFactory_1.default.register(response => {
         var score = 0;
@@ -3632,20 +3633,18 @@ ImageRenderer = ImageRenderer_1 = __decorate([
         return score;
     })
 ], ImageRenderer);
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = ImageRenderer;
-var ImageRenderer_1;
 
 },{"../ResponseRenderer":18,"../ResponseRendererFactory":19}],28:[function(require,module,exports){
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const HTMLRenderer_1 = require("./HTMLRenderer");
+const HTMLRenderer_1 = require('./HTMLRenderer');
 exports.HTMLRenderer = HTMLRenderer_1.default;
-const ImageRenderer_1 = require("./ImageRenderer");
+const ImageRenderer_1 = require('./ImageRenderer');
 exports.ImageRenderer = ImageRenderer_1.default;
 
 },{"./HTMLRenderer":26,"./ImageRenderer":27}],29:[function(require,module,exports){
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * This function is called by the extension's HTML preview to sync the browser client's with VS Code's theme.
  * @param theme The theme to set.
@@ -3670,26 +3669,26 @@ function setChromeVSCodeTheme(theme) {
             break;
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = setChromeVSCodeTheme;
 window.setChromeVSCodeTheme = setChromeVSCodeTheme;
 
 },{}],30:[function(require,module,exports){
-"use strict";
 ///
 /// User Prompts API Imeplemntation
 /// Spec: http://w3c.github.io/html/webappapis.html#user-prompts
 ///
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
+        step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const Dialog_1 = require("../Dialog");
-const Button_1 = require("../Button");
+const Dialog_1 = require('../Dialog');
+const Button_1 = require('../Button');
 /**
  * Adds a button to a dialog that closes the dialog when pressed.
  * @param dialog The dialog to add the button to.
@@ -3821,7 +3820,6 @@ exports.initialize = initialize;
 },{"../Button":11,"../Dialog":12}],31:[function(require,module,exports){
 (function (__dirname){
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * A URL to report extension bugs at.
  */
@@ -3834,7 +3832,6 @@ exports.STATIC_DIR = `${__dirname}/static/`;
 }).call(this,"/out/src")
 },{}],32:[function(require,module,exports){
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 var InternalRoute;
 (function (InternalRoute) {
     /**
@@ -3870,11 +3867,11 @@ var InternalRoute;
      */
     InternalRoute[InternalRoute["Hosts"] = 8] = "Hosts";
 })(InternalRoute || (InternalRoute = {}));
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = InternalRoute;
 
 },{}],33:[function(require,module,exports){
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * @final
  */
@@ -3900,6 +3897,7 @@ class TypedSymbol {
     }
 }
 TypedSymbol.counter = 0;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = TypedSymbol;
 
 },{}],34:[function(require,module,exports){
@@ -3907,12 +3905,11 @@ exports.default = TypedSymbol;
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
+        step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
 class Event {
     constructor() {
         this.suspended = false;
@@ -4015,17 +4012,15 @@ exports.SmartEvent = SmartEvent;
 
 },{}],35:[function(require,module,exports){
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const event = require("./event");
+const event = require('./event');
 exports.event = event;
-const sleep_1 = require("./sleep");
+const sleep_1 = require('./sleep');
 exports.sleep = sleep_1.default;
-const parseURL_1 = require("./parseURL");
+const parseURL_1 = require('./parseURL');
 exports.parseURL = parseURL_1.default;
 
 },{"./event":34,"./parseURL":36,"./sleep":37}],36:[function(require,module,exports){
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * Parses a URL into its parts. **Requires the DOM to work.**
  * @param url The URL to parse.
@@ -4047,12 +4042,12 @@ function parseURL(url) {
         hash: link.hash
     };
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = parseURL;
 ;
 
 },{}],37:[function(require,module,exports){
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * Resolves a promise after a given number of milliseconds.
  * @param milliseconds The number of milliseconds to wait before resolving the returned promise.
@@ -4062,6 +4057,7 @@ function sleep(milliseconds) {
         setTimeout(resolve, milliseconds);
     });
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = sleep;
 
 },{}]},{},[7]);
