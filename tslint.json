@@ -54,7 +54,8 @@
 				"multiline": "never",
 				"singleline": "never"
 			}
-		]
+		],
+		"arrow-parens": false
 	},
 	"rulesDirectory": []
 }
