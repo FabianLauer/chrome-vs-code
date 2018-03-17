@@ -3,10 +3,6 @@
   "description": "Browse the web in VS Code.",
   "version": "0.0.1",
   "publisher": "fabianlauer",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/FabianLauer/chrome-vs-code"
-  },
   "preview": true,
   "repository": {
     "type": "git",
