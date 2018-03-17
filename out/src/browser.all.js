@@ -3823,7 +3823,7 @@ exports.initialize = initialize;
 /**
  * A URL to report extension bugs at.
  */
-exports.BUG_REPORT_URL = 'https://github.com';
+exports.BUG_REPORT_URL = 'https://github.com/FabianLauer/chrome-vs-code/issues';
 /**
  * Path to the directory that contains static resources.
  */
