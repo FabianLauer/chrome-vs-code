@@ -30,10 +30,10 @@ export default class BrowserBackend extends Disposable {
 			this.documentContentProvider = undefined;
 			this.documentContentProviderRegistration.dispose();
 			this.documentContentProviderRegistration = undefined;
-			(this.logWriter as any) = undefined;
-			(this.serverPort as any) = undefined;
-			(this.internalRouteMap as any) = undefined;
-			(this.previewUriScheme as any) = undefined;
+			(this as any).logWriter = undefined;
+			(this as any).serverPort = undefined;
+			(this as any).internalRouteMap = undefined;
+			(this as any).previewUriScheme = undefined;
 		});
 		this.previewUri = Uri.parse(`${this.previewUriScheme}://`);
 	}
