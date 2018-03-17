@@ -1,4 +1,4 @@
-# ![](https://raw.githubusercontent.com/FabianLauer/chrome-vs-code/master/out/src/static/logo-32x32.png) **Chrome VS Code** <small style="color: #fff; background: #fdd400; padding: .1em .4em; font-size: 0.4em; font-weight: 600; position: relative; top: -0.7em">PREVIEW</small>
+# ![ ](./out/src/static/logo-32x32.png) **Chrome VS Code** <small style="color: #fff; background: #fdd400; padding: .1em .4em; font-size: 0.4em; font-weight: 600; position: relative; top: -0.7em">PREVIEW</small>
 
 ## Google Chrome for Visual Studio Code.
 
