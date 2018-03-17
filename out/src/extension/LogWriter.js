@@ -1,6 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const vscode_1 = require("vscode");
+const vscode_1 = require('vscode');
 /**
  * Accepts log messages and writes them to a log file, console, etc.
  */
@@ -23,5 +22,6 @@ class LogWriter {
         this.outputChannel.appendLine(completeMessage);
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = LogWriter;
 //# sourceMappingURL=LogWriter.js.map

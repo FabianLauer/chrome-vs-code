@@ -1,7 +1,6 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const vscode_1 = require("vscode");
-const InternalRoute_1 = require("../server/InternalRoute");
+const vscode_1 = require('vscode');
+const InternalRoute_1 = require('../server/InternalRoute');
 class TextDocumentContentProvider {
     /**
      * @param backEndPort The port to which the back end is listening.
@@ -72,5 +71,6 @@ class TextDocumentContentProvider {
         this._onDidChange.fire(uri);
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = TextDocumentContentProvider;
 //# sourceMappingURL=TextDocumentContentProvider.js.map

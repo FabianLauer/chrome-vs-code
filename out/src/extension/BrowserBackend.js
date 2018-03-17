@@ -2,16 +2,15 @@
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
+        step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const vscode_1 = require("vscode");
-const Server_1 = require("../server/Server");
-const BrowserConfiguration_1 = require("./BrowserConfiguration");
-const TextDocumentContentProvider_1 = require("./TextDocumentContentProvider");
+const vscode_1 = require('vscode');
+const Server_1 = require('../server/Server');
+const BrowserConfiguration_1 = require('./BrowserConfiguration');
+const TextDocumentContentProvider_1 = require('./TextDocumentContentProvider');
 class BrowserBackend extends vscode_1.Disposable {
     /**
      * Creates a new backend instance.
@@ -105,5 +104,6 @@ class BrowserBackend extends vscode_1.Disposable {
         });
     }
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = BrowserBackend;
 //# sourceMappingURL=BrowserBackend.js.map

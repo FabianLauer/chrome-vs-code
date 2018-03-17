@@ -8,14 +8,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
+        step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const OutgoingRequestHandler_1 = require("../OutgoingRequestHandler");
-const url_1 = require("url");
+const OutgoingRequestHandler_1 = require('../OutgoingRequestHandler');
+const url_1 = require('url');
 /**
  * Request handler for `http://` and `https://` URLs.
  */
@@ -81,5 +80,6 @@ Http = __decorate([
         return protocol === 'http:' || protocol === 'https:' ? 1 : 0;
     })
 ], Http);
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = Http;
 //# sourceMappingURL=Http.js.map

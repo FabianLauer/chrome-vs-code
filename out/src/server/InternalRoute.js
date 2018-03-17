@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 var InternalRoute;
 (function (InternalRoute) {
     /**
@@ -35,5 +34,6 @@ var InternalRoute;
      */
     InternalRoute[InternalRoute["Hosts"] = 8] = "Hosts";
 })(InternalRoute || (InternalRoute = {}));
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = InternalRoute;
 //# sourceMappingURL=InternalRoute.js.map

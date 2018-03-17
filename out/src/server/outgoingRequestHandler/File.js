@@ -8,20 +8,19 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
+        step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const OutgoingRequestHandler_1 = require("../OutgoingRequestHandler");
-const url_1 = require("url");
-const fs_1 = require("fs");
-const mime = require("../util/mime");
+const OutgoingRequestHandler_1 = require('../OutgoingRequestHandler');
+const url_1 = require('url');
+const fs_1 = require('fs');
+const mime = require('../util/mime');
 /**
  * Request handler for `file://` URLs.
  */
-let File = File_1 = class File extends OutgoingRequestHandler_1.default {
+let File_1 = class File extends OutgoingRequestHandler_1.default {
     /**
      * Handles an incoming request and responds to it.
      * @param virtualRequest The request data that the browser user gets to see.
@@ -124,12 +123,13 @@ let File = File_1 = class File extends OutgoingRequestHandler_1.default {
         });
     }
 };
+let File = File_1;
 File = File_1 = __decorate([
     OutgoingRequestHandler_1.default.register((virtualRequest, request) => {
         const protocol = url_1.parse(virtualRequest.url).protocol;
         return protocol === 'file:' ? 1 : 0;
     })
 ], File);
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = File;
-var File_1;
 //# sourceMappingURL=File.js.map

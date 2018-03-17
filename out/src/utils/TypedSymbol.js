@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * @final
  */
@@ -25,5 +24,6 @@ class TypedSymbol {
     }
 }
 TypedSymbol.counter = 0;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = TypedSymbol;
 //# sourceMappingURL=TypedSymbol.js.map

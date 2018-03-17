@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 class PreviewUriSchemePool {
     /**
      * @param
@@ -47,5 +46,6 @@ class PreviewUriSchemePool {
     }
 }
 PreviewUriSchemePool.registeredSchemes = [];
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = PreviewUriSchemePool;
 //# sourceMappingURL=PreviewUriSchemePool.js.map

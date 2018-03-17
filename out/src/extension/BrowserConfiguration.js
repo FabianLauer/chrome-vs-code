@@ -1,7 +1,6 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const vscode = require("vscode");
-const url_1 = require("url");
+const vscode = require('vscode');
+const url_1 = require('url');
 class BrowserConfiguration {
     constructor(home, autoToggleAddressBar, showWelcomePage, disclaimerReadAndAccepted, webSearchURL) {
         this.home = home;
@@ -42,5 +41,6 @@ class BrowserConfiguration {
  * A browser configuration with fallback values.
  */
 BrowserConfiguration.defaultConfig = new BrowserConfiguration('http://code.visualstudio.com', true, true, false, 'http://www.google.com/search?q=${searchTerm}');
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = BrowserConfiguration;
 //# sourceMappingURL=BrowserConfiguration.js.map

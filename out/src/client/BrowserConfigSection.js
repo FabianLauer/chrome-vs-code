@@ -1,6 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const TypedSymbol_1 = require("../utils/TypedSymbol");
+const TypedSymbol_1 = require('../utils/TypedSymbol');
 class BrowserConfigSectionSymbol extends TypedSymbol_1.default {
     /**
      * Creates a new typed symbol for a browser configuration section.

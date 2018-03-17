@@ -1,7 +1,6 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const crypto_1 = require("crypto");
-const InternalRoute_1 = require("../../server/InternalRoute");
+const crypto_1 = require('crypto');
+const InternalRoute_1 = require('../../server/InternalRoute');
 /**
  * Generates a random sha hash.
  */
