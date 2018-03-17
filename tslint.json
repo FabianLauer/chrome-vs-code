@@ -55,7 +55,8 @@
 				"singleline": "never"
 			}
 		],
-		"arrow-parens": false
+		"arrow-parens": false,
+		"max-classes-per-file": false
 	},
 	"rulesDirectory": []
 }
