@@ -39,8 +39,8 @@ ____
 
 👌 Stable &nbsp;&nbsp;&nbsp; ⚒ Experimental &nbsp;&nbsp;&nbsp; ✋ Not Implemented Yet
 
-## Downloading Extension 
-  1. [Download Extension (.vsix) ](https://github.com/pavittarx/chrome-vs-code/raw/master/chrome-vs-code-0.0.1.vsix) 
+## Downloading & Installing Extension 
+  1. [Download Extension (.vsix) ](https://github.com/FabianLauer/chrome-vs-code/raw/master/chrome-vs-code-0.0.1.vsix) 
   2. Install a .vsix in Visual Studio Code. [Click here to see installation instructions](https://code.visualstudio.com/docs/editor/extension-gaery#_install-from-a-vsix)
 
 ## Known Issues
