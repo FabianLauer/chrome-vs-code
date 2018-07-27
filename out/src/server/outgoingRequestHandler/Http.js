@@ -43,6 +43,7 @@ let Http = class Http extends OutgoingRequestHandler_1.default {
                 const options = {
                     hostname: parsedRequestURL.hostname,
                     path: parsedRequestURL.path,
+                    port: parseInt(parsedRequestURL.port, 10),
                     headers: request.headers
                 };
                 const clientRequest = requestFn(options, clientResponse => {
