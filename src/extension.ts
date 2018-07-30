@@ -52,7 +52,7 @@ async function openWebBrowser(logWriter: LogWriter, viewColumn: vscode.ViewColum
 	return vscode.commands.executeCommand(
 		'vscode.previewHtml',
 		backend.getPreviewUri(),
-		vscode.ViewColumn.Two,
+		viewColumn,
 		'Web Browser'
 	);
 }

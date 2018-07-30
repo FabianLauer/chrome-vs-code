@@ -47,7 +47,7 @@ function startBackend(logWriter) {
 function openWebBrowser(logWriter, viewColumn) {
     return __awaiter(this, void 0, void 0, function* () {
         const backend = yield startBackend(logWriter);
-        return vscode.commands.executeCommand('vscode.previewHtml', backend.getPreviewUri(), vscode.ViewColumn.Two, 'Web Browser');
+        return vscode.commands.executeCommand('vscode.previewHtml', backend.getPreviewUri(), viewColumn, 'Web Browser');
     });
 }
 /**
