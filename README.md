@@ -33,7 +33,7 @@ ____
 |	👌		 |	VS Code dark theme
 |	👌		 |	VS Code light theme
 |	✋		 |	VS Code high-contrast theme
-|	✋		|	Validate HTTPS certifications
+|	✋		|	Validate HTTPS certificates
 |	✋		|	Cookies (this means you can't log in *anywhere*)
 |	✋		|	Open selected URL
 |	✋		|	Open PDFs
