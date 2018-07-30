@@ -44,7 +44,7 @@ export default class URLBar implements IRenderable {
 		this.hideLoadingIndicator();
 		this.outerElement.appendChild(this.loadingBar);
 		// input
-		this.input.addEventListener('keyup', e => this.handleInputChange(e));
+		this.input.addEventListener('keyup', e => this.handleInputKeyup(e));
 		this.input.addEventListener('blur', this.handleInputBlur.bind(this));
 		this.input.placeholder = 'Enter an address or search the web';
 		this.outerElement.appendChild(this.input);
@@ -164,14 +164,27 @@ export default class URLBar implements IRenderable {
 	}
 
 
-	private async handleInputChange(e: KeyboardEvent): Promise<void> {
-		// only trigger change event on enter
-		if (e.keyCode !== 13) {
-			return;
+	private handleInputKeyup(e: KeyboardEvent): void {
+		// Return key
+		if (e.keyCode === 13) {
+			this.inputReturnKeyUp();
 		}
+		// Ctrl + A key
+		else if (e.keyCode === 65 && e.ctrlKey) {
+			this.inputSelectAll();
+		}
+	}
+
+
+	private async inputReturnKeyUp(): Promise<void> {
 		this.input.value = await this.urlInterpreter.interpret(this.input.value);
 		this.onChange.trigger();
 		this.input.blur();
+	}
+
+
+	private inputSelectAll(): void {
+		this.input.setSelectionRange(0, -1);
 	}
 
 

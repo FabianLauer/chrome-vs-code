@@ -54,7 +54,7 @@ class URLBar {
             this.hideLoadingIndicator();
             this.outerElement.appendChild(this.loadingBar);
             // input
-            this.input.addEventListener('keyup', e => this.handleInputChange(e));
+            this.input.addEventListener('keyup', e => this.handleInputKeyup(e));
             this.input.addEventListener('blur', this.handleInputBlur.bind(this));
             this.input.placeholder = 'Enter an address or search the web';
             this.outerElement.appendChild(this.input);
@@ -162,16 +162,24 @@ class URLBar {
         // reset the input's value to the current URL
         this.setURL(this.getURLFromFormattedView(), false);
     }
-    handleInputChange(e) {
+    handleInputKeyup(e) {
+        // Return key
+        if (e.keyCode === 13) {
+            this.inputReturnKeyUp();
+        }
+        else if (e.keyCode === 65 && e.ctrlKey) {
+            this.inputSelectAll();
+        }
+    }
+    inputReturnKeyUp() {
         return __awaiter(this, void 0, void 0, function* () {
-            // only trigger change event on enter
-            if (e.keyCode !== 13) {
-                return;
-            }
             this.input.value = yield this.urlInterpreter.interpret(this.input.value);
             this.onChange.trigger();
             this.input.blur();
         });
+    }
+    inputSelectAll() {
+        this.input.setSelectionRange(0, -1);
     }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
