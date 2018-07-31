@@ -28,6 +28,11 @@ class URLInterpreter {
     interpret(urlString) {
         return __awaiter(this, void 0, void 0, function* () {
             urlString = urlString.trim();
+            // If there's a port in the URL but no protocol, we prepend the protocol right away.
+            // This fixes a bug documented in https://github.com/FabianLauer/chrome-vs-code/issues/11.
+            if (/:\d/.test(urlString) && urlString.indexOf(':') === urlString.lastIndexOf(':')) {
+                urlString = `http://${urlString}`;
+            }
             const url = url_1.parse(urlString);
             if (typeof url.protocol === 'string') {
                 return url_1.format(url);

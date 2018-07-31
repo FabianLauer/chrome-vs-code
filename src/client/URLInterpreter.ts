@@ -23,6 +23,11 @@ export default class URLInterpreter {
 	 */
 	public async interpret(urlString: string): Promise<string> {
 		urlString = urlString.trim();
+		// If there's a port in the URL but no protocol, we prepend the protocol right away.
+		// This fixes a bug documented in https://github.com/FabianLauer/chrome-vs-code/issues/11.
+		if (/:\d/.test(urlString) && urlString.indexOf(':') === urlString.lastIndexOf(':')) {
+			urlString = `http://${urlString}`;
+		}
 		const url = parse(urlString);
 		if (typeof url.protocol === 'string') {
 			return format(url);
