@@ -1,1 +1,4 @@
 node_modules
+out/**/*.js
+out/**/*.map
+out/**/*.css
