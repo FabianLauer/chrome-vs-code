@@ -55,7 +55,9 @@ Virtual documents live in a sandbox, though. This means that communication with 
 
 To do this, Chrome VS Code runs a proxy server in the extension process through which requests are redirected. While not particularly elegant, it allows to circumvent the SOP.
 
-
+## Using
+Download latest vsix file (https://github.com/FabianLauer/chrome-vs-code/blob/master/chrome-vs-code-0.0.1.vsix) and install it in VS Code manually. Go to Extension -> Click "..." and there is "Install from VSIX". Restart vscode. 
+Commands(Ctrl+Shift+p): "Open Web Browser" and "Open Web Browser ( Split View)"
 
 ## Contributing
 
